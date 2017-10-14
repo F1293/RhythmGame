@@ -72,6 +72,13 @@ public class GameScreen extends ScreenAdapter {
     Button3 mButton3;
     Button4 mButton4;
 
+    Player mPlayer;
+
+    AttackLine mAttackLine;
+    JumpLine mJumpLine;
+
+    ActionBack mActionBack;
+
     int mGameState;//ゲームの状態を保持
     Vector3 mTouchPoint; // タッチされた座標を保持するメンバ変数
     BitmapFont mFont; // Bitmapフォントの使用
@@ -146,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
         //背景の処理
         Texture bgTexture = new Texture("back.png");
         //TextureReionで切り出すときの原点は左上
-        mBg = new Sprite(new TextureRegion(bgTexture, 0, 0, 1022, 608));
+        mBg = new Sprite(new TextureRegion(bgTexture, 0, 0, 1024, 608));
         //画像の切り出し
         mBg.setSize(CAMERA_WIDTH, CAMERA_HEIGHT);
         //カメラサイズに設定
@@ -183,13 +190,13 @@ public class GameScreen extends ScreenAdapter {
         //オブジェクト配置するcreateStageメソッドを呼び出す
 
         //背景の処理
-        Texture bg2Texture = new Texture("back2.png");
+        //Texture bg2Texture = new Texture("back2.png");
         //TextureReionで切り出すときの原点は左上
-        mBg2 = new Sprite(new TextureRegion(bg2Texture, 0, 0, 1022, 608));
+        //mBg2 = new Sprite(new TextureRegion(bg2Texture, 0, 0, 1022, 608));
         //画像の切り出し
-        mBg2.setSize(CAMERA_WIDTH, CAMERA_HEIGHT);
+        //mBg2.setSize(CAMERA_WIDTH, CAMERA_HEIGHT);
         //カメラサイズに設定
-        mBg2.setPosition(0, 0);
+        //mBg2.setPosition(0, 0);
         //左下基準０．０に描画
     }
 
@@ -236,17 +243,21 @@ public class GameScreen extends ScreenAdapter {
         // 棒の表示
         mBar.draw(mGame.batch);
         //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        //mIBar.draw(mGame.batch);
-        //mIBar1.draw(mGame.batch);
-        //mIBar2.draw(mGame.batch);
-        // デッドラインの表示
-        //mDeadLine.draw(mGame.batch);
+        mIBar.draw(mGame.batch);
+        mIBar1.draw(mGame.batch);
+        mIBar2.draw(mGame.batch);
+         //デッドラインの表示
+        mDeadLine.draw(mGame.batch);
 
         // ボタンの表示
         mButton1.draw(mGame.batch);
         mButton2.draw(mGame.batch);
         mButton3.draw(mGame.batch);
         mButton4.draw(mGame.batch);
+        mActionBack.draw(mGame.batch);
+        mAttackLine.draw(mGame.batch);
+        mJumpLine.draw(mGame.batch);
+        mPlayer.draw(mGame.batch);
 
         mGame.batch.end();
 
@@ -260,7 +271,7 @@ public class GameScreen extends ScreenAdapter {
         mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
         mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         mFont.draw(mGame.batch, "Score: " + mScore, 16, GUI_HEIGHT - 35);
-        mFont.draw(mGame.batch, "tb1.2.3.4"+ tb1 + "."+ tb2 + "."+ tb3 + "."+ tb4 + ".", 16, GUI_HEIGHT - 75);
+        mFont.draw(mGame.batch, "tb1.2.3.4"+ tb1 + "."+ tb2 + "."+ tb3 + "."+ tb4 + "."+ mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
         // mFont.draw(mGame.batch, "ToSs" + ToSs, 16, GUI_HEIGHT - 95);
         // mFont.draw(mGame.batch, "n ="+ n + "" , 16, GUI_HEIGHT - 115);
         //mFont.draw(mGame.batch, "hasseibu i="+ nn + "" , 16, GUI_HEIGHT - 135);
@@ -292,11 +303,15 @@ public class GameScreen extends ScreenAdapter {
         Texture playerTexture = new Texture("uma.png");
         Texture ufoTexture = new Texture("ufo.png");
         Texture barTexture = new Texture("bar.png");
+        Texture ibarTexture = new Texture("ibar.png");
         Texture button1Texture = new Texture("button1a.png");
         Texture button2Texture = new Texture("button2a.png");
         Texture button3Texture = new Texture("button3a.png");
         Texture button3bTexture = new Texture("button3b.png");
         Texture button4Texture = new Texture("button4a.png");
+        Texture actionbackTexture = new Texture("actionback.png");
+        Texture attacklineTexture = new Texture("attackline.png");
+        Texture jumplineTexture = new Texture("up.png");
 
         // StepとStar、DarkStar、Enemyをゴールの高さまで配置していく
        // float y = 0;
@@ -304,71 +319,52 @@ public class GameScreen extends ScreenAdapter {
         mBar = new Bar(barTexture, 0, 0, 128, 128);
         mBar.setPosition(3.1f, 0);
         //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        mIBar = new iBar(barTexture, 0, 0, 128, 128);
+        mIBar = new iBar(ibarTexture, 0, 0, 128, 128);
         mIBar.setPosition(3, 0);
-       mIBar1 = new iBar1(barTexture, 0, 0, 128, 128);
+       mIBar1 = new iBar1(ibarTexture, 0, 0, 128, 128);
        mIBar1.setPosition(2.5f, 0);
-        mIBar2 = new iBar2(barTexture, 0, 0, 128, 128);
+        mIBar2 = new iBar2(ibarTexture, 0, 0, 128, 128);
         mIBar2.setPosition(3.3f, 0);
 //左右0.1までのずれ許容
         // デッドラインを配置
-        mDeadLine = new DeadLine(barTexture, 0, 0, 128, 128);
+        mDeadLine = new DeadLine(ibarTexture, 0, 0, 128, 128);
         mDeadLine.setPosition(1, 0);
+
+        // アクション部背景を配置
+        mActionBack = new ActionBack(actionbackTexture, 0, 0, 1024, 304);
+        mActionBack.setPosition(0, 4.5f);
+
+        // 攻撃エリア表示を配置
+        mAttackLine = new AttackLine(attacklineTexture, 0, 0, 512, 170);
+        mAttackLine.setPosition(1.6f, 4.79f);
+
+        mJumpLine = new JumpLine(jumplineTexture, 0, 0, 128, 128);
+        mJumpLine.setPosition(0.6f, 5.3f);
 
         // ボタン１を配置
         mButton1 = new Button1(button1Texture, 0, 0, 128, 128);
-        mButton1.setPosition(14, 2.2f);
+        mButton1.setPosition(14, 2.25f);
 
         // ボタン2を配置
         mButton2 = new Button2(button2Texture, 0, 0, 128, 128);
         mButton2.setPosition(14, 0);
 
-        // ボタン１を配置
+        // ボタン3を配置
         mButton3 = new Button3(button3Texture, 0, 0, 128, 128);
-        mButton3.setPosition(0, 2.2f);
+        mButton3.setPosition(0, 2.25f);
 
-        // ボタン１を配置
+        // ボタン4を配置
         mButton4 = new Button4(button4Texture, 0, 0, 128, 128);
         mButton4.setPosition(0, 0);
+
+        // Playerを配置
+        mPlayer = new Player(playerTexture, 0, 0, 72, 72);
+        mPlayer.setPosition(5, 5);
 
         //lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
         //float maxJumpHeight = 5;
         //ゴール直前まで繰り返して生成
         while (end < ToSs || end < ToSs2 ) {
-        //while (y < WORLD_HEIGHT - 5) {
-            //x方向はランダムな場所
-            //float x = mRandom.nextFloat() * (WORLD_WIDTH - Step.STEP_WIDTH);
-
-            // Step step = new Step(stepTexture, 0, 0, 144, 36);
-            // step.setPosition(x, y);
-            // mSteps.add(step);//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-            // Stepa stepa = new Stepa(stepaTexture, 0, 0, 144, 36);
-            // stepa.setPosition(1, 1);
-            // mStepas.add(stepa);
-
-            //星はランダムで生成(2/5の確率
-            // if (mRandom.nextFloat() > 0.6f) {
-            //     Star star = new Star(starTexture, 0, 0, 72, 72);
-            //     //床を基準に乱数で場所を決める
-            //     star.setPosition(step.getX() + mRandom.nextFloat(), step.getY() + Star.STAR_HEIGHT + mRandom.nextFloat() * 3);
-            //     mStars.add(star);
-            // }
-
-            //偽星はランダムで生成(1/5の確率、中央に配置させないため二つに分ける
-            //if (mRandom.nextFloat() > 0.9f) {
-            //    DarkStar darkstar = new DarkStar(darkstarTexture, 0, 0, 72, 72);
-            //    //床を基準に乱数で場所を決める
-            //    darkstar.setPosition(mRandom.nextFloat() * 3, step.getY() + DarkStar.DARKSTAR_HEIGHT + 1);
-            //    mDarkStars.add(darkstar);
-            //}
-            //if (mRandom.nextFloat() > 0.9f) {
-            //    DarkStar darkstar = new DarkStar(darkstarTexture, 0, 0, 72, 72);
-            //     //床を基準に乱数で場所を決める
-            //    darkstar.setPosition(mRandom.nextFloat() * 4 + 6, step.getY() + DarkStar.DARKSTAR_HEIGHT + 1);
-            //    mDarkStars.add(darkstar);
-            // }
-
             //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             Note note = new Note(noteTexture, 0, 0, 128, 128);
             //場所を決める
@@ -396,26 +392,6 @@ public class GameScreen extends ScreenAdapter {
             end ++;
 
         }
-
-        // Playerを配置
-        // mPlayer = new Player(playerTexture, 0, 0, 72, 72);
-        //mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, Step.STEP_HEIGHT);
-
-        // ゴールのUFOを配置
-        //mUfo = new Ufo(ufoTexture, 0, 0, 120, 74);
-        //mUfo.setPosition(WORLD_WIDTH / 2 - Ufo.UFO_WIDTH / 2, y);
-        /*lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
-        //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-        //while ( n < 5) {
-            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            Note note = new Note(noteTexture, 0, 0, 120, 74);
-            //場所を決める
-            note.setPosition(5, 5);
-            mNote.add(note);
-            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        //}
-        //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-        */
     }
 
     // それぞれのオブジェクトの状態をアップデートする
@@ -448,10 +424,7 @@ public class GameScreen extends ScreenAdapter {
             playingmusic.play();//音楽を再生
         }
 
-        //int diff = Float.compare(f, playingmusic.getPosition());
-        //if(diff == 0) {
-        //   hitsound.play(1.0f);//衝突音
-        //}
+            mPlayer.update(delta);
 
         musictime = playingmusic.getPosition();//再生時間取得
         //ボタンがタッチされているかaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -459,6 +432,9 @@ public class GameScreen extends ScreenAdapter {
         tb2 = false;
         tb3 = false;
         tb4 = false;
+        mAttackLine.unpush();
+        mJumpLine.unpush();
+
 //sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
         //タッチされている間動作
         if (Gdx.input.justTouched()) {
@@ -466,16 +442,39 @@ public class GameScreen extends ScreenAdapter {
             // Vector3クラスはx,yだけでなくZ軸を保持するメンバ変数zも持っているためsetメソッドの第3引数には0を指定
             //mTouchPointをOrthographicCameraクラスのunprojectメソッドに与えて呼び出すことでカメラを使った座標に変換
             mGuiViewPort.unproject(mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            Rectangle leftu = new Rectangle(0, 77, 70, 144);//ボタン３
-            Rectangle leftd = new Rectangle(0, 0, 70, 77);//ボタン４
+            //Rectangle rightu = new Rectangle( GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
+            //Rectangle rightd = new Rectangle( GUI_WIDTH -70, 0, GUI_WIDTH, 72);//ボタン2
+            Rectangle leftu = new Rectangle(0, 72, 70, 72);//ボタン３
+            Rectangle leftd = new Rectangle(0, 0, 70, 72);//ボタン４
+            /*
+            if (rightu.contains(mTouchPoint.x, mTouchPoint.y)) {
+                tb1 = true;
+                // mButton3.setTexture();
+            }
+            if (rightd.contains(mTouchPoint.x, mTouchPoint.y)) {
+                tb2 = true;
+            }*/
             if (leftu.contains(mTouchPoint.x, mTouchPoint.y)) {
-                //左タッチ時の動作
                 tb3 = true;
+                mPlayer.jumpstate = 1;
+                //mPlayer.update(delta);
                // mButton3.setTexture();
             }
             if (leftd.contains(mTouchPoint.x, mTouchPoint.y)) {
-                //右タッチ時の動作
                 tb4 = true;
+            }
+        }
+        if (Gdx.input.isTouched()) {
+            Rectangle rightu = new Rectangle( GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
+            Rectangle rightd = new Rectangle( GUI_WIDTH -70, 0, GUI_WIDTH, 72);//ボタン2
+            if (rightu.contains(mTouchPoint.x, mTouchPoint.y)) {
+                tb1 = true;
+                mAttackLine.push();
+            }
+            if (rightd.contains(mTouchPoint.x, mTouchPoint.y)) {
+                tb2 = true;
+                mJumpLine.update(delta);
+                mJumpLine.push();
             }
         }
 

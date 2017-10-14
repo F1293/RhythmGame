@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class Button4  extends GameObject {
     // 横幅、高さ
     public static final float BUTTON4_WIDTH = 2.0f;
-    public static final float BUTTON4_HEIGHT = 2.2f;
+    public static final float BUTTON4_HEIGHT = 2.25f;
 
     public Button4(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);
