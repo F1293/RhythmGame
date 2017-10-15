@@ -58,7 +58,7 @@ public class Player  extends GameObject{
                 }
                 if (velocity.y <= -9.9f) {
                     velocity.y = PLAYER_JUMP_VELOCITY;
-                    setPosition(5, 5);
+                    setPosition(1.4f, 5.2f);
                     jumpstate = 0;
                     //break;
                 }
