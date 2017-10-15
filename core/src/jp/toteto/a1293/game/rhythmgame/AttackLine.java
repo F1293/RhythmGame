@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class AttackLine extends GameObject {
     // 横幅、高さ
     public static final float ATTACKLINE_WIDTH = 12.0f;
-    public static final float ATTACKLINE_HEIGHT = 3.5f;
+    public static final float ATTACKLINE_HEIGHT = 4.5f;
 
 
     public AttackLine(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
@@ -22,7 +22,7 @@ public class AttackLine extends GameObject {
         setAlpha(0);
     }
     public void push() {
-        setAlpha(1);
+        setAlpha(120);
     }
 
 }

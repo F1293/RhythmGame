@@ -84,6 +84,7 @@ public class GameScreen extends ScreenAdapter {
 
     AttackLine mAttackLine;
     JumpLine mJumpLine;
+    Star mStar;
 
     ActionBack mActionBack;
 
@@ -192,7 +193,7 @@ public class GameScreen extends ScreenAdapter {
         mHighScore = 0;
 
         // ハイスコアをPreferencesから取得する
-        mPrefs = Gdx.app.getPreferences("jp.techacademy.fumio.ueda.rhythmgame");//Preferencesの取得
+        mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");//Preferencesの取得
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
 
         createStage();
@@ -255,11 +256,11 @@ public class GameScreen extends ScreenAdapter {
         // 棒の表示
         mBar.draw(mGame.batch);
         //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        mIBar.draw(mGame.batch);
-        mIBar1.draw(mGame.batch);
-        mIBar2.draw(mGame.batch);
+        //mIBar.draw(mGame.batch);
+       // mIBar1.draw(mGame.batch);
+       // mIBar2.draw(mGame.batch);
         //デッドラインの表示
-        mDeadLine.draw(mGame.batch);
+       // mDeadLine.draw(mGame.batch);
 
         // ボタンの表示
         mButton1.draw(mGame.batch);
@@ -269,6 +270,7 @@ public class GameScreen extends ScreenAdapter {
         mActionBack.draw(mGame.batch);
         mAttackLine.draw(mGame.batch);
         mJumpLine.draw(mGame.batch);
+        mStar.draw(mGame.batch);
         mPlayer.draw(mGame.batch);
 //pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
   /*      for(int i = 0; i < 5; i++) {
@@ -293,11 +295,8 @@ public class GameScreen extends ScreenAdapter {
         //drawメソッドで描画第1引数にSprteBatch、第2引数に表示されたい文字列、第3引数にx座標、第4引数にy座標
         mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
         mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
-        mFont.draw(mGame.batch, "Score: " + mScore + message, 16, GUI_HEIGHT - 35);
+        mFont.draw(mGame.batch, "Score: " + mScore , 16, GUI_HEIGHT - 35);
         mFont.draw(mGame.batch, "tb1.2.3.4" + tb1 + "." + tb2 + "." + tb3 + "." + tb4 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
-        // mFont.draw(mGame.batch, "ToSs" + ToSs, 16, GUI_HEIGHT - 95);
-        // mFont.draw(mGame.batch, "n ="+ n + "" , 16, GUI_HEIGHT - 115);
-        //mFont.draw(mGame.batch, "hasseibu i="+ nn + "" , 16, GUI_HEIGHT - 135);
 
         mGame.batch.end();
 
@@ -341,7 +340,7 @@ public class GameScreen extends ScreenAdapter {
         Texture darkstarTexture = new Texture("darkstar.png");
         Texture noteTexture = new Texture("note.png");
         Texture note2Texture = new Texture("note.png");
-        Texture playerTexture = new Texture("uma.png");
+        Texture playerTexture = new Texture("majo.png");
         Texture ufoTexture = new Texture("ufo.png");
         Texture barTexture = new Texture("bar.png");
         Texture ibarTexture = new Texture("ibar.png");
@@ -377,10 +376,13 @@ public class GameScreen extends ScreenAdapter {
 
         // 攻撃エリア表示を配置
         mAttackLine = new AttackLine(attacklineTexture, 0, 0, 512, 170);
-        mAttackLine.setPosition(1.6f, 4.79f);
+        mAttackLine.setPosition(1.6f, 4.7f);
 
         mJumpLine = new JumpLine(jumplineTexture, 0, 0, 128, 128);
         mJumpLine.setPosition(0.6f, 5.3f);
+
+        mStar = new Star(darkstarTexture, 0, 0, 128, 128);
+        mStar.setPosition(6.8f, 10);
 
         // ボタン１を配置
         mButton1 = new Button1(button1Texture, 0, 0, 128, 128);
@@ -399,7 +401,7 @@ public class GameScreen extends ScreenAdapter {
         mButton4.setPosition(0, 0);
 
         // Playerを配置
-        mPlayer = new Player(playerTexture, 0, 0, 72, 72);
+        mPlayer = new Player(playerTexture, 0, 64, 23, 32);
         mPlayer.setPosition(1.4f, 5.2f);
 
         while (end < ToSs || end < ToSs2) {
@@ -451,6 +453,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         mPlayer.update(delta);
+        mStar.update(delta);
 
         musictime = playingmusic.getPosition();//再生時間取得
         //ボタンがタッチされているかaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -489,49 +492,6 @@ public class GameScreen extends ScreenAdapter {
             mAttackLine.push();
         }
 
-
-    //fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    //タッチされている間動作
-/*
-            if (Gdx.input.justTouched()) {
-                //Gdx.input.getX()とGdx.input.getY()でタッチされた座標を取得
-                // Vector3クラスはx,yだけでなくZ軸を保持するメンバ変数zも持っているためsetメソッドの第3引数には0を指定
-                //mTouchPointをOrthographicCameraクラスのunprojectメソッドに与えて呼び出すことでカメラを使った座標に変換
-                mGuiViewPort.unproject(mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-                //Rectangle rightu = new Rectangle( GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
-                //Rectangle rightd = new Rectangle( GUI_WIDTH -70, 0, GUI_WIDTH, 72);//ボタン2
-                Rectangle leftu = new Rectangle(0, 72, 70, 72);//ボタン３
-                Rectangle leftd = new Rectangle(0, 0, 70, 72);//ボタン４
-
-                if (leftu.contains(mTouchPoint.x, mTouchPoint.y)) {
-                    tb3 = true;
-                    mPlayer.jumpstate = 1;
-                }
-                if (leftd.contains(mTouchPoint.x, mTouchPoint.y)) {
-                    tb4 = true;
-                }
-            }/*
-
-            if (Gdx.input.isTouched(i)) {
-                final int iX = Gdx.input.getX(i);
-                final int iY = Gdx.input.getY(i);
-                Rectangle rightu = new Rectangle(GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
-                Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//ボタン2
-                if (rightu.contains(iX, iY)) {
-                    tb1 = true;
-                    mAttackLine.push();
-                }
-                if (rightd.contains(iX, iY)) {
-                    tb2 = true;
-                    mJumpLine.update(delta);
-                    mJumpLine.push();
-                }
-            }*/
-        //fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-
-        //mNote.get(2).update(delta);
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        // Stepa
         if (n < ToSs) {
             for (int i = 0; i < a; i++) { //ここで一回のみの動作に
                 mNote.get(i).update(delta);
@@ -561,8 +521,6 @@ public class GameScreen extends ScreenAdapter {
                 aa++;
             }
         }
-
-//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         checkCollision();
 
         // ゲームオーバーか判断する
@@ -576,7 +534,7 @@ public class GameScreen extends ScreenAdapter {
             // ノーツとの当たり判定
             for (int i = 0; i < mNote.size(); i++) {
                 Note note = mNote.get(i);
-                if (tb4 == true) {
+                if (tb4) {
                     //ボタン３が押されたときに上ラインのあたり判定
                 if (note.mState == note.NOTE_NONE) {
                     continue;
@@ -584,10 +542,12 @@ public class GameScreen extends ScreenAdapter {
                 }
                 if (mIBar.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                     //testa
-                    if (tb1){
+                    if (tb1 && !tb2){
                         mPlayer.jumpstate = 1;
                     }
-                    if (tb2){
+                    if (tb2 && !tb1){
+                        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                        mStar.jumpstate = 1;
                         //ボタン2押しながら得点得た時の動作
                     }
                     if (mIBar1.getBoundingRectangle().overlaps(note.getBoundingRectangle())
@@ -629,7 +589,7 @@ public class GameScreen extends ScreenAdapter {
         }
         for (int i = 0; i < mNote2.size(); i++) {
             Note2 note2 = mNote2.get(i);
-            if (tb3 == true) {
+            if (tb3) {
                 //ボタン３が押されたときに上ラインのあたり判定
                 if (note2.mState == note2.NOTE_NONE) {
                     continue;
@@ -637,11 +597,12 @@ public class GameScreen extends ScreenAdapter {
                 }
                 if (mIBar.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                     //testa
-                    if (tb1){
+                    if (tb1 && !tb2){
                         mPlayer.jumpstate = 1;
                     }
-                    if (tb2){
+                    if (tb2 && !tb1){
                         //ボタン2押しながら得点得た時の動作
+                        mStar.jumpstate = 1;
                     }
                     if (mIBar1.getBoundingRectangle().overlaps(note2.getBoundingRectangle())
                             && mIBar2.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
@@ -704,61 +665,4 @@ public class GameScreen extends ScreenAdapter {
             mGameState = GAME_STATE_GAMEOVER;
         }
     }
-/*
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(touches.get(pointer) == null){
-            touches.put(pointer, new TouchInfo());
-        }
-        touches.get(pointer).touchX = screenX;
-        touches.get(pointer).touchY = screenY;
-        touches.get(pointer).touched = true;
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        touches.get(pointer).touchX = 0;
-        touches.get(pointer).touchY = 0;
-        touches.get(pointer).touched = false;
-        return true;
-    }
-    //touchDown, touchUpコールバックで、触れた時/離した時のイベントを取得して、pointerを元にhashMapにタップした情報を更新
-    class TouchInfo {
-        public float touchX = 0;
-        public float touchY = 0;
-        public boolean touched = false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    */
 }

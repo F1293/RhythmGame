@@ -9,16 +9,14 @@ import com.badlogic.gdx.graphics.Texture;
 public class Player  extends GameObject{
     // 横幅、高さ
     public static final float PLAYER_WIDTH = 1.0f;
-    public static final float PLAYER_HEIGHT = 1.0f;
+    public static final float PLAYER_HEIGHT = 1.4f;
 
     // 状態（ジャンプ中、落ちている最中）
     public static final int PLAYER_STATE_JUMP = 0;
     public static final int PLAYER_STATE_FALL = 1;
-    public static final int PLAYER_STATE_FALLED = 2;
 
     // 速度
     public static final float PLAYER_JUMP_VELOCITY = 10.0f;
-    public static final float PLAYER_MOVE_VELOCITY = 20.0f;
 
     //状態を保持する
     int mState;
@@ -64,6 +62,5 @@ public class Player  extends GameObject{
                 }
             }
         }
-        //}
     }
 }
