@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -69,7 +70,7 @@ public class GameScreen extends ScreenAdapter {
     List<Note> mNote;
     List<Note2> mNote2;
     Bar mBar;
-    //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
     iBar mIBar;
     iBar1 mIBar1;
     iBar2 mIBar2;
@@ -87,6 +88,13 @@ public class GameScreen extends ScreenAdapter {
     Star mStar;
 
     ActionBack mActionBack;
+    //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    List<Bat> mBat;
+    List<Skeleton> mSkeleton;
+    List<Ghost> mGhost;
+    List<Pumpkin> mPumpkin;
+
+    EnemyCreate mEnemyCreate;
 
     int mGameState;//ゲームの状態を保持
     Vector3 mTouchPoint; // タッチされた座標を保持するメンバ変数
@@ -101,23 +109,37 @@ public class GameScreen extends ScreenAdapter {
     boolean tb2;
     boolean tb3;
     boolean tb4;
+
+    //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
     String message;
 
     //boolean b = true;
     int ToSs;
     int ToSs2;
+    int PumpkinTs;
+    int SkeletonTs;
+    int GhostTs;
+    int BatTs;
+    //リストの数を入れる
 
     int n = 0;
-    int a = 0;
     int nn = 0;
-    int aa = 0;
 
     int end = 0;
-
+    int hoge;//ランダムな数字
+    int ENEMY_NUMBER = 0;//敵を選ぶための数字
+    int createpumpkin = 0;//かぼちゃ出すときに加算する
+    int createskeleton = 0;
+    int createghost = 0;
+    int createbat = 0;
 
     //float[] ToS = {5.20f,6.90f};//再生時間に応じて音を鳴らす、どのタイミングかを入れる
     ArrayList<Float> ToS = new ArrayList<Float>();
     ArrayList<Float> ToS2 = new ArrayList<Float>();
+    ArrayList<Float> PumpkinT = new ArrayList<Float>();
+    ArrayList<Float> SkeletonT = new ArrayList<Float>();
+    ArrayList<Float> GhostT = new ArrayList<Float>();
+    ArrayList<Float> BatT = new ArrayList<Float>();
     //ToS.add(10.2f);
     //String stringFormat;
 
@@ -136,27 +158,50 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(RhythmGame game) {
         mGame = game;
 
-        ToS.add(2.1f);
-        ToS.add(3.7f);
-        ToS.add(4.7f);
-        ToS.add(5.7f);
-        ToS.add(6.7f);
-        ToS.add(7.7f);
+        ToS.add(0.0f);
+        ToS.add(1.3f);
+        ToS.add(6.0f);
+        ToS.add(7.3f);
+        ToS.add(11.0f);
+        ToS.add(12.3f);
+        ToS.add(17.0f);
+        ToS.add(18.3f);
+        ToS.add(23.0f);
+        ToS.add(24.3f);
         ToS.add(98.7f);
 
         ToS2.add(1.1f);
         ToS2.add(2.7f);
-        ToS2.add(3.1f);
-        ToS2.add(4.1f);
         ToS2.add(5.1f);
-        ToS2.add(6.1f);
         ToS2.add(7.1f);
-        ToS2.add(8.7f);
         ToS2.add(9.1f);
-        ToS2.add(10.1f);
         ToS2.add(11.1f);
-        ToS2.add(12.1f);
+        ToS2.add(12.4f);
+        ToS2.add(13.7f);
+        ToS2.add(15.1f);
+        ToS2.add(17.1f);
+        ToS2.add(19.1f);
+        ToS2.add(21.1f);
         ToS2.add(98.1f);
+
+        PumpkinT.add(0.0f);
+        PumpkinT.add(2.7f);
+        PumpkinT.add(5.7f);
+        PumpkinT.add(17.0f);
+        PumpkinT.add(19.1f);
+        PumpkinT.add(93.0f);
+
+        SkeletonT.add(2.7f);
+        SkeletonT.add(5.7f);
+        SkeletonT.add(98.7f);
+
+        GhostT.add(2.7f);
+        GhostT.add(6.7f);
+        GhostT.add(98.7f);
+
+        BatT.add(10.7f);
+        BatT.add(12.7f);
+        BatT.add(99.7f);
 
         //playingmusic.setLooping(true);//音楽はループ
 
@@ -191,7 +236,10 @@ public class GameScreen extends ScreenAdapter {
         mFont.getData().setScale(0.8f);// フォントサイズも指定
         mScore = 0;
         mHighScore = 0;
-
+        mSkeleton = new ArrayList<Skeleton>();
+        mGhost = new ArrayList<Ghost>();
+        mPumpkin = new ArrayList<Pumpkin>();
+        mBat = new ArrayList<Bat>();
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");//Preferencesの取得
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
@@ -244,13 +292,11 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mNote.size(); i++) {
             //for (int i = 0; i < 6; i++) {
             mNote.get(i).draw(mGame.batch);
-
         }
         // Note2,リストで保持しているので順番に取り出し
         for (int i = 0; i < mNote2.size(); i++) {
             //for (int i = 0; i < 6; i++) {
             mNote2.get(i).draw(mGame.batch);
-
         }
 
         // 棒の表示
@@ -271,6 +317,22 @@ public class GameScreen extends ScreenAdapter {
         mAttackLine.draw(mGame.batch);
         mJumpLine.draw(mGame.batch);
         mStar.draw(mGame.batch);
+        // 骸骨リストで保持しているので順番に取り出し
+        for (int i = 0; i < mSkeleton.size(); i++) {
+            mSkeleton.get(i).draw(mGame.batch);
+        }
+        // 幽霊リストで保持しているので順番に取り出し
+        for (int i = 0; i < mGhost.size(); i++) {
+            mGhost.get(i).draw(mGame.batch);
+        }
+        // かぼちゃリストで保持しているので順番に取り出し
+        for (int i = 0; i < mPumpkin.size(); i++) {
+            mPumpkin.get(i).draw(mGame.batch);
+        }
+        // Bat,リストで保持しているので順番に取り出し
+        for (int i = 0; i < mBat.size(); i++) {
+            mBat.get(i).draw(mGame.batch);
+        }
         mPlayer.draw(mGame.batch);
 //pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
   /*      for(int i = 0; i < 5; i++) {
@@ -325,6 +387,10 @@ public class GameScreen extends ScreenAdapter {
     private void createStage() {
         ToSs = ToS.size();
         ToSs2 = ToS2.size();
+        PumpkinTs = PumpkinT.size();
+        SkeletonTs = SkeletonT.size();
+        GhostTs = GhostT.size();
+        BatTs = BatT.size();
 //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
 // w = Gdx.graphics.getWidth();
         //h = Gdx.graphics.getHeight();
@@ -352,6 +418,10 @@ public class GameScreen extends ScreenAdapter {
         Texture actionbackTexture = new Texture("actionback.png");
         Texture attacklineTexture = new Texture("attackline.png");
         Texture jumplineTexture = new Texture("up.png");
+        Texture batTexture = new Texture("Bat.png");
+        Texture skeletonTexture = new Texture("skeleton.png");
+        Texture ghostTexture = new Texture("ghost.png");
+        Texture pumpkinTexture = new Texture("pumpkin.png");
 
         // StepとStar、DarkStar、Enemyをゴールの高さまで配置していく
         // float y = 0;
@@ -408,13 +478,33 @@ public class GameScreen extends ScreenAdapter {
             //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             Note note = new Note(noteTexture, 0, 0, 128, 128);
             //場所を決める
-            note.setPosition(15, 0.85f);
+            note.setPosition(17, 0.85f);
             mNote.add(note);
 
             Note2 note2 = new Note2(note2Texture, 0, 0, 128, 128);
             //場所を決める
-            note2.setPosition(15, 2.85f);
+            note2.setPosition(17, 2.85f);
             mNote2.add(note2);
+
+            Skeleton skeleton = new Skeleton(skeletonTexture, 0, 34, 24, 32);
+            //場所を決める
+            skeleton.setPosition(18, 5.2f);
+            mSkeleton.add(skeleton);
+
+            Ghost ghost = new Ghost(ghostTexture, 0, 2, 24, 32);
+            //場所を決める
+            ghost.setPosition(16.8f, 5.2f);
+            mGhost.add(ghost);
+
+            Pumpkin pumpkin = new Pumpkin(pumpkinTexture, 0, 0, 31, 26);
+            //場所を決める
+            pumpkin.setPosition(18, 5.2f);
+            mPumpkin.add(pumpkin);
+
+            Bat bat = new Bat(batTexture, 0, 100, 21, 16);
+            //場所を決める
+            bat.setPosition(25, 5.5f);
+            mBat.add(bat);
             //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
             end++;
@@ -493,34 +583,99 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (n < ToSs) {
-            for (int i = 0; i < a; i++) { //ここで一回のみの動作に
+                //for (int i = 0; i < createpumpkin; i++) {
+                //    mPumpkin.get(i).update(delta);
+                //    mGhost.get(i).update(delta);
+                //}
+
+            for (int i = 0; i < n; i++) { //ここで一回のみの動作に
                 mNote.get(i).update(delta);
                 //mNote.get(i).draw(mGame.batch);
-
+                //createenemy();
             }
             if (playingmusic.getPosition() > ToS.get(n)) {
-
-
+                ENEMY_NUMBER++;
                 n++;
-                a++;
             }
         }
         //mNote2.get(2).update(delta);
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         // Stepa
         if (nn < ToSs2) {
-            for (int i = 0; i < aa; i++) { //ここで一回のみの動作に
+            //for (int i = 0; i < nn; i++) {
+               // if (hoge > 50) {
+                //mBat.get(i).update(delta);
+               // mSkeleton.get(i).update(delta);
+                    //mNote2.get(i).draw(mGame.batch);
+                //}
+            //}
+            for (int i = 0; i < nn; i++) { //ここで一回のみの動作に
                 mNote2.get(i).update(delta);
-                //mNote2.get(i).draw(mGame.batch);
 
             }
-            if (playingmusic.getPosition() > ToS2.get(nn)) {
-
-
+            if (playingmusic.getPosition() > ToS2.get(nn)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 nn++;
-                aa++;
             }
         }
+
+        //かぼちゃ出すタイミングで動作
+        if (createpumpkin < PumpkinTs) {
+            for (int i = 0; i < createpumpkin; i++) {
+                mPumpkin.get(i).update(delta);
+                //mGhost.get(i).update(delta);
+            }
+            if (playingmusic.getPosition() > PumpkinT.get(createpumpkin)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
+                createpumpkin++;
+            }
+        }
+        //骸骨出すタイミングで動作
+        if (createskeleton < SkeletonTs) {
+            for (int i = 0; i < createskeleton; i++) {
+                mSkeleton.get(i).update(delta);
+                //mGhost.get(i).update(delta);
+            }
+            if (playingmusic.getPosition() > SkeletonT.get(createskeleton)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
+                createskeleton++;
+            }
+        }
+        //幽霊出すタイミングで動作
+        if (createghost < GhostTs) {
+            for (int i = 0; i < createghost; i++) {
+                mGhost.get(i).update(delta);
+            }
+            if (playingmusic.getPosition() > GhostT.get(createghost)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
+                createghost++;
+            }
+        }
+        //コウモリ出すタイミングで動作
+        if (createbat < BatTs) {
+            for (int i = 0; i < createbat; i++) {
+                mBat.get(i).update(delta);
+            }
+            if (playingmusic.getPosition() > BatT.get(createbat)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
+                createbat++;
+            }
+        }
+        //pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
+        /*
+        switch (ENEMY_NUMBER) {
+            //case 1:
+            case 2:
+            case 5:
+            case 7:
+            case 95:
+                //mGhost.get(i).update(delta);
+                //mPumpkin.get(i).update(delta);
+                createpumpkin ++;
+                break;
+            case 3:
+            case 4:
+            case 6:
+            case 8:
+            case 9:
+                // mGhost.get(i).update(delta);
+                //mPumpkin.get(i).update(delta);
+                break;
+        }*/
         checkCollision();
 
         // ゲームオーバーか判断する
@@ -582,7 +737,7 @@ public class GameScreen extends ScreenAdapter {
                 //タイミング判定
             }
             if (note.mState == note.NOTE_EXIST && mDeadLine.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
-                hitsound.play(1.0f);//衝突音
+                //逃した場合
                 note.get();//消す
             }
             //押されなかった場合（ダメージを追加予定
@@ -637,13 +792,42 @@ public class GameScreen extends ScreenAdapter {
                 //タイミング判定
             }
             if (note2.mState == note2.NOTE_EXIST && mDeadLine.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
-                hitsound.play(1.0f);//衝突音
+                //逃した場合
                 note2.get();//消す
             }
             //押されなかった場合（ダメージを追加予定
         }
-
     }
+/*
+    // プレイヤーを爆破させる
+    private void createEnemy(GameSprite player) {
+        Image explosion = new Image(new Texture(Gdx.files.internal("explosion.png")));
+        explosion.setPosition(player.getX(), player.getY());
+        explosion.setOrigin(explosion.getWidth() * .5f, explosion.getHeight() * .5f);
+        Color color = explosion.getColor();
+        explosion.setScale(0, 0);
+        explosion.setColor(color.r, color.g, color.b, 0.f);
+        explosion.addAction(parallel(
+                sequence(
+                        fadeIn(.2f),
+                        delay(.5f),
+                        fadeOut(1.5f),
+                        removeActor()
+                ),
+                scaleTo(2.f, 2.f, .2f)
+        ));
+        status = GameStatus.GAME_OVER;  // ステータスをゲームオーバーにする
+        // 爆発が終わった後(2秒後)にゲームオーバーの演出をする
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                gameOver();
+            }
+        }, 2.f);
+        stage.addActor(explosion);
+        player.remove();
+        explosionSound.play();
+    }*/
 
     //ゲームオーバー時タッチするとResultScreenに遷移
     private void updateGameOver() {
@@ -658,11 +842,39 @@ public class GameScreen extends ScreenAdapter {
     private void checkGameOver() {
         //地面との距離からカメラの高さの半分を引き、その値より低くなったらゲームオーバー
         //(画面の下まで落ちた場合）
-        if (playingmusic.getPosition()>18) {
+        //ここの時間で終了
+        if (playingmusic.getPosition()>30) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
             //gomusic.play();//ゲームオーバー画面の音楽再生
             playingmusic.dispose();//メモリ解放
             mGameState = GAME_STATE_GAMEOVER;
         }
     }
+  /*  private void createenemy() {
+        switch (ENEMY_NUMBER) {
+            //case 1:
+            case 2:
+            case 5:
+            case 7:
+            case 95:
+                //mGhost.get(i).update(delta);
+                //mPumpkin.get(i).update(delta);
+                createpumpkin = true;
+                break;
+            case 3:
+            case 4:
+            case 6:
+            case 8:
+            case 9:
+               // mGhost.get(i).update(delta);
+                //mPumpkin.get(i).update(delta);
+                break;
+        }
+    }*/
+    //private void createpumpkin(int i,float delta) {
+       // while(ENEMY_NUMBER > 100) {
+      //      mPumpkin.get(i).update(delta);
+        //}
+
+//    }
 }
