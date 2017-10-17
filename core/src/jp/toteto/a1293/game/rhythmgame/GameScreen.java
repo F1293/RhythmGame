@@ -43,6 +43,8 @@ public class GameScreen extends ScreenAdapter {
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
     static final int GAME_STATE_GAMEOVER = 2;
+    static int FearGauge = 100;//体力上限を減らすゲージ
+    static int LifeGauge = 100;//体力
 
     // 重力
     static final float GRAVITY = -12;
@@ -71,6 +73,11 @@ public class GameScreen extends ScreenAdapter {
     List<Note2> mNote2;
     Bar mBar;
 
+    GaugeBarBack mGaugeBarBack;
+    LGaugeBar mLGaugeBar;
+    FGaugeBar mFGaugeBar;
+
+
     iBar mIBar;
     iBar1 mIBar1;
     iBar2 mIBar2;
@@ -88,6 +95,7 @@ public class GameScreen extends ScreenAdapter {
     Star mStar;
 
     ActionBack mActionBack;
+    RFrame mRFrame;
     //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     List<Bat> mBat;
     List<Skeleton> mSkeleton;
@@ -111,8 +119,6 @@ public class GameScreen extends ScreenAdapter {
     boolean tb4;
 
     //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-    String message;
-
     //boolean b = true;
     int ToSs;
     int ToSs2;
@@ -121,6 +127,9 @@ public class GameScreen extends ScreenAdapter {
     int GhostTs;
     int BatTs;
     //リストの数を入れる
+
+    //int FearGauge = 100;
+    //int LifeGauge = 100;//体力
 
     int n = 0;
     int nn = 0;
@@ -186,22 +195,22 @@ public class GameScreen extends ScreenAdapter {
 
         PumpkinT.add(0.0f);
         PumpkinT.add(2.7f);
-        PumpkinT.add(5.7f);
-        PumpkinT.add(17.0f);
+        PumpkinT.add(5.1f);
+        PumpkinT.add(17.1f);
         PumpkinT.add(19.1f);
         PumpkinT.add(93.0f);
 
-        SkeletonT.add(2.7f);
-        SkeletonT.add(5.7f);
+        BatT.add(7.1f);
+        BatT.add(12.4f);
+        BatT.add(99.7f);
+
+        SkeletonT.add(1.3f);
+        SkeletonT.add(9.1f);
         SkeletonT.add(98.7f);
 
-        GhostT.add(2.7f);
-        GhostT.add(6.7f);
+        GhostT.add(11.1f);
+        GhostT.add(15.1f);
         GhostT.add(98.7f);
-
-        BatT.add(10.7f);
-        BatT.add(12.7f);
-        BatT.add(99.7f);
 
         //playingmusic.setLooping(true);//音楽はループ
 
@@ -247,15 +256,6 @@ public class GameScreen extends ScreenAdapter {
         createStage();
         //オブジェクト配置するcreateStageメソッドを呼び出す
 
-        //背景の処理
-        //Texture bg2Texture = new Texture("back2.png");
-        //TextureReionで切り出すときの原点は左上
-        //mBg2 = new Sprite(new TextureRegion(bg2Texture, 0, 0, 1022, 608));
-        //画像の切り出し
-        //mBg2.setSize(CAMERA_WIDTH, CAMERA_HEIGHT);
-        //カメラサイズに設定
-        //mBg2.setPosition(0, 0);
-        //左下基準０．０に描画
     }
 
     //描画を行うレンダーメソッド
@@ -269,12 +269,7 @@ public class GameScreen extends ScreenAdapter {
         //赤、緑、青、透過の指定
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //指定した色で塗りつぶし
-/*
-        // カメラの中心を超えたらカメラを上に移動させる つまりキャラが画面の上半分には絶対に行かない
-        if (mPlayer.getY() > mCamera.position.y) {
-            mCamera.position.y = mPlayer.getY();
-        }
-*/
+
         //スプライトなどの描画はbeginとendの間で行う
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mCamera.update();
@@ -301,12 +296,14 @@ public class GameScreen extends ScreenAdapter {
 
         // 棒の表示
         mBar.draw(mGame.batch);
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
         //mIBar.draw(mGame.batch);
        // mIBar1.draw(mGame.batch);
        // mIBar2.draw(mGame.batch);
         //デッドラインの表示
        // mDeadLine.draw(mGame.batch);
+
+
 
         // ボタンの表示
         mButton1.draw(mGame.batch);
@@ -334,18 +331,13 @@ public class GameScreen extends ScreenAdapter {
             mBat.get(i).draw(mGame.batch);
         }
         mPlayer.draw(mGame.batch);
-//pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-  /*      for(int i = 0; i < 5; i++) {
-            if (touches.get(i).touched) {
-                message += "Finger:" + Integer.toString(i) + "touch at:" +
-                        Float.toString(touches.get(i).touchX) +
-                        "," +
-                        Float.toString(touches.get(i).touchY) +
-                        "¥n";
-            }
-        }
-        */
-        //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
+        mRFrame.draw(mGame.batch);
+
+        //ライフゲージ周り
+        mGaugeBarBack.draw(mGame.batch);
+        mLGaugeBar.draw(mGame.batch);
+        mFGaugeBar.draw(mGame.batch);
+
         mGame.batch.end();
 
         // スコア表示
@@ -355,21 +347,16 @@ public class GameScreen extends ScreenAdapter {
         mGame.batch.begin();
 
         //drawメソッドで描画第1引数にSprteBatch、第2引数に表示されたい文字列、第3引数にx座標、第4引数にy座標
-        mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
-        mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
-        mFont.draw(mGame.batch, "Score: " + mScore , 16, GUI_HEIGHT - 35);
-        mFont.draw(mGame.batch, "tb1.2.3.4" + tb1 + "." + tb2 + "." + tb3 + "." + tb4 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
+        //mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
+        //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
+        mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
+        //mFont.draw(mGame.batch, "tb1.2.3.4" + tb1 + "." + tb2 + "." + tb3 + "." + tb4 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
+
 
         mGame.batch.end();
 
     }
 
-    /*
-        @Override
-        public void create() {
-
-        }
-    */
     //resizeメソッドをオーバーライドしてFitViewportクラスのupdateメソッドを呼び出す
     //このメソッドは物理的な画面のサイズが変更されたときに呼ばれる
     @Override
@@ -378,26 +365,17 @@ public class GameScreen extends ScreenAdapter {
         mGuiViewPort.update(width, height);
     }
 
-    /*
-        @Override
-        public void render() {
-        }
-    */
     // ステージを作成する、オブジェクトを配置するメソッド
     private void createStage() {
+        LifeGauge = 100;
+        FearGauge = 100;
+
         ToSs = ToS.size();
         ToSs2 = ToS2.size();
         PumpkinTs = PumpkinT.size();
         SkeletonTs = SkeletonT.size();
         GhostTs = GhostT.size();
         BatTs = BatT.size();
-//qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-// w = Gdx.graphics.getWidth();
-        //h = Gdx.graphics.getHeight();
-        //Gdx.input.setInputProcessor(this);
-        //for(int i = 0; i < 5; i++){
-        //    touches.put(i, new TouchInfo());
-        //}//qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
 
         // テクスチャの準備
         Texture stepTexture = new Texture("step.png");
@@ -410,6 +388,9 @@ public class GameScreen extends ScreenAdapter {
         Texture ufoTexture = new Texture("ufo.png");
         Texture barTexture = new Texture("bar.png");
         Texture ibarTexture = new Texture("ibar.png");
+        Texture gaugebarbackTexture = new Texture("gaugeback.png");
+        Texture lgaugebarTexture = new Texture("lgauge.png");
+        Texture fgaugebarTexture = new Texture("fgauge.png");
         Texture button1Texture = new Texture("button1a.png");
         Texture button2Texture = new Texture("button2a.png");
         Texture button3Texture = new Texture("button3a.png");
@@ -422,13 +403,14 @@ public class GameScreen extends ScreenAdapter {
         Texture skeletonTexture = new Texture("skeleton.png");
         Texture ghostTexture = new Texture("ghost.png");
         Texture pumpkinTexture = new Texture("pumpkin.png");
+        Texture frameTexture = new Texture("frame.png");
 
         // StepとStar、DarkStar、Enemyをゴールの高さまで配置していく
         // float y = 0;
         // 棒を配置
         mBar = new Bar(barTexture, 0, 0, 128, 128);
         mBar.setPosition(3.1f, 0);
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
         mIBar = new iBar(ibarTexture, 0, 0, 128, 128);
         mIBar.setPosition(3, 0);
         mIBar1 = new iBar1(ibarTexture, 0, 0, 128, 128);
@@ -438,11 +420,26 @@ public class GameScreen extends ScreenAdapter {
 //左右0.1までのずれ許容
         // デッドラインを配置
         mDeadLine = new DeadLine(ibarTexture, 0, 0, 128, 128);
-        mDeadLine.setPosition(1, 0);
+        mDeadLine.setPosition(1.3f, 0);
+
+
+        mGaugeBarBack = new GaugeBarBack(gaugebarbackTexture, 0, 0, 256, 256);
+        mGaugeBarBack.setPosition(0, 4.5f);
+
+        mFGaugeBar = new FGaugeBar(fgaugebarTexture, 0, 0, 256, 256);
+        mFGaugeBar.setPosition(0, 5.0f);
+
+        mLGaugeBar = new LGaugeBar(lgaugebarTexture, 0, 0, 256, 256);
+        mLGaugeBar.setPosition(0, 5.0f);
 
         // アクション部背景を配置
         mActionBack = new ActionBack(actionbackTexture, 0, 0, 1024, 304);
         mActionBack.setPosition(0, 4.5f);
+
+        // 警告フレームを配置
+        mRFrame = new RFrame(frameTexture, 0, 0, 1024, 304);
+        mRFrame.setPosition(0, 4.5f);
+        mRFrame.setAlpha(0);
 
         // 攻撃エリア表示を配置
         mAttackLine = new AttackLine(attacklineTexture, 0, 0, 512, 170);
@@ -474,8 +471,9 @@ public class GameScreen extends ScreenAdapter {
         mPlayer = new Player(playerTexture, 0, 64, 23, 32);
         mPlayer.setPosition(1.4f, 5.2f);
 
+
         while (end < ToSs || end < ToSs2) {
-            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
             Note note = new Note(noteTexture, 0, 0, 128, 128);
             //場所を決める
             note.setPosition(17, 0.85f);
@@ -498,14 +496,14 @@ public class GameScreen extends ScreenAdapter {
 
             Pumpkin pumpkin = new Pumpkin(pumpkinTexture, 0, 0, 31, 26);
             //場所を決める
-            pumpkin.setPosition(18, 5.2f);
+            pumpkin.setPosition(17.8f, 5.2f);
             mPumpkin.add(pumpkin);
 
             Bat bat = new Bat(batTexture, 0, 100, 21, 16);
             //場所を決める
             bat.setPosition(25, 5.5f);
             mBat.add(bat);
-            //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 
             end++;
 
@@ -546,7 +544,7 @@ public class GameScreen extends ScreenAdapter {
         mStar.update(delta);
 
         musictime = playingmusic.getPosition();//再生時間取得
-        //ボタンがタッチされているかaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        //ボタンがタッチされているか
         tb1 = false;
         tb2 = false;
         tb3 = false;
@@ -554,7 +552,7 @@ public class GameScreen extends ScreenAdapter {
         mAttackLine.unpush();
         mJumpLine.unpush();
 
-//sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+
         for (int i = 0; i < 5; i++) { // 20 is max number of touch points
             if (Gdx.input.isTouched(i)) {
                 //test
@@ -565,8 +563,7 @@ public class GameScreen extends ScreenAdapter {
                 //test
                 final int iX = Gdx.input.getX(i);
                 final int iY = Gdx.input.getY(i);
-                //tb1 = tb1 || (iX > 1680 && iY < 810 && iY > 540); // Touch coordinates are in screen space
-                //tb2 = tb2 || (iX > 1680 && iY > 810 && iY < 1080);
+
                 mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
                 tb1 = tb1 || (rightu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
                 tb2 = tb2 || (rightd.contains(mTouchPoint.x, mTouchPoint.y));
@@ -583,10 +580,6 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (n < ToSs) {
-                //for (int i = 0; i < createpumpkin; i++) {
-                //    mPumpkin.get(i).update(delta);
-                //    mGhost.get(i).update(delta);
-                //}
 
             for (int i = 0; i < n; i++) { //ここで一回のみの動作に
                 mNote.get(i).update(delta);
@@ -601,13 +594,7 @@ public class GameScreen extends ScreenAdapter {
         //mNote2.get(2).update(delta);
         // Stepa
         if (nn < ToSs2) {
-            //for (int i = 0; i < nn; i++) {
-               // if (hoge > 50) {
-                //mBat.get(i).update(delta);
-               // mSkeleton.get(i).update(delta);
-                    //mNote2.get(i).draw(mGame.batch);
-                //}
-            //}
+
             for (int i = 0; i < nn; i++) { //ここで一回のみの動作に
                 mNote2.get(i).update(delta);
 
@@ -655,27 +642,20 @@ public class GameScreen extends ScreenAdapter {
                 createbat++;
             }
         }
-        //pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-        /*
-        switch (ENEMY_NUMBER) {
-            //case 1:
-            case 2:
-            case 5:
-            case 7:
-            case 95:
-                //mGhost.get(i).update(delta);
-                //mPumpkin.get(i).update(delta);
-                createpumpkin ++;
-                break;
-            case 3:
-            case 4:
-            case 6:
-            case 8:
-            case 9:
-                // mGhost.get(i).update(delta);
-                //mPumpkin.get(i).update(delta);
-                break;
-        }*/
+
+        mLGaugeBar.GetDamage();
+        mFGaugeBar.GetDamage();
+        mActionBack.Darker();
+
+
+        if (LifeGauge > FearGauge){
+            LifeGauge = FearGauge;
+        }
+
+        if (LifeGauge <= 15){
+            mRFrame.update(delta);
+        }
+//ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
         checkCollision();
 
         // ゲームオーバーか判断する
@@ -691,7 +671,7 @@ public class GameScreen extends ScreenAdapter {
                 Note note = mNote.get(i);
                 if (tb4) {
                     //ボタン３が押されたときに上ラインのあたり判定
-                if (note.mState == note.NOTE_NONE) {
+                if (note.mState == 1) {
                     continue;
                     //消えてるのには反応しない
                 }
@@ -731,22 +711,23 @@ public class GameScreen extends ScreenAdapter {
                     if (mIBar1.getBoundingRectangle().overlaps(note.getBoundingRectangle())
                             || mIBar2.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                         hitsound.play(1.0f);//衝突音
+                        FearGauge -= 5;//プレーヤーダメージ
                         note.get();//消す
                     }
                 }
                 //タイミング判定
             }
-            if (note.mState == note.NOTE_EXIST && mDeadLine.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
-                //逃した場合
+            if (note.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
+                //押されなかった場合（ダメージを追加予定
+                FearGauge -= 5;//プレーヤーダメージ
                 note.get();//消す
             }
-            //押されなかった場合（ダメージを追加予定
         }
         for (int i = 0; i < mNote2.size(); i++) {
             Note2 note2 = mNote2.get(i);
             if (tb3) {
                 //ボタン３が押されたときに上ラインのあたり判定
-                if (note2.mState == note2.NOTE_NONE) {
+                if (note2.mState == 1) {
                     continue;
                     //消えてるのには反応しない
                 }
@@ -786,62 +767,72 @@ public class GameScreen extends ScreenAdapter {
                     if (mIBar1.getBoundingRectangle().overlaps(note2.getBoundingRectangle())
                             || mIBar2.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                         hitsound.play(1.0f);//衝突音
+                        FearGauge -= 5;//プレーヤーダメージ
                         note2.get();//消す
                     }
                 }
                 //タイミング判定
             }
-            if (note2.mState == note2.NOTE_EXIST && mDeadLine.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
-                //逃した場合
+            if (note2.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
+                //押されなかった場合（ダメージを追加予定
+                FearGauge -= 5;//プレーヤーダメージ
                 note2.get();//消す
             }
-            //押されなかった場合（ダメージを追加予定
         }
-    }
-/*
-    // プレイヤーを爆破させる
-    private void createEnemy(GameSprite player) {
-        Image explosion = new Image(new Texture(Gdx.files.internal("explosion.png")));
-        explosion.setPosition(player.getX(), player.getY());
-        explosion.setOrigin(explosion.getWidth() * .5f, explosion.getHeight() * .5f);
-        Color color = explosion.getColor();
-        explosion.setScale(0, 0);
-        explosion.setColor(color.r, color.g, color.b, 0.f);
-        explosion.addAction(parallel(
-                sequence(
-                        fadeIn(.2f),
-                        delay(.5f),
-                        fadeOut(1.5f),
-                        removeActor()
-                ),
-                scaleTo(2.f, 2.f, .2f)
-        ));
-        status = GameStatus.GAME_OVER;  // ステータスをゲームオーバーにする
-        // 爆発が終わった後(2秒後)にゲームオーバーの演出をする
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                gameOver();
+        //かぼちゃ
+        for (int i = 0; i < mPumpkin.size(); i++) {
+            Pumpkin pumpkin = mPumpkin.get(i);
+            if (mStar.getBoundingRectangle().overlaps(pumpkin.getBoundingRectangle())) {
+                //攻撃当たった場合
+                pumpkin.get();//消す
             }
-        }, 2.f);
-        stage.addActor(explosion);
-        player.remove();
-        explosionSound.play();
-    }*/
+            if (pumpkin.mState == 0 && mPlayer.getBoundingRectangle().overlaps(pumpkin.getBoundingRectangle())) {
+                //キャラに当たった場合
+                LifeGauge -= 5;
+                pumpkin.get();//消す
+            }
+        }
+        //骸骨
+        for (int i = 0; i < mSkeleton.size(); i++) {
+            Skeleton skeleton = mSkeleton.get(i);
+            if (mStar.getBoundingRectangle().overlaps(skeleton.getBoundingRectangle())) {
+                //攻撃当たった場合
+                skeleton.get();//消す
+            }
+        }
+        //幽霊
+        for (int i = 0; i < mGhost.size(); i++) {
+            Ghost ghost = mGhost.get(i);
+            if (mStar.getBoundingRectangle().overlaps(ghost.getBoundingRectangle()) && ghost.getY() < 8) {
+                //攻撃当たった場合
+                ghost.get();//消す
+            }
+        }
+        //コウモリ
+        for (int i = 0; i < mBat.size(); i++) {
+            Bat bat = mBat.get(i);
+            if (bat.mState == 0 && mPlayer.getBoundingRectangle().overlaps(bat.getBoundingRectangle())) {
+                //キャラに当たった場合
+                LifeGauge -= 5;
+                bat.get();//消す
+            }
+        }
+        //あたり判定ここまで
+    }
 
-    //ゲームオーバー時タッチするとResultScreenに遷移
+    //ゲームオーバー時ResultScreenに遷移
     private void updateGameOver() {
-
-            hitsound.dispose();//メモリ解放
-            fall.dispose();//メモリ解放
-            getstarsound.dispose();//メモリ解放
-            jingle.dispose();//メモリ解放
-            mGame.setScreen(new ResultScreen(mGame, mScore));
-        //}
+        playingmusic.dispose();//メモリ解放
+        hitsound.dispose();//メモリ解放
+        fall.dispose();//メモリ解放
+        getstarsound.dispose();//メモリ解放
+        jingle.dispose();//メモリ解放
+        mGame.setScreen(new ResultScreen(mGame, mScore));
     }
     private void checkGameOver() {
-        //地面との距離からカメラの高さの半分を引き、その値より低くなったらゲームオーバー
-        //(画面の下まで落ちた場合）
+        //if (LifeGauge <= 0){
+        //    updateGameOver();
+        //}
         //ここの時間で終了
         if (playingmusic.getPosition()>30) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
@@ -850,31 +841,4 @@ public class GameScreen extends ScreenAdapter {
             mGameState = GAME_STATE_GAMEOVER;
         }
     }
-  /*  private void createenemy() {
-        switch (ENEMY_NUMBER) {
-            //case 1:
-            case 2:
-            case 5:
-            case 7:
-            case 95:
-                //mGhost.get(i).update(delta);
-                //mPumpkin.get(i).update(delta);
-                createpumpkin = true;
-                break;
-            case 3:
-            case 4:
-            case 6:
-            case 8:
-            case 9:
-               // mGhost.get(i).update(delta);
-                //mPumpkin.get(i).update(delta);
-                break;
-        }
-    }*/
-    //private void createpumpkin(int i,float delta) {
-       // while(ENEMY_NUMBER > 100) {
-      //      mPumpkin.get(i).update(delta);
-        //}
-
-//    }
 }

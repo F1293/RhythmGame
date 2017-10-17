@@ -15,4 +15,12 @@ public class ActionBack extends GameObject {
         super(texture, srcX, srcY, srcWidth, srcHeight);
         setSize(AB_WIDTH, AB_HEIGHT);
     }
+
+    public void Darker() {
+        if (GameScreen.FearGauge > 15) {
+            float color;
+            color = GameScreen.FearGauge * 0.01f;
+            setColor(color, color, color, 1);
+        }
+    }
 }
