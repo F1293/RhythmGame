@@ -20,7 +20,7 @@ public class Bat extends GameObject {
 
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
-    public static final float BAT_VELOCITY = - 5f;
+    public static final float BAT_VELOCITY = - 8f;
 
 
 

@@ -20,7 +20,7 @@ public class Note extends GameObject {
 
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
-    public static final float NOTE_VELOCITY = - 3.5f;
+    public static final float NOTE_VELOCITY = - 7f;
 
 
 

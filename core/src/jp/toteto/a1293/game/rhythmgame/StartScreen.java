@@ -1,6 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -60,6 +61,7 @@ public class StartScreen extends ScreenAdapter {
 
         mGame.batch.end();
         if (Gdx.input.justTouched()) {
+            //mGame.setScreen((Screen) new LibGdxSample());
             mGame.setScreen(new GameScreen(mGame));
             //タッチされたらgameScreenに戻る
         }

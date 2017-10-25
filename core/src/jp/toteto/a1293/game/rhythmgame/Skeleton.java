@@ -17,7 +17,7 @@ public class Skeleton extends GameObject {
 
     //状態を保持するメンバ変数
     int mState;
-
+Star mStar;
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
     public static final float SKELETON_VELOCITY = - 2;
@@ -33,19 +33,21 @@ public class Skeleton extends GameObject {
 
     // 中央付近で折り返し、行ったり来たり
     public void update(float deltaTime) {
-        setX(getX() + velocity.x * deltaTime);
-        if (getX() < 7.5f) {
-            //ここで攻撃出す
-            velocity.x = 1;
+        if (mState == 0) {
+            setX(getX() + velocity.x * deltaTime);
+            if (getX() < 7.5f) {
+                //ここで攻撃出す
+                velocity.x = 1;
+            }
+            if (getX() > 12 && velocity.x > 0) {
+                velocity.x = -1;
+            }
         }
-        if (getX() > 12 && velocity.x > 0) {
-            velocity.x = -1;
-        }
-
     }
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
     public void get() {
         mState = SKELETON_NONE;
         setAlpha(0);
+        setX(16);
     }
 }

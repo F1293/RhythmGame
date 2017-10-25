@@ -21,6 +21,7 @@ public class Player  extends GameObject{
     //状態を保持する
     int mState;
     int jumpstate;
+    float stateTime = 0;
 
     GameScreen mGameScreen;
 
@@ -31,7 +32,10 @@ public class Player  extends GameObject{
     }
 
     public void update (float delta) {
-      if (jumpstate == 1) {
+        stateTime += delta;
+        //anianianimmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+
+        if (jumpstate == 1) {
             if (velocity.y == 0) {
                 velocity.y = PLAYER_JUMP_VELOCITY;
                 mState = PLAYER_STATE_JUMP;

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class iBar1 extends GameObject {
     // 横幅、高さ
-    public static final float BAR_WIDTH = 0.3f;
+    public static final float BAR_WIDTH = 0.01f;
     public static final float BAR_HEIGHT = 4.5f;
 
     public iBar1(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {

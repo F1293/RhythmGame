@@ -14,13 +14,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -34,15 +30,9 @@ import java.util.Random;
  * Created by Fumio on 2017/10/01.
  */
 // implements ApplicationListener, InputProcessor
-public class GameScreen extends ScreenAdapter {
+public class TGameScreen extends ScreenAdapter {
 
-    //aniani
-    private TextureAtlas UFOAtlas;
-    private Animation animation;
-    private float timePassed = 0;
-    private SpriteBatch batch;
-    //aniani
-
+    //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
     static final float CAMERA_HEIGHT = 9;
@@ -60,8 +50,7 @@ public class GameScreen extends ScreenAdapter {
     static final float GRAVITY = -12;
 
     private RhythmGame mGame;
-
-
+//qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
    /* class TouchInfo {
         public float touchX = 0;
         public float touchY = 0;
@@ -80,7 +69,6 @@ public class GameScreen extends ScreenAdapter {
     FitViewport mGuiViewPort;
 
     Random mRandom;//乱数を取得するためのクラス
-    List<ENote> mENote;
     List<Note> mNote;
     List<Note2> mNote2;
     Bar mBar;
@@ -99,28 +87,20 @@ public class GameScreen extends ScreenAdapter {
     Button2 mButton2;
     Button3 mButton3;
     Button4 mButton4;
+
     Player mPlayer;
 
     AttackLine mAttackLine;
     JumpLine mJumpLine;
     Star mStar;
-    Bone mBone;
 
     ActionBack mActionBack;
-    ButtonBack mButtonBack;
     RFrame mRFrame;
-
-    Animator mAnimator;
-
     //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     List<Bat> mBat;
     List<Skeleton> mSkeleton;
     List<Ghost> mGhost;
     List<Pumpkin> mPumpkin;
-    List<Tree> mTree;
-    List<Tree2> mTree2;
-    List<Grass> mGrass;
-    List<Ground> mGround;
 
     EnemyCreate mEnemyCreate;
 
@@ -137,7 +117,6 @@ public class GameScreen extends ScreenAdapter {
     boolean tb2;
     boolean tb3;
     boolean tb4;
-    boolean etb;
 
     //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
     //boolean b = true;
@@ -147,10 +126,8 @@ public class GameScreen extends ScreenAdapter {
     int SkeletonTs;
     int GhostTs;
     int BatTs;
-
     //リストの数を入れる
-    int en=0;//エネルギーノーツを取り出すときに使用
-
+    String str = String.valueOf(musictime);
     //int FearGauge = 100;
     //int LifeGauge = 100;//体力
 
@@ -158,6 +135,7 @@ public class GameScreen extends ScreenAdapter {
     int nn = 0;
 
     int end = 0;
+    int hoge;//ランダムな数字
     int ENEMY_NUMBER = 0;//敵を選ぶための数字
     int createpumpkin = 0;//かぼちゃ出すときに加算する
     int createskeleton = 0;
@@ -186,170 +164,229 @@ public class GameScreen extends ScreenAdapter {
     Sound jingle = Gdx.audio.newSound(Gdx.files.internal("jingle.mp3"));
     Sound getstarsound = Gdx.audio.newSound(Gdx.files.internal("getstarsound.mp3"));
 
-    public GameScreen(RhythmGame game) {
-
+    public TGameScreen(RhythmGame game) {
         mGame = game;
 
-        //ToS.add(1.168f);
-        ToS.add(1.514f);
-        ToS.add(1.802f);
-        ToS.add(2.102f);
-        ToS.add(2.418f);
-        ToS.add(2.784f);
-        ToS.add(3.084f);
-        ToS.add(3.4840002f);
-        BatT.add(3.784f);
-        ToS.add(4.0860004f);
-        ToS.add(4.401f);
-        ToS.add(4.701f);
-        ToS.add(5.0010004f);
-        ToS.add(5.318f);
-        PumpkinT.add(5.634f);
-        ToS.add(5.951f);
-        ToS.add(6.234f);
-        SkeletonT.add(6.5509996f);
-        ToS.add(6.851f);
-        ToS.add(7.151f);
-        ToS.add(7.467f);
-        ToS.add(7.785f);
-        ToS.add(8.104f);
-        ToS.add(8.401f);
-        ToS.add(8.668f);
-        ToS.add(9.001f);
-        ToS.add(9.301f);
-        ToS.add(9.601f);
-        BatT.add(9.901f);
-        ToS.add(10.218f);
-        ToS.add(10.818f);
-        ToS.add(11.452f);
-        ToS.add(12.034f);
-        ToS.add(12.618f);
-        ToS.add(13.268f);
-        BatT.add(13.584f);
-        ToS.add(13.900999f);
-        ToS.add(14.518f);
-        PumpkinT.add(15.152f);
-        ToS.add(15.750999f);
-        ToS.add(16.052f);
-        ToS.add(16.318f);
-        SkeletonT.add(16.951f);
-        ToS.add(17.518f);
-        ToS.add(18.184f);
-        BatT.add(18.501f);
-        ToS.add(18.851f);
-        ToS.add(19.435f);
-        ToS.add(20.018f);
-        ToS.add(20.684f);
-        ToS.add(21.318f);
-        ToS.add(21.636f);
-        ToS.add(21.802f);
-        PumpkinT.add(22.085f);
-        ToS.add(22.539f);
-        ToS.add(23.701f);
-        ToS.add(24.067f);
-        ToS.add(24.234f);
-        ToS.add(24.534f);
-        SkeletonT.add(24.951f);
-        ToS.add(26.184f);
-        ToS.add(26.518f);
-        BatT.add(26.701f);
-        ToS.add(26.985f);
-        ToS.add(27.451f);
-        ToS.add(28.153f);
-        ToS.add(28.467f);
-        ToS.add(28.766998f);
-        ToS.add(29.368f);
-        ToS.add(29.987999f);
-        ToS.add(30.601002f);
-        ToS.add(30.883999f);
-        ToS.add(31.222f);
-        PumpkinT.add(31.550999f);
-        ToS.add(31.719002f);
-        ToS.add(31.987999f);
-        ToS.add(32.455f);
-        ToS.add(33.669f);
-        ToS.add(34.018f);
-        ToS.add(34.184f);
-        SkeletonT.add(34.501f);
-        ToS.add(34.917f);
-        ToS.add(36.175f);
-        ToS.add(36.468f);
-        ToS.add(36.634f);
-        ToS.add(37.001f);
-        ToS.add(37.418f);
-        GhostT.add(38.068f);
-        ToS.add(38.384f);
-        ToS.add(38.667f);
-        ToS.add(39.301f);
-        ToS.add(39.902f);
-        ToS.add(40.468f);
-        ToS.add(40.803f);
-        ToS.add(41.14f);
-        ToS.add(42.034f);
-        ToS.add(42.351f);
-        ToS.add(43.317f);
-        PumpkinT.add(43.637f);
-        ToS.add(43.918f);
-        ToS.add(44.234f);
-        ToS.add(44.57f);
-        ToS.add(44.734f);
-        GhostT.add(44.951f);
-        ToS.add(46.085f);
-        ToS.add(46.725f);
-        ToS.add(47.274f);
-        ToS.add(47.856f);
-        ToS.add(48.523f);
-        ToS.add(49.089f);
-        GhostT.add(49.39f);
-        ToS.add(49.773f);
-        ToS.add(50.126f);
-        ToS.add(50.49f);
-        ToS.add(51.026f);
-        ToS.add(51.355f);
-        ToS.add(51.556f);
-        ToS.add(51.707f);
-        PumpkinT.add(52.173f);
-        ToS.add(52.356f);
-        ToS.add(53.525f);
-        ToS.add(53.84f);
-        ToS.add(54.192f);
-        ToS.add(54.49f);
-        ToS.add(54.776f);
-        ToS.add(55.073f);
-        ToS.add(55.389f);
-        ToS.add(55.727f);
-        ToS.add(55.991f);
-        ToS.add(56.273f);
-        ToS.add(56.44f);
-        ToS.add(56.605f);
-        ToS.add(57.089f);
-        ToS.add(57.238f);
-        ToS.add(58.423f);
-        ToS.add(58.738f);
-        ToS.add(59.074f);
-        ToS.add(59.373f);
-        ToS.add(59.673f);
-        ToS.add(59.976f);
-        //ToS.add(60.172997f);
-        ToS.add(60.189003f);
-        ToS.add(60.372f);
-        //ToS.add(60.739998f);
-        ToS.add(60.889f);
-        ToS.add(61.072f);
+        ToS.add(1.43f);
+        ToS.add(1.73f);
+        ToS.add(1.95f);
+        ToS.add(2.35f);
+        ToS.add(2.67f);
+        ToS.add(2.98f);
+        ToS.add(3.29f);
+        ToS.add(3.59f);
+        ToS.add(3.93f);
+        ToS.add(4.21f);
+        ToS.add(4.52f);
+        ToS.add(4.83f);
+        ToS.add(5.45f);
+        ToS.add(5.75f);
+        ToS.add(6.08f);
+        ToS.add(6.40f);
+        ToS.add(6.65f);
+        ToS.add(6.99f);
+        ToS.add(7.30f);
+        ToS.add(7.65f);
+        ToS.add(7.95f);
+        ToS.add(8.26f);
+        ToS.add(8.58f);
+        ToS.add(8.91f);
+        ToS.add(9.21f);
+        ToS.add(9.52f);
+        ToS.add(9.81f);
+        ToS.add(10.13f);
+        ToS.add(10.74f);
+        ToS.add(11.28f);
+        ToS.add(11.83f);
+        ToS.add(12.53f);
+        ToS.add(13.17f);
+        ToS.add(13.39f);
+        ToS.add(13.83f);
+        ToS.add(14.38f);
+        ToS.add(15.03f);
+        ToS.add(15.65f);
+        ToS.add(15.78f);
+        ToS.add(16.13f);
+        ToS.add(16.76f);
+        ToS.add(17.44f);
+
+        ToS.add(18.22f);
+        ToS.add(18.53f);
+
+        ToS.add(18.82f);
+        ToS.add(19.47f);
+        ToS.add(20.07f);
+        ToS.add(20.70f);
+
+        ToS.add(21.28f);
+        ToS.add(21.41f);
+        ToS.add(21.56f);
+        ToS.add(21.73f);
+        ToS.add(22.03f);
+        ToS.add(22.48f);
+
+        ToS.add(23.74f);
+        ToS.add(23.89f);
+        ToS.add(24.04f);
+        ToS.add(24.20f);
+        ToS.add(24.50f);
+        ToS.add(24.97f);
+
+        ToS.add(26.20f);
+        ToS.add(26.36f);
+        ToS.add(26.51f);
+        ToS.add(26.67f);
+        ToS.add(26.98f);
+        ToS.add(27.43f);
+
+        ToS.add(28.06f);
+        ToS.add(28.37f);
+        ToS.add(28.67f);
+        ToS.add(29.30f);
+        ToS.add(29.92f);
+        ToS.add(30.53f);
+        ToS.add(30.85f);
+
+        ToS.add(31.16f);
+        ToS.add(31.32f);
+        ToS.add(31.48f);
+        ToS.add(31.66f);
+        ToS.add(31.93f);
+        ToS.add(32.4f);
 
 
-        ToS.add(61.002f);
+        ToS.add(33.65f);
+        ToS.add(33.82f);
+        ToS.add(33.95f);
+        ToS.add(34.15f);
+        ToS.add(34.40f);
+        ToS.add(34.89f);
+
+        ToS.add(36.09f);
+        ToS.add(36.28f);
+        ToS.add(36.44f);
+        ToS.add(36.61f);
+        ToS.add(36.88f);
+        ToS.add(37.35f);
+
+        ToS.add(37.94f);
+        ToS.add(38.29f);
+        ToS.add(38.60f);
+        ToS.add(39.20f);
+        ToS.add(39.89f);
+        ToS.add(40.43f);
+        ToS.add(40.75f);
+        ToS.add(41.08f);
+        ToS.add(42.02f);
+        ToS.add(42.36f);
+        ToS.add(43.24f);
+        ToS.add(43.57f);
+        ToS.add(43.79f);
+        ToS.add(44.28f);
+        ToS.add(44.51f);
+
+        ToS.add(46.04f);
+        ToS.add(46.66f);
+        ToS.add(47.37f);
+        ToS.add(47.87f);
+
+        ToS.add(48.56f);
+        ToS.add(49.12f);
+        ToS.add(49.45f);
+
+        ToS.add(49.79f);
+        ToS.add(50.11f);
+        ToS.add(50.40f);
 
 
+        ToS.add(50.97f);
 
+        ToS.add(51.27f);
+        ToS.add(51.54f);
+
+        ToS.add(51.70f);
+
+        ToS.add(51.86f);
+        ToS.add(52.00f);
+        ToS.add(52.18f);
+
+
+        ToS.add(52.47f);
+        ToS.add(52.63f);
+        ToS.add(52.79f);
+        ToS.add(52.95f);
+
+        ToS.add(53.39f);
+        ToS.add(53.57f);
+        ToS.add(53.73f);
+        ToS.add(53.89f);
+
+        ToS.add(54.09f);
+
+        ToS.add(54.22f);
+
+        ToS.add(54.43f);
+
+        ToS.add(54.65f);
+
+
+        ToS.add(54.95f);
+
+        ToS.add(55.23f);
+        ToS.add(55.55f);
+
+        ToS.add(55.85f);
+
+        ToS.add(56.13f);
+        ToS.add(56.31f);
+
+
+        ToS.add(56.50f);
+        ToS.add(56.91f);
+        ToS.add(57.13f);
+        ToS.add(58.27f);
+
+        ToS.add(58.45f);
+        ToS.add(58.63f);
+        ToS.add(58.81f);
+        ToS.add(58.97f);
+
+        ToS.add(59.15f);
+
+
+        ToS.add(59.64f);
+        ToS.add(59.78f);
+        ToS.add(59.92f);
+        ToS.add(60.05f);
+
+        ToS.add(59.94f);
+        ToS.add(60.28f);
+        //  ToS.add(60.22f);
+        ToS.add(60.35f);
+
+        ToS.add(60.81f);
 
         ToS.add(98.1f);
-        ToS2.add(98.1f);
-        PumpkinT.add(98.0f);
-        SkeletonT.add(98.7f);
-        BatT.add(99.7f);
-        GhostT.add(98.7f);
 
+
+        ToS2.add(98.1f);
+
+        PumpkinT.add(0.0f);
+        PumpkinT.add(2.7f);
+        PumpkinT.add(5.1f);
+        PumpkinT.add(93.0f);
+
+        BatT.add(0.0f);
+        BatT.add(12.4f);
+        BatT.add(99.7f);
+
+        SkeletonT.add(1.3f);
+        SkeletonT.add(9.1f);
+        SkeletonT.add(98.7f);
+
+        GhostT.add(11.1f);
+        GhostT.add(15.1f);
+        GhostT.add(98.7f);
 
         //playingmusic.setLooping(true);//音楽はループ
 
@@ -377,7 +414,6 @@ public class GameScreen extends ScreenAdapter {
         // メンバ変数の初期化
         mRandom = new Random();
         mNote = new ArrayList<Note>();
-        mENote = new ArrayList<ENote>();
         mNote2 = new ArrayList<Note2>();
         mGameState = GAME_STATE_READY;
         mTouchPoint = new Vector3();
@@ -389,10 +425,6 @@ public class GameScreen extends ScreenAdapter {
         mGhost = new ArrayList<Ghost>();
         mPumpkin = new ArrayList<Pumpkin>();
         mBat = new ArrayList<Bat>();
-        mTree = new ArrayList<Tree>();
-        mTree2 = new ArrayList<Tree2>();
-        mGrass = new ArrayList<Grass>();
-        mGround = new ArrayList<Ground>();
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");//Preferencesの取得
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
@@ -405,9 +437,9 @@ public class GameScreen extends ScreenAdapter {
     //描画を行うレンダーメソッド
     @Override
     public void render(float delta) {
+
         // それぞれの状態をアップデートする
         update(delta);
-
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         //赤、緑、青、透過の指定
@@ -422,10 +454,6 @@ public class GameScreen extends ScreenAdapter {
 
         mGame.batch.begin();
 
-        //aniani
-        timePassed += Gdx.graphics.getDeltaTime();
-        batch.draw((TextureRegion) animation.getKeyFrame(timePassed, true),300,500);
-        //aniani
 
         // 原点は左下
         mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2);
@@ -433,49 +461,34 @@ public class GameScreen extends ScreenAdapter {
 
         // Note,リストで保持しているので順番に取り出し
         for (int i = 0; i < mNote.size(); i++) {
+            //for (int i = 0; i < 6; i++) {
             mNote.get(i).draw(mGame.batch);
         }
         // Note2,リストで保持しているので順番に取り出し
         for (int i = 0; i < mNote2.size(); i++) {
+            //for (int i = 0; i < 6; i++) {
             mNote2.get(i).draw(mGame.batch);
-        }
-        // ENote,リストで保持しているので順番に取り出し
-        for (int i = 0; i < mENote.size(); i++) {
-            mENote.get(i).draw(mGame.batch);
         }
 
         // 棒の表示
         mBar.draw(mGame.batch);
 
-       // mIBar.draw(mGame.batch);
-        //mIBar1.draw(mGame.batch);
-        //mIBar2.draw(mGame.batch);
+        mIBar.draw(mGame.batch);
+        mIBar1.draw(mGame.batch);
+        mIBar2.draw(mGame.batch);
         //デッドラインの表示
         // mDeadLine.draw(mGame.batch);
 
 
-        mButtonBack.draw(mGame.batch);
         // ボタンの表示
         mButton1.draw(mGame.batch);
         mButton2.draw(mGame.batch);
         mButton3.draw(mGame.batch);
         mButton4.draw(mGame.batch);
         mActionBack.draw(mGame.batch);
-
-        for (int i = 0; i < mTree2.size(); i++) {
-            mTree2.get(i).draw(mGame.batch);
-        }
-
-        // Treeリストで保持しているので順番に取り出し
-        for (int i = 0; i < mTree.size(); i++) {
-            mTree.get(i).draw(mGame.batch);
-        }
-
-        for (int i = 0; i < mGround.size(); i++) {
-            mGround.get(i).draw(mGame.batch);
-        }
+        mAttackLine.draw(mGame.batch);
         mJumpLine.draw(mGame.batch);
-        mBone.draw(mGame.batch);
+        mStar.draw(mGame.batch);
         // 骸骨リストで保持しているので順番に取り出し
         for (int i = 0; i < mSkeleton.size(); i++) {
             mSkeleton.get(i).draw(mGame.batch);
@@ -488,26 +501,12 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mPumpkin.size(); i++) {
             mPumpkin.get(i).draw(mGame.batch);
         }
-
-        mAttackLine.draw(mGame.batch);
-        mStar.draw(mGame.batch);
-
-
         // Bat,リストで保持しているので順番に取り出し
         for (int i = 0; i < mBat.size(); i++) {
             mBat.get(i).draw(mGame.batch);
         }
-
         mPlayer.draw(mGame.batch);
-
-        // Grassリストで保持しているので順番に取り出し
-        for (int i = 0; i < mGrass.size(); i++) {
-            mGrass.get(i).draw(mGame.batch);
-        }
-
         mRFrame.draw(mGame.batch);
-
-
 
         //ライフゲージ周り
         mGaugeBarBack.draw(mGame.batch);
@@ -524,9 +523,9 @@ public class GameScreen extends ScreenAdapter {
 
         //drawメソッドで描画第1引数にSprteBatch、第2引数に表示されたい文字列、第3引数にx座標、第4引数にy座標
         //mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
-        //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
-        //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + mENote.size() + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
-        //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
+        mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
+        mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + FearGauge + "Life: " + LifeGauge, 16, GUI_HEIGHT - 35);
+        mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
 
 
         mGame.batch.end();
@@ -543,16 +542,6 @@ public class GameScreen extends ScreenAdapter {
 
     // ステージを作成する、オブジェクトを配置するメソッド
     private void createStage() {
-        //aniani
-        batch = new SpriteBatch();
-        UFOAtlas = new TextureAtlas(Gdx.files.internal("UFO.atlas"));
-        //UFOAtlas = new TextureAtlas(Gdx.files.internal("UFO.atlas"));
-        animation = new Animation(1/30f,UFOAtlas.getRegions());
-        //aniani
-        float x = 0;
-        float trees = 0;
-        float grasses = 0;
-        float Gs = 0;
         LifeGauge = 100;
         FearGauge = 100;
 
@@ -562,8 +551,6 @@ public class GameScreen extends ScreenAdapter {
         SkeletonTs = SkeletonT.size();
         GhostTs = GhostT.size();
         BatTs = BatT.size();
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
 
         // テクスチャの準備
         Texture stepTexture = new Texture("step.png");
@@ -581,37 +568,30 @@ public class GameScreen extends ScreenAdapter {
         Texture fgaugebarTexture = new Texture("fgauge.png");
         Texture button1Texture = new Texture("button1a.png");
         Texture button2Texture = new Texture("button2a.png");
-        Texture button3Texture = new Texture("b.png");
+        Texture button3Texture = new Texture("button3a.png");
         Texture button3bTexture = new Texture("button3b.png");
-        Texture buttonbackTexture = new Texture("BB.png");
+        Texture button4Texture = new Texture("button4a.png");
         Texture actionbackTexture = new Texture("actionback.png");
-        Texture attacklineTexture = new Texture("mahojin.png");
+        Texture attacklineTexture = new Texture("attackline.png");
         Texture jumplineTexture = new Texture("up.png");
         Texture batTexture = new Texture("Bat.png");
         Texture skeletonTexture = new Texture("skeleton.png");
         Texture ghostTexture = new Texture("ghost.png");
         Texture pumpkinTexture = new Texture("pumpkin.png");
         Texture frameTexture = new Texture("frame.png");
-        Texture treeTexture = new Texture("f_tree_shadow70.png");
-        Texture tree2Texture = new Texture("tree.png");
-        Texture grassTexture = new Texture("kusa.png");
-        Texture groundTexture = new Texture("jimen.png");
-        Texture boneTexture = new Texture("hone.png");
 
         // StepとStar、DarkStar、Enemyをゴールの高さまで配置していく
         // float y = 0;
         // 棒を配置
         mBar = new Bar(barTexture, 0, 0, 128, 128);
-        mBar.setPosition(3.0f, 0);
+        mBar.setPosition(3.1f, 0);
 
         mIBar = new iBar(ibarTexture, 0, 0, 128, 128);
         mIBar.setPosition(3, 0);
         mIBar1 = new iBar1(ibarTexture, 0, 0, 128, 128);
-        //元の位置mIBar1.setPosition(2.79f, 0);
-        mIBar1.setPosition(2.89f, 0);
+        mIBar1.setPosition(2.79f, 0);
         mIBar2 = new iBar2(ibarTexture, 0, 0, 128, 128);
-        //元の位置mIBar2.setPosition(3.3f, 0);
-        mIBar2.setPosition(3.1f, 0);
+        mIBar2.setPosition(3.3f, 0);
 //左右0.1までのずれ許容
         // デッドラインを配置
         mDeadLine = new DeadLine(ibarTexture, 0, 0, 128, 128);
@@ -637,19 +617,14 @@ public class GameScreen extends ScreenAdapter {
         mRFrame.setAlpha(0);
 
         // 攻撃エリア表示を配置
-        mAttackLine = new AttackLine(attacklineTexture, 0, 0, 128, 128);
-        mAttackLine.setPosition(8.2f, 5.0f);
+        mAttackLine = new AttackLine(attacklineTexture, 0, 0, 512, 170);
+        mAttackLine.setPosition(1.6f, 4.7f);
 
         mJumpLine = new JumpLine(jumplineTexture, 0, 0, 128, 128);
         mJumpLine.setPosition(0.6f, 5.3f);
 
         mStar = new Star(darkstarTexture, 0, 0, 128, 128);
         mStar.setPosition(6.8f, 10);
-
-        mBone = new Bone(boneTexture, 0, 0, 128, 128);
-        mBone.setPosition(8.0f, 5.5f);
-
-
 
         // ボタン１を配置
         mButton1 = new Button1(button1Texture, 0, 0, 128, 128);
@@ -660,11 +635,11 @@ public class GameScreen extends ScreenAdapter {
         mButton2.setPosition(14, 0);
 
         // ボタン3を配置
-        mButton3 = new Button3(button3Texture, 50, 1865, 160, 160);
+        mButton3 = new Button3(button3Texture, 0, 0, 128, 128);
         mButton3.setPosition(0, 2.25f);
 
         // ボタン4を配置
-        mButton4 = new Button4(button3Texture, 50, 1885, 160, 160);
+        mButton4 = new Button4(button4Texture, 0, 0, 128, 128);
         mButton4.setPosition(0, 0);
 
         // Playerを配置
@@ -672,29 +647,17 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.setPosition(1.4f, 5.2f);
 
 
-        mButtonBack = new ButtonBack(buttonbackTexture, 0, 0, 90, 256);
-        mButtonBack.setPosition(0, 0);
-
         while (end < ToSs || end < ToSs2) {
 
             Note note = new Note(noteTexture, 0, 0, 128, 128);
             //場所を決める
-            note.setPosition(30.0f, 0.85f);
+            note.setPosition(31, 0.85f);
             mNote.add(note);
 
-            Note2 note2 = new Note2(noteTexture, 0, 0, 128, 128);
+            Note2 note2 = new Note2(pnoteTexture, 0, 0, 128, 128);
             //場所を決める
-            note2.setPosition(30.0f, 2.85f);
+            note2.setPosition(17, 2.85f);
             mNote2.add(note2);
-
-            ENote enote = new ENote(pnoteTexture, 0, 0, 128, 128);
-            //ランダムで場所を決める
-            if (MathUtils.random(0, 1) == 1) {
-                enote.setPosition(30.0f, 2.85f);
-            }else{
-                enote.setPosition(30.0f, 0.85f);
-            }
-            mENote.add(enote);
 
             Skeleton skeleton = new Skeleton(skeletonTexture, 0, 34, 24, 32);
             //場所を決める
@@ -708,49 +671,17 @@ public class GameScreen extends ScreenAdapter {
 
             Pumpkin pumpkin = new Pumpkin(pumpkinTexture, 0, 0, 31, 26);
             //場所を決める
-            pumpkin.setPosition(16.8f, 5.2f);
+            pumpkin.setPosition(17.8f, 5.2f);
             mPumpkin.add(pumpkin);
 
             Bat bat = new Bat(batTexture, 0, 100, 21, 16);
-            //ランダムで場所を決める
-            if (MathUtils.random(0, 1) == 1) {
-                bat.setPosition(37.76f, 7.0f);
-            }else {
-                bat.setPosition(37.76f, 5.5f);
-            }
+            //場所を決める
+            bat.setPosition(37.76f, 5.5f);
             mBat.add(bat);
+
 
             end++;
 
-        }
-        while ( x < 24) {
-
-            Tree tree = new Tree(treeTexture,0,0,512,512);
-            tree.setPosition(x, 5.3f);
-            mTree.add(tree);
-            x += mRandom.nextFloat() * 10;
-        }
-
-        while ( trees < 24) {
-            Tree2 tree2 = new Tree2(tree2Texture,0,0,512,512);
-            tree2.setPosition(trees, 5.3f);
-            mTree2.add(tree2);
-            trees += mRandom.nextFloat() * 10;
-        }
-
-        while ( grasses < 24) {
-
-            Grass grass = new Grass(grassTexture,0,845,1024,171);
-            grass.setPosition(grasses, 4.5f);
-            mGrass.add(grass);
-            grasses += 6;
-        }
-        while ( Gs <= 24) {
-
-            Ground ground = new Ground(groundTexture,0,896,1024,128);
-            ground.setPosition(Gs, 4.5f);
-            mGround.add(ground);
-            Gs += 8;
         }
     }
 
@@ -778,12 +709,6 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    //aniani
-    public void dispose(){
-        batch.dispose();
-        UFOAtlas.dispose();
-    }
-    //aniani
     private void updatePlaying(float delta) {
 
         if (!playingmusic.isPlaying()) {
@@ -792,23 +717,6 @@ public class GameScreen extends ScreenAdapter {
 
         mPlayer.update(delta);
         mStar.update(delta);
-        mBone.update(delta);
-        for (int i = 0; i < mTree2.size(); i++) { //ここで一回のみの動作に
-            mTree2.get(i).update(delta);
-        }
-
-        for (int i = 0; i < mTree.size(); i++) { //ここで一回のみの動作に
-            mTree.get(i).update(delta);
-        }
-
-        for (int i = 0; i < mGround.size(); i++) { //ここで一回のみの動作に
-            mGround.get(i).update(delta);
-        }
-
-        for (int i = 0; i < mGrass.size(); i++) { //ここで一回のみの動作に
-            mGrass.get(i).update(delta);
-        }
-
 
         musictime = playingmusic.getPosition();//再生時間取得
         //ボタンがタッチされているか
@@ -820,27 +728,29 @@ public class GameScreen extends ScreenAdapter {
         mJumpLine.unpush();
 
 
-        for (int i = 0; i < 5; i++) { // 20 is max number of touch points
-            if (Gdx.input.isTouched(i)) {
-                //test
-                Rectangle rightu = new Rectangle(GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
-                Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//ボタン2
-                Rectangle leftu = new Rectangle(0, 72, 70, 72);//ボタン３
-                Rectangle leftd = new Rectangle(0, 0, 70, 72);//ボタン４
-                //test
-                final int iX = Gdx.input.getX(i);
-                final int iY = Gdx.input.getY(i);
+        //for (int i = 0; i < 5; i++) { // 20 is max number of touch points
+        if (Gdx.input.justTouched()) {Gdx.app.log("MyTag","ToS.add("+String.valueOf(musictime - 4)+"f);");
+            //test
+            Rectangle rightu = new Rectangle(GUI_WIDTH - 70, 72, GUI_WIDTH, 72);//ボタン1
+            Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//ボタン2
+            Rectangle leftu = new Rectangle(0, 72, 70, 72);//ボタン３
+            Rectangle leftd = new Rectangle(0, 0, 70, 72);//ボタン４
+            //test
+            //final int iX = Gdx.input.getX(i);
+            //final int iY = Gdx.input.getY(i);
 
-                mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
-                tb1 = tb1 || (rightu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
-                tb2 = tb2 || (rightd.contains(mTouchPoint.x, mTouchPoint.y));
-                tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
-                tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
-            }
+            //mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
+            tb1 = tb1 || (rightu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+            tb2 = tb2 || (rightd.contains(mTouchPoint.x, mTouchPoint.y));
+            tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+            tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
         }
+        //}
         if (tb1) {
-            mJumpLine.update(delta);
-            mJumpLine.push();
+            //mJumpLine.update(delta);
+            //mJumpLine.push();
+
+
         }
         if (tb2) {
             mAttackLine.push();
@@ -872,23 +782,20 @@ public class GameScreen extends ScreenAdapter {
         if (createpumpkin < PumpkinTs) {
             for (int i = 0; i < createpumpkin; i++) {
                 mPumpkin.get(i).update(delta);
+                //mGhost.get(i).update(delta)
             }
             if (playingmusic.getPosition() > PumpkinT.get(createpumpkin)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createpumpkin++;
-                en++;
             }
         }
         //骸骨出すタイミングで動作
         if (createskeleton < SkeletonTs) {
             for (int i = 0; i < createskeleton; i++) {
                 mSkeleton.get(i).update(delta);
-                if (mSkeleton.get(i).getX() < 7.5f) {
-                    mBone.threw = 1;//ここを攻撃の表示に変えるアップデート常にさせて各クラス内で条件分岐させる方法ほかもできるかも？
-                }
+                //mGhost.get(i).update(delta);
             }
             if (playingmusic.getPosition() > SkeletonT.get(createskeleton)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createskeleton++;
-                en++;
             }
         }
         //幽霊出すタイミングで動作
@@ -898,41 +805,28 @@ public class GameScreen extends ScreenAdapter {
             }
             if (playingmusic.getPosition() > GhostT.get(createghost)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createghost++;
-                en++;
             }
         }
         //コウモリ出すタイミングで動作
         if (createbat < BatTs) {
             for (int i = 0; i < createbat; i++) {
                 mBat.get(i).update(delta);
-                //mENote.get(en).update(delta);
-                //en++;
             }
             if (playingmusic.getPosition() > BatT.get(createbat)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createbat++;
-                en++;
             }
         }
-
-        //すべての敵タイミングで動作
-        if (createpumpkin < PumpkinTs||createghost < GhostTs||createskeleton < SkeletonTs||createbat < BatTs) {
-            for (int i = 0; i < en; i++) {
-                mENote.get(i).update(delta);
-            }
-        }
-
-
 
         mLGaugeBar.GetDamage();
         mFGaugeBar.GetDamage();
         mActionBack.Darker();
 
 
-        if (LifeGauge > FearGauge){
+        if (LifeGauge > FearGauge) {
             LifeGauge = FearGauge;
         }
 
-        if (LifeGauge <= 15){
+        if (LifeGauge <= 15) {
             mRFrame.update(delta);
         }
 //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
@@ -949,22 +843,34 @@ public class GameScreen extends ScreenAdapter {
         // ノーツとの当たり判定
         for (int i = 0; i < mNote.size(); i++) {
             Note note = mNote.get(i);
-            if (tb4) {
+            //testaa if (tb4) {
             //ボタン３が押されたときに上ラインのあたり判定
             if (note.mState == 1) {
                 continue;
                 //消えてるのには反応しない
-            }
+            }//testaa次のtestaaまで消す
+            if (mIBar1.getBoundingRectangle().overlaps(note.getBoundingRectangle())
+                    && mIBar2.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
+                getstarsound.play(1.0f);//獲得音
+                mScore = mScore + 1; //スコアに加算
+                if (mScore > mHighScore) { //ハイスコアを超えた場合
+                    mHighScore = mScore; //今の点数をハイスコアに
+                    //ハイスコアをPreferenceに保存する
+                    mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                    mPrefs.flush(); // 値を永続化するのに必要
+                }
+                note.get();//消す
+            }/*testaaここまで消す
                 if (mIBar.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                     //testa
-                    /*if (tb1 && !tb2){
+                    if (tb1 && !tb2){
                         mPlayer.jumpstate = 1;
                     }
                     if (tb2 && !tb1){
                         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         mStar.jumpstate = 1;
                         //ボタン2押しながら得点得た時の動作
-                    }*/
+                    }
                     if (mIBar1.getBoundingRectangle().overlaps(note.getBoundingRectangle())
                             && mIBar2.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                         getstarsound.play(1.0f);//獲得音
@@ -991,37 +897,48 @@ public class GameScreen extends ScreenAdapter {
                     if (mIBar1.getBoundingRectangle().overlaps(note.getBoundingRectangle())
                             || mIBar2.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                         hitsound.play(1.0f);//衝突音
-                        FearGauge -= 1;//プレーヤーダメージ
+                        FearGauge -= 5;//プレーヤーダメージ
                         note.get();//消す
                     }
-                }
-
+                }testaa*/
             //タイミング判定
-            }
+            //testaa}
             if (note.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                 //押されなかった場合（ダメージを追加予定
-                FearGauge -= 1;//プレーヤーダメージ
+                FearGauge -= 5;//プレーヤーダメージ
                 note.get();//消す
             }
         }
         for (int i = 0; i < mNote2.size(); i++) {
             Note2 note2 = mNote2.get(i);
-             if (tb3) {
+            //testaa if (tb3) {
             //ボタン３が押されたときに上ラインのあたり判定
             if (note2.mState == 1) {
                 continue;
                 //消えてるのには反応しない
             }
-
+            //testaa次のtestaaまで消す
+            if (mIBar1.getBoundingRectangle().overlaps(note2.getBoundingRectangle())
+                    && mIBar2.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
+                getstarsound.play(1.0f);//獲得音
+                mScore = mScore + 5; //スコアに加算
+                if (mScore > mHighScore) { //ハイスコアを超えた場合
+                    mHighScore = mScore; //今の点数をハイスコアに
+                    //ハイスコアをPreferenceに保存する
+                    mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                    mPrefs.flush(); // 値を永続化するのに必要
+                }
+                note2.get();//消す
+            }/*testaaここまで消す
                 if (mIBar.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                     //testa
-                    /*if (tb1 && !tb2){
+                    if (tb1 && !tb2){
                         mPlayer.jumpstate = 1;
                     }
                     if (tb2 && !tb1){
                         //ボタン2押しながら得点得た時の動作
                         mStar.jumpstate = 1;
-                    }*/
+                    }
                     if (mIBar1.getBoundingRectangle().overlaps(note2.getBoundingRectangle())
                             && mIBar2.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                         getstarsound.play(1.0f);//獲得音
@@ -1049,79 +966,16 @@ public class GameScreen extends ScreenAdapter {
                     if (mIBar1.getBoundingRectangle().overlaps(note2.getBoundingRectangle())
                             || mIBar2.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                         hitsound.play(1.0f);//衝突音
-                        FearGauge -= 2;//プレーヤーダメージ
+                        FearGauge -= 5;//プレーヤーダメージ
                         note2.get();//消す
                     }
-                }
+                }testaa*/
             //タイミング判定
-            }
+            //testaa }
             if (note2.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                 //押されなかった場合（ダメージを追加予定
-                FearGauge -= 2;//プレーヤーダメージ
+                FearGauge -= 5;//プレーヤーダメージ
                 note2.get();//消す
-            }
-        }
-
-        for (int i = 0; i < mENote.size(); i++) {
-            ENote enote = mENote.get(i);
-            if (enote.getY()>2) {
-                etb = tb3;
-            }else{
-                etb = tb4;
-            }
-                if (etb) {
-                    //ボタン３が押されたときに上ラインのあたり判定
-                    if (enote.mState == 1) {
-                        continue;
-                        //消えてるのには反応しない
-                    }
-
-                    if (mIBar.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                        //testa
-                        if (tb1 && !tb2) {
-                            mPlayer.jumpstate = 1;
-                        }
-                        if (tb2 && !tb1) {
-                            //ボタン2押しながら得点得た時の動作
-                            mStar.jumpstate = 1;
-                        }
-                        if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
-                                && mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                            getstarsound.play(1.0f);//獲得音
-                            mScore = mScore + 5; //スコアに加算
-                            if (mScore > mHighScore) { //ハイスコアを超えた場合
-                                mHighScore = mScore; //今の点数をハイスコアに
-                                //ハイスコアをPreferenceに保存する
-                                mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                                mPrefs.flush(); // 値を永続化するのに必要
-                            }
-                            enote.get();//消す
-                        } else {
-                            mScore = mScore + 3; //スコアに加算
-                            if (mScore > mHighScore) { //ハイスコアを超えた場合
-                                mHighScore = mScore; //今の点数をハイスコアに
-                                //ハイスコアをPreferenceに保存する
-                                mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                                mPrefs.flush(); // 値を永続化するのに必要
-                            }
-                            enote.get();//消す
-
-                            break;
-                        }
-                    } else {
-                        if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
-                                || mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                            hitsound.play(1.0f);//衝突音
-                            FearGauge -= 2;//プレーヤーダメージ
-                            enote.get();//消す
-                        }
-                    }
-                    //タイミング判定
-                }
-            if (enote.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                //押されなかった場合（ダメージを追加予定
-                FearGauge -= 2;//プレーヤーダメージ
-                enote.get();//消す
             }
         }
         //かぼちゃ
@@ -1162,12 +1016,6 @@ public class GameScreen extends ScreenAdapter {
                 bat.get();//消す
             }
         }
-        //敵の攻撃
-        if (mPlayer.getBoundingRectangle().overlaps(mBone.getBoundingRectangle()) ){
-            //攻撃当たった場合
-            LifeGauge -= 5;
-            mBone.get();//消す
-        }
         //あたり判定ここまで
     }
 
@@ -1180,12 +1028,13 @@ public class GameScreen extends ScreenAdapter {
         jingle.dispose();//メモリ解放
         mGame.setScreen(new ResultScreen(mGame, mScore));
     }
+
     private void checkGameOver() {
-        if (LifeGauge < 0){
-            updateGameOver();
-        }
+        //if (LifeGauge <= 0){
+        //    updateGameOver();
+        //}
         //ここの時間で終了
-        if (playingmusic.getPosition()>66) {
+        if (playingmusic.getPosition() > 67) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
             //gomusic.play();//ゲームオーバー画面の音楽再生
             playingmusic.dispose();//メモリ解放
@@ -1193,4 +1042,7 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void check() {
+
+    }
 }
