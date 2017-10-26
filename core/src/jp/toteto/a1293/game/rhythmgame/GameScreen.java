@@ -1,10 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
@@ -14,13 +10,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -36,9 +29,13 @@ import java.util.Random;
 // implements ApplicationListener, InputProcessor
 public class GameScreen extends ScreenAdapter {
 
-    //aniani
+//アニメーション
 
-    //aniani
+    Texture img;
+    TextureRegion[] animationFrames;
+    Animation<TextureRegion> animation;
+    float elapsedTime;
+    //アニメーション
 
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
@@ -448,7 +445,6 @@ public class GameScreen extends ScreenAdapter {
         //デッドラインの表示
         // mDeadLine.draw(mGame.batch);
 
-
         mButtonBack.draw(mGame.batch);
         // ボタンの表示
         mButton1.draw(mGame.batch);
@@ -500,6 +496,11 @@ public class GameScreen extends ScreenAdapter {
             mGrass.get(i).draw(mGame.batch);
         }
 
+        //アニメーション
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        //mGame.batch.draw(animation.getKeyFrame(elapsedTime,true),0,0,1,1);
+        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true), 0, 64, 23, 32);
+
         mRFrame.draw(mGame.batch);
 
 
@@ -508,6 +509,7 @@ public class GameScreen extends ScreenAdapter {
         mGaugeBarBack.draw(mGame.batch);
         mLGaugeBar.draw(mGame.batch);
         mFGaugeBar.draw(mGame.batch);
+
 
         mGame.batch.end();
 
@@ -522,7 +524,7 @@ public class GameScreen extends ScreenAdapter {
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + mENote.size() + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
         //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
-
+        mFont.draw(mGame.batch,  "" + elapsedTime, 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -555,6 +557,19 @@ public class GameScreen extends ScreenAdapter {
         GhostTs = GhostT.size();
         BatTs = BatT.size();
         //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+//アニメーション
+        img = new Texture("majomajo.png");
+        TextureRegion[] [] tmpFrames = TextureRegion.split(img,256,256);
+
+        animationFrames = new TextureRegion[4];
+        int index = 0;
+        for (int i = 0; i < 2; i++){
+            for (int j = 0; j < 2; j++){
+                animationFrames[index++] = tmpFrames[j][i];
+            }
+        }
+        animation = new Animation<TextureRegion>(1f/4f,animationFrames);
 
 
         // テクスチャの準備
@@ -660,7 +675,7 @@ public class GameScreen extends ScreenAdapter {
         mButton4.setPosition(0, 0);
 
         // Playerを配置
-        mPlayer = new Player(playerTexture, 0, 64, 23, 32);
+        //アニメーションmPlayer = new Player(playerTexture, 0, 64, 23, 32);
         mPlayer.setPosition(1.4f, 5.2f);
 
 

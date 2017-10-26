@@ -1,12 +1,14 @@
 package jp.toteto.a1293.game.rhythmgame;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/14.
  */
 
-public class Player  extends GameObject{
+public class Player  extends GameObject implements ApplicationListener {
     // 横幅、高さ
     public static final float PLAYER_WIDTH = 1.0f;
     public static final float PLAYER_HEIGHT = 1.4f;
@@ -25,8 +27,8 @@ public class Player  extends GameObject{
 
     GameScreen mGameScreen;
 
-    public Player(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Player(Texture texture1, int srcX, int srcY, int srcWidth, int srcHeight) {
+        super(texture1 , srcX, srcY, srcWidth, srcHeight);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
         mState = PLAYER_STATE_FALL;
     }
@@ -66,5 +68,35 @@ public class Player  extends GameObject{
                 }
             }
         }
+    }
+
+    @Override
+    public void create() {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void render() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }
