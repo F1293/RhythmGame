@@ -37,10 +37,7 @@ import java.util.Random;
 public class GameScreen extends ScreenAdapter {
 
     //aniani
-    private TextureAtlas UFOAtlas;
-    private Animation animation;
-    private float timePassed = 0;
-    private SpriteBatch batch;
+
     //aniani
 
     //カメラのサイズを表す定数を定義する
@@ -110,7 +107,6 @@ public class GameScreen extends ScreenAdapter {
     ButtonBack mButtonBack;
     RFrame mRFrame;
 
-    Animator mAnimator;
 
     //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     List<Bat> mBat;
@@ -423,8 +419,7 @@ public class GameScreen extends ScreenAdapter {
         mGame.batch.begin();
 
         //aniani
-        timePassed += Gdx.graphics.getDeltaTime();
-        batch.draw((TextureRegion) animation.getKeyFrame(timePassed, true),300,500);
+
         //aniani
 
         // 原点は左下
@@ -544,10 +539,7 @@ public class GameScreen extends ScreenAdapter {
     // ステージを作成する、オブジェクトを配置するメソッド
     private void createStage() {
         //aniani
-        batch = new SpriteBatch();
-        UFOAtlas = new TextureAtlas(Gdx.files.internal("UFO.atlas"));
-        //UFOAtlas = new TextureAtlas(Gdx.files.internal("UFO.atlas"));
-        animation = new Animation(1/30f,UFOAtlas.getRegions());
+
         //aniani
         float x = 0;
         float trees = 0;
@@ -779,10 +771,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     //aniani
-    public void dispose(){
-        batch.dispose();
-        UFOAtlas.dispose();
-    }
+
     //aniani
     private void updatePlaying(float delta) {
 
