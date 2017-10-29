@@ -1,6 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/16.
@@ -18,14 +19,15 @@ public class Skeleton extends GameObject {
     //状態を保持するメンバ変数
     int mState;
 Star mStar;
+    Game mGame;
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
     public static final float SKELETON_VELOCITY = - 2;
 
 
 
-    public Skeleton(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Skeleton(TextureRegion texture) {
+        super(texture);
         setSize(SKELETON_WIDTH, SKELETON_HEIGHT);
         mState = SKELETON_EXIST;
         velocity.x = SKELETON_VELOCITY;
@@ -36,6 +38,7 @@ Star mStar;
         if (mState == 0) {
             setX(getX() + velocity.x * deltaTime);
             if (getX() < 7.5f) {
+
                 //ここで攻撃出す
                 velocity.x = 1;
             }
@@ -44,6 +47,9 @@ Star mStar;
             }
         }
     }
+
+
+
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
     public void get() {
         mState = SKELETON_NONE;

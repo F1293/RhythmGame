@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/16.
@@ -25,8 +25,8 @@ public class Ghost extends GameObject {
 
 
 
-    public Ghost(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Ghost(TextureRegion texture) {
+        super(texture);
         setSize(GHOST_WIDTH, GHOST_HEIGHT);
         mState = GHOST_EXIST;
         velocity.x = GHOST_VELOCITY;

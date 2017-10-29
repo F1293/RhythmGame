@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/16.
@@ -24,8 +24,8 @@ public class Bat extends GameObject {
 
 
 
-    public Bat(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Bat(TextureRegion texture) {
+        super(texture);
         setSize(BAT_WIDTH, BAT_HEIGHT);
         mState = BAT_EXIST;
         velocity.x = BAT_VELOCITY;

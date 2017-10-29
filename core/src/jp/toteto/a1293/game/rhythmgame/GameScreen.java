@@ -397,9 +397,9 @@ public class GameScreen extends ScreenAdapter {
 
     //描画を行うレンダーメソッド
     @Override
-    public void render(float delta) {
+    public void render(float deltaTime) {
         // それぞれの状態をアップデートする
-        update(delta);
+        update(deltaTime);
 
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -488,18 +488,18 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mBat.size(); i++) {
             mBat.get(i).draw(mGame.batch);
         }
+//アニメーション
 
         mPlayer.draw(mGame.batch);
 
+       // mPlayer.draw(animation.getKeyFrame(elapsedTime,true), pos.x, pos.y, width, height);
+//アニメーション
         // Grassリストで保持しているので順番に取り出し
         for (int i = 0; i < mGrass.size(); i++) {
             mGrass.get(i).draw(mGame.batch);
         }
 
-        //アニメーション
-        elapsedTime += Gdx.graphics.getDeltaTime();
-        //mGame.batch.draw(animation.getKeyFrame(elapsedTime,true),0,0,1,1);
-        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true), 0, 64, 23, 32);
+
 
         mRFrame.draw(mGame.batch);
 
@@ -523,8 +523,8 @@ public class GameScreen extends ScreenAdapter {
         //mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + mENote.size() + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
-        //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate, 16, GUI_HEIGHT - 75);
-        mFont.draw(mGame.batch,  "" + elapsedTime, 16, GUI_HEIGHT - 15);
+        mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
+        mFont.draw(mGame.batch, mPlayer.playerY+ "<" + elapsedTime, 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -570,68 +570,130 @@ public class GameScreen extends ScreenAdapter {
             }
         }
         animation = new Animation<TextureRegion>(1f/4f,animationFrames);
-
+//アニメーションテクスチャ準備
 
         // テクスチャの準備
-        Texture stepTexture = new Texture("step.png");
-        Texture stepaTexture = new Texture("stepa.png");
-        Texture starTexture = new Texture("star.png");
-        Texture darkstarTexture = new Texture("darkstar.png");
-        Texture noteTexture = new Texture("note.png");
-        Texture pnoteTexture = new Texture("pnote.png");
-        Texture playerTexture = new Texture("majo.png");
-        Texture ufoTexture = new Texture("ufo.png");
-        Texture barTexture = new Texture("bar.png");
-        Texture ibarTexture = new Texture("ibar.png");
-        Texture gaugebarbackTexture = new Texture("gaugeback.png");
-        Texture lgaugebarTexture = new Texture("lgauge.png");
-        Texture fgaugebarTexture = new Texture("fgauge.png");
-        Texture button1Texture = new Texture("button1a.png");
-        Texture button2Texture = new Texture("button2a.png");
-        Texture button3Texture = new Texture("b.png");
-        Texture button3bTexture = new Texture("button3b.png");
-        Texture buttonbackTexture = new Texture("BB.png");
-        Texture actionbackTexture = new Texture("actionback.png");
-        Texture attacklineTexture = new Texture("mahojin.png");
-        Texture jumplineTexture = new Texture("up.png");
-        Texture batTexture = new Texture("Bat.png");
-        Texture skeletonTexture = new Texture("skeleton.png");
-        Texture ghostTexture = new Texture("ghost.png");
-        Texture pumpkinTexture = new Texture("pumpkin.png");
-        Texture frameTexture = new Texture("frame.png");
-        Texture treeTexture = new Texture("f_tree_shadow70.png");
-        Texture tree2Texture = new Texture("tree.png");
-        Texture grassTexture = new Texture("kusa.png");
-        Texture groundTexture = new Texture("jimen.png");
-        Texture boneTexture = new Texture("hone.png");
+        //Texture stepTexture = new Texture("step.png");
+
+
+        //Texture stepaTexture = new Texture("stepa.png");
+
+
+        //Texture starTexture = new Texture("star.png");
+
+
+        Texture darkstar = new Texture("darkstar.png");
+        TextureRegion darkstarTexture = new TextureRegion(darkstar,0, 0, 128, 128);
+
+        Texture notet = new Texture("note.png");
+        TextureRegion noteTexture = new TextureRegion(notet,0, 0, 128, 128);
+
+        Texture pnote = new Texture("pnote.png");
+        TextureRegion pnoteTexture = new TextureRegion(pnote,0, 0, 128, 128);
+
+        //Texture playerTexture = new Texture("majo.png");
+
+
+        //Texture ufoTexture = new Texture("ufo.png");
+
+
+        Texture bar = new Texture("bar.png");
+        TextureRegion barTexture = new TextureRegion(bar,0,845,1024,171);
+
+        Texture ibar = new Texture("ibar.png");
+        TextureRegion ibarTexture = new TextureRegion(ibar,0,845,1024,171);
+
+        Texture gaugebarback = new Texture("gaugeback.png");
+        TextureRegion gaugebarbackTexture = new TextureRegion(gaugebarback,0, 0, 256, 256);
+
+        Texture lgaugebar = new Texture("lgauge.png");
+        TextureRegion lgaugebarTexture = new TextureRegion(lgaugebar,0, 0, 256, 256);
+
+        Texture fgaugebar = new Texture("fgauge.png");
+        TextureRegion fgaugebarTexture = new TextureRegion(fgaugebar,0, 0, 256, 256);
+
+        Texture button1 = new Texture("button1a.png");
+        TextureRegion button1Texture = new TextureRegion(button1,0, 0, 128, 128);
+
+        Texture button2 = new Texture("button2a.png");
+        TextureRegion button2Texture = new TextureRegion(button2,0, 0, 128, 128);
+
+        Texture button3 = new Texture("b.png");
+        TextureRegion button3Texture = new TextureRegion(button3,50, 1865, 160, 160);
+
+        //Texture button3bTexture = new Texture("button3b.png");
+
+
+        Texture buttonback = new Texture("BB.png");
+        TextureRegion buttonbackTexture = new TextureRegion(buttonback,0, 0, 90, 256);
+
+        Texture actionback = new Texture("actionback.png");
+        TextureRegion actionbackTexture = new TextureRegion(actionback,0, 0, 1024, 304);
+
+
+        Texture attackline = new Texture("mahojin.png");
+        TextureRegion attacklineTexture = new TextureRegion(attackline,0, 0, 128, 128);
+
+        Texture jumpline = new Texture("up.png");
+        TextureRegion jumplineTexture = new TextureRegion(jumpline,0, 0, 128, 128);
+
+        Texture batt = new Texture("Bat.png");
+        TextureRegion batTexture = new TextureRegion(batt,0, 100, 21, 16);
+
+        Texture skeletont = new Texture("skeleton.png");
+        TextureRegion skeletonTexture = new TextureRegion(skeletont,0, 34, 24, 32);
+
+        Texture ghostt = new Texture("ghost.png");
+        TextureRegion ghostTexture = new TextureRegion(ghostt,0, 2, 24, 32);
+
+        Texture pumpkint = new Texture("pumpkin.png");
+        TextureRegion pumpkinTexture = new TextureRegion(pumpkint,0, 0, 31, 26);
+
+        Texture frame = new Texture("frame.png");
+        TextureRegion frameTexture = new TextureRegion(frame,0, 0, 1024, 304);
+
+        Texture treet = new Texture("f_tree_shadow70.png");
+        TextureRegion treeTexture = new TextureRegion(treet,0,0,512,512);
+
+        Texture tree2t = new Texture("tree.png");
+        TextureRegion tree2Texture = new TextureRegion(tree2t,0,0,512,512);
+
+        Texture grasst = new Texture("kusa.png");
+        TextureRegion grassTexture = new TextureRegion(grasst,0,845,1024,171);
+
+        Texture jiment = new Texture("jimen.png");
+        TextureRegion groundTexture = new TextureRegion(jiment,0,896,1024,128);
+
+        Texture bone = new Texture("hone.png");
+        TextureRegion boneTexture = new TextureRegion(bone,0, 0, 128, 128);
 
         // StepとStar、DarkStar、Enemyをゴールの高さまで配置していく
         // float y = 0;
         // 棒を配置
-        mBar = new Bar(barTexture, 0, 0, 128, 128);
+        mBar = new Bar(barTexture);
         mBar.setPosition(3.0f, 0);
 
-        mIBar = new iBar(ibarTexture, 0, 0, 128, 128);
+        mIBar = new iBar(ibarTexture);
         mIBar.setPosition(3, 0);
-        mIBar1 = new iBar1(ibarTexture, 0, 0, 128, 128);
+        mIBar1 = new iBar1(ibarTexture);
         //元の位置mIBar1.setPosition(2.79f, 0);
         mIBar1.setPosition(2.89f, 0);
-        mIBar2 = new iBar2(ibarTexture, 0, 0, 128, 128);
+        mIBar2 = new iBar2(ibarTexture);
         //元の位置mIBar2.setPosition(3.3f, 0);
         mIBar2.setPosition(3.1f, 0);
 //左右0.1までのずれ許容
         // デッドラインを配置
-        mDeadLine = new DeadLine(ibarTexture, 0, 0, 128, 128);
+        mDeadLine = new DeadLine(ibarTexture);
         mDeadLine.setPosition(1.3f, 0);
 
 
-        mGaugeBarBack = new GaugeBarBack(gaugebarbackTexture, 0, 0, 256, 256);
+        mGaugeBarBack = new GaugeBarBack(gaugebarbackTexture);
         mGaugeBarBack.setPosition(0, 4.5f);
 
-        mFGaugeBar = new FGaugeBar(fgaugebarTexture, 0, 0, 256, 256);
+        mFGaugeBar = new FGaugeBar(fgaugebarTexture);
         mFGaugeBar.setPosition(0, 5.0f);
 
-        mLGaugeBar = new LGaugeBar(lgaugebarTexture, 0, 0, 256, 256);
+        mLGaugeBar = new LGaugeBar(lgaugebarTexture);
         mLGaugeBar.setPosition(0, 5.0f);
 
         // アクション部背景を配置
@@ -639,7 +701,7 @@ public class GameScreen extends ScreenAdapter {
         mActionBack.setPosition(0, 4.5f);
 
         // 警告フレームを配置
-        mRFrame = new RFrame(frameTexture, 0, 0, 1024, 304);
+        mRFrame = new RFrame(frameTexture);
         mRFrame.setPosition(0, 4.5f);
         mRFrame.setAlpha(0);
 
@@ -647,54 +709,54 @@ public class GameScreen extends ScreenAdapter {
         mAttackLine = new AttackLine(attacklineTexture, 0, 0, 128, 128);
         mAttackLine.setPosition(8.2f, 5.0f);
 
-        mJumpLine = new JumpLine(jumplineTexture, 0, 0, 128, 128);
+        mJumpLine = new JumpLine(jumplineTexture);
         mJumpLine.setPosition(0.6f, 5.3f);
 
-        mStar = new Star(darkstarTexture, 0, 0, 128, 128);
+        mStar = new Star(darkstarTexture);
         mStar.setPosition(6.8f, 10);
 
-        mBone = new Bone(boneTexture, 0, 0, 128, 128);
+        mBone = new Bone(boneTexture);
         mBone.setPosition(8.0f, 5.5f);
 
+// Playerを配置
+        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));
 
 
         // ボタン１を配置
-        mButton1 = new Button1(button1Texture, 0, 0, 128, 128);
+        mButton1 = new Button1(button1Texture);
         mButton1.setPosition(14, 2.25f);
 
         // ボタン2を配置
-        mButton2 = new Button2(button2Texture, 0, 0, 128, 128);
+        mButton2 = new Button2(button2Texture);
         mButton2.setPosition(14, 0);
 
         // ボタン3を配置
-        mButton3 = new Button3(button3Texture, 50, 1865, 160, 160);
+        mButton3 = new Button3(button3Texture);
         mButton3.setPosition(0, 2.25f);
 
         // ボタン4を配置
-        mButton4 = new Button4(button3Texture, 50, 1885, 160, 160);
+        mButton4 = new Button4(button3Texture);
         mButton4.setPosition(0, 0);
 
-        // Playerを配置
-        //アニメーションmPlayer = new Player(playerTexture, 0, 64, 23, 32);
-        mPlayer.setPosition(1.4f, 5.2f);
 
 
-        mButtonBack = new ButtonBack(buttonbackTexture, 0, 0, 90, 256);
+
+        mButtonBack = new ButtonBack(buttonbackTexture);
         mButtonBack.setPosition(0, 0);
 
         while (end < ToSs || end < ToSs2) {
 
-            Note note = new Note(noteTexture, 0, 0, 128, 128);
+            Note note = new Note(noteTexture);
             //場所を決める
             note.setPosition(30.0f, 0.85f);
             mNote.add(note);
 
-            Note2 note2 = new Note2(noteTexture, 0, 0, 128, 128);
+            Note2 note2 = new Note2(noteTexture);
             //場所を決める
             note2.setPosition(30.0f, 2.85f);
             mNote2.add(note2);
 
-            ENote enote = new ENote(pnoteTexture, 0, 0, 128, 128);
+            ENote enote = new ENote(pnoteTexture);
             //ランダムで場所を決める
             if (MathUtils.random(0, 1) == 1) {
                 enote.setPosition(30.0f, 2.85f);
@@ -703,22 +765,22 @@ public class GameScreen extends ScreenAdapter {
             }
             mENote.add(enote);
 
-            Skeleton skeleton = new Skeleton(skeletonTexture, 0, 34, 24, 32);
+            Skeleton skeleton = new Skeleton(skeletonTexture);
             //場所を決める
             skeleton.setPosition(18, 5.2f);
             mSkeleton.add(skeleton);
 
-            Ghost ghost = new Ghost(ghostTexture, 0, 2, 24, 32);
+            Ghost ghost = new Ghost(ghostTexture);
             //場所を決める
             ghost.setPosition(16.8f, 5.2f);
             mGhost.add(ghost);
 
-            Pumpkin pumpkin = new Pumpkin(pumpkinTexture, 0, 0, 31, 26);
+            Pumpkin pumpkin = new Pumpkin(pumpkinTexture);
             //場所を決める
             pumpkin.setPosition(16.8f, 5.2f);
             mPumpkin.add(pumpkin);
 
-            Bat bat = new Bat(batTexture, 0, 100, 21, 16);
+            Bat bat = new Bat(batTexture);
             //ランダムで場所を決める
             if (MathUtils.random(0, 1) == 1) {
                 bat.setPosition(37.76f, 7.0f);
@@ -732,14 +794,14 @@ public class GameScreen extends ScreenAdapter {
         }
         while ( x < 24) {
 
-            Tree tree = new Tree(treeTexture,0,0,512,512);
+            Tree tree = new Tree(treeTexture);
             tree.setPosition(x, 5.3f);
             mTree.add(tree);
             x += mRandom.nextFloat() * 10;
         }
 
         while ( trees < 24) {
-            Tree2 tree2 = new Tree2(tree2Texture,0,0,512,512);
+            Tree2 tree2 = new Tree2(tree2Texture);
             tree2.setPosition(trees, 5.3f);
             mTree2.add(tree2);
             trees += mRandom.nextFloat() * 10;
@@ -747,14 +809,14 @@ public class GameScreen extends ScreenAdapter {
 
         while ( grasses < 24) {
 
-            Grass grass = new Grass(grassTexture,0,845,1024,171);
+            Grass grass = new Grass(grassTexture);
             grass.setPosition(grasses, 4.5f);
             mGrass.add(grass);
             grasses += 6;
         }
         while ( Gs <= 24) {
 
-            Ground ground = new Ground(groundTexture,0,896,1024,128);
+            Ground ground = new Ground(groundTexture);
             ground.setPosition(Gs, 4.5f);
             mGround.add(ground);
             Gs += 8;
@@ -789,12 +851,21 @@ public class GameScreen extends ScreenAdapter {
 
     //aniani
     private void updatePlaying(float delta) {
+//アニメーション
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        mPlayer.update(deltaTime);
+        elapsedTime += Gdx.graphics.getDeltaTime();//時間積み上げ
+        //mPlayer.playerY += 0.01;
+       // mPlayer.setPosition(mPlayer.playerY,mPlayer.playerY);
+        //mPlayer.setPosition(1.4f,elapsedTime +4 );
+        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));//テクスチャをplayerクラスに渡す
 
+        //アニメーション
         if (!playingmusic.isPlaying()) {
             playingmusic.play();//音楽を再生
         }
 
-        mPlayer.update(delta);
+       //mPlayer.update(delta);
         mStar.update(delta);
         mBone.update(delta);
         for (int i = 0; i < mTree2.size(); i++) { //ここで一回のみの動作に

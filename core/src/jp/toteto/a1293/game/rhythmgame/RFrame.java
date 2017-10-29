@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/17.
@@ -13,8 +13,8 @@ public class RFrame extends GameObject {
     float Alpha = 0;
     int n = 1;
 
-    public RFrame(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public RFrame(TextureRegion texture) {
+        super(texture);
         setSize(RF_WIDTH, RF_HEIGHT);
     }
 

@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/06.
@@ -24,8 +24,8 @@ public class Note2 extends GameObject {
 
 
 
-    public Note2(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Note2(TextureRegion texture) {
+        super(texture);
         setSize(NOTE_WIDTH, NOTE_HEIGHT);
         velocity.x = NOTE_VELOCITY;
     }

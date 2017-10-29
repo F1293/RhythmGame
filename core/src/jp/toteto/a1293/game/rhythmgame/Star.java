@@ -1,6 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/15.
@@ -21,8 +22,8 @@ public class Star extends GameObject{
 
     GameScreen mGameScreen;
 
-    public Star(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Star(TextureRegion texture) {
+        super(texture);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
         //mState = PLAYER_STATE_FALL;
     }

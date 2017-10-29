@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/13.
@@ -11,8 +11,8 @@ public class JumpLine extends GameObject {
     public static final float JUMPLINE_WIDTH = 1.0f;
     public static final float JUMPLINE_HEIGHT = 1.0f;
 
-    public JumpLine(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public JumpLine(TextureRegion texture) {
+        super(texture);
         setSize(JUMPLINE_WIDTH, JUMPLINE_HEIGHT);
         setAlpha(0);
     }

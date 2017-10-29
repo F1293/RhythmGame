@@ -1,7 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -23,19 +23,27 @@ public class Player  extends GameObject implements ApplicationListener {
     //状態を保持する
     int mState;
     int jumpstate;
-    float stateTime = 0;
+    float stateTime = 0.01f;
+    public float playerY;
+    float posx;
+    float posy;
 
     GameScreen mGameScreen;
 
-    public Player(Texture texture1, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture1 , srcX, srcY, srcWidth, srcHeight);
+    public Player(TextureRegion texture1) {
+        super(texture1);
+        //draw((Batch) texture1),posx, posy,PLAYER_WIDTH, PLAYER_HEIGHT);
+        //super(texture1);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
-        mState = PLAYER_STATE_FALL;
+        setPosition(1.4f, 5.2f);
+        //setPosition(1.4f,playerY );
+        //mState = PLAYER_STATE_FALL;
+
     }
 
-    public void update (float delta) {
-        stateTime += delta;
-        //anianianimmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+    public void update (float deltaTime) {
+
+
 
         if (jumpstate == 1) {
             if (velocity.y == 0) {
@@ -44,8 +52,8 @@ public class Player  extends GameObject implements ApplicationListener {
             }
             // while (mState != PLAYER_STATE_FALLED) {
             // 重力をプレイヤーの速度に加算し、速度から位置を計算する
-            velocity.add(0, -20 * delta);
-            setPosition(getX(), getY() + velocity.y * delta);
+            velocity.add(0, -20 * deltaTime);
+            setPosition(getX(), getY() + velocity.y * deltaTime);
 
 
             // y方向の速度が正（＝上方向）のときにSTATEがPLAYER_STATE_JUMPでなければPLAYER_STATE_JUMPにする

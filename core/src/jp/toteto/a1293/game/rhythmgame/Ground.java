@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/23.
@@ -22,8 +22,8 @@ public class Ground   extends GameObject {
 
 
 
-    public Ground(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Ground(TextureRegion texture) {
+        super(texture);
         setSize(GROUND_WIDTH, GROUND_HEIGHT);
         mState = GROUND_EXIST;
         velocity.x = TREE_VELOCITY;

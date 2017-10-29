@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/23.
@@ -22,8 +22,8 @@ public class Grass  extends GameObject {
 
 
 
-    public Grass(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Grass(TextureRegion texture) {
+        super(texture);
         setSize(GRASS_WIDTH, GRASS_HEIGHT);
         mState = GRASS_EXIST;
         velocity.x = GRASS_VELOCITY;

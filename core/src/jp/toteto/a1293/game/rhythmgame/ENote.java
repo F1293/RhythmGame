@@ -1,7 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/20.
@@ -25,8 +24,8 @@ public class ENote extends GameObject {
 
 
 
-    public ENote(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public ENote(TextureRegion texture) {
+        super(texture);
         setSize(NOTE_WIDTH, NOTE_HEIGHT);
         mState = NOTE_EXIST;
         velocity.x = NOTE_VELOCITY;

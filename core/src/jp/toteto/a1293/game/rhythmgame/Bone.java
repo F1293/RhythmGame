@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Fumio on 2017/10/21.
@@ -18,8 +18,8 @@ public class Bone extends GameObject{
 
     GameScreen mGameScreen;
 
-    public Bone(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public Bone(TextureRegion texture) {
+        super(texture);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
         setAlpha(0);
         //mState = PLAYER_STATE_FALL;

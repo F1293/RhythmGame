@@ -1,6 +1,6 @@
 package jp.toteto.a1293.game.rhythmgame;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class DeadLine extends GameObject {
@@ -8,8 +8,8 @@ public class DeadLine extends GameObject {
     public static final float BAR_WIDTH = 0.1f;
     public static final float BAR_HEIGHT = 4.5f;
 
-    public DeadLine(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
-        super(texture, srcX, srcY, srcWidth, srcHeight);
+    public DeadLine(TextureRegion texture) {
+        super(texture);
         setSize(BAR_WIDTH, BAR_HEIGHT);
     }
 }
