@@ -858,7 +858,9 @@ public class GameScreen extends ScreenAdapter {
         //mPlayer.playerY += 0.01;
        // mPlayer.setPosition(mPlayer.playerY,mPlayer.playerY);
         //mPlayer.setPosition(1.4f,elapsedTime +4 );
-        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));//テクスチャをplayerクラスに渡す
+       if (mPlayer.jumpstate == 0){
+           mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));//テクスチャをplayerクラスに渡す
+       }
 
         //アニメーション
         if (!playingmusic.isPlaying()) {

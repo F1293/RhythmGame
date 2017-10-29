@@ -1,6 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -49,6 +50,7 @@ public class Player  extends GameObject implements ApplicationListener {
             if (velocity.y == 0) {
                 velocity.y = PLAYER_JUMP_VELOCITY;
                 mState = PLAYER_STATE_JUMP;
+
             }
             // while (mState != PLAYER_STATE_FALLED) {
             // 重力をプレイヤーの速度に加算し、速度から位置を計算する
