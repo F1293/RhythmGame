@@ -50,7 +50,6 @@ public class Player  extends GameObject implements ApplicationListener {
             if (velocity.y == 0) {
                 velocity.y = PLAYER_JUMP_VELOCITY;
                 mState = PLAYER_STATE_JUMP;
-
             }
             // while (mState != PLAYER_STATE_FALLED) {
             // 重力をプレイヤーの速度に加算し、速度から位置を計算する

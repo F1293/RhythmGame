@@ -1,6 +1,7 @@
 package jp.toteto.a1293.game.rhythmgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
@@ -30,11 +31,19 @@ import java.util.Random;
 public class GameScreen extends ScreenAdapter {
 
 //アニメーション
+    public TextureRegion jumpingFrame;
+    public TextureRegion attackFrame;
 
     Texture img;
-    TextureRegion[] animationFrames;
-    Animation<TextureRegion> animation;
+    Texture button3;
+    TextureRegion[] playeranimationFrames;
+    Animation<TextureRegion> playeranimation;
+    TextureRegion[] button3animationFrames;
+    Animation<TextureRegion> button3animation;
+    TextureRegion[] button4animationFrames;
+    Animation<TextureRegion> button4animation;
     float elapsedTime;
+    float anitimer;
     //アニメーション
 
     //カメラのサイズを表す定数を定義する
@@ -562,14 +571,29 @@ public class GameScreen extends ScreenAdapter {
         img = new Texture("majomajo.png");
         TextureRegion[] [] tmpFrames = TextureRegion.split(img,256,256);
 
-        animationFrames = new TextureRegion[4];
+        playeranimationFrames = new TextureRegion[4];
         int index = 0;
         for (int i = 0; i < 2; i++){
             for (int j = 0; j < 2; j++){
-                animationFrames[index++] = tmpFrames[j][i];
+                playeranimationFrames[index++] = tmpFrames[j][i];
             }
         }
-        animation = new Animation<TextureRegion>(1f/4f,animationFrames);
+        jumpingFrame = tmpFrames[1][1];
+        attackFrame = tmpFrames[0][0];
+        playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
+
+        //ボタン
+        button3 = new Texture("buttonsp.png");
+        TextureRegion[] [] button3Frames = TextureRegion.split(button3,128,128);
+        button3animationFrames = new TextureRegion[16];
+        int b3index = 0;
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 4; j++){
+                button3animationFrames[b3index++] = button3Frames[j][i];
+            }
+        }
+        playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
+        button3animation = new Animation<TextureRegion>(1f/30f,button3animationFrames);
 //アニメーションテクスチャ準備
 
         // テクスチャの準備
@@ -618,8 +642,7 @@ public class GameScreen extends ScreenAdapter {
         Texture button2 = new Texture("button2a.png");
         TextureRegion button2Texture = new TextureRegion(button2,0, 0, 128, 128);
 
-        Texture button3 = new Texture("b.png");
-        TextureRegion button3Texture = new TextureRegion(button3,50, 1865, 160, 160);
+
 
         //Texture button3bTexture = new Texture("button3b.png");
 
@@ -719,7 +742,7 @@ public class GameScreen extends ScreenAdapter {
         mBone.setPosition(8.0f, 5.5f);
 
 // Playerを配置
-        mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));
+        mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime,true));
 
 
         // ボタン１を配置
@@ -731,11 +754,11 @@ public class GameScreen extends ScreenAdapter {
         mButton2.setPosition(14, 0);
 
         // ボタン3を配置
-        mButton3 = new Button3(button3Texture);
+        mButton3 = new Button3(button3animation.getKeyFrame(elapsedTime,true));
         mButton3.setPosition(0, 2.25f);
 
         // ボタン4を配置
-        mButton4 = new Button4(button3Texture);
+        mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime,true));
         mButton4.setPosition(0, 0);
 
 
@@ -852,16 +875,19 @@ public class GameScreen extends ScreenAdapter {
     //aniani
     private void updatePlaying(float delta) {
 //アニメーション
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        mPlayer.update(deltaTime);
-        elapsedTime += Gdx.graphics.getDeltaTime();//時間積み上げ
-        //mPlayer.playerY += 0.01;
-       // mPlayer.setPosition(mPlayer.playerY,mPlayer.playerY);
-        //mPlayer.setPosition(1.4f,elapsedTime +4 );
-       if (mPlayer.jumpstate == 0){
-           mPlayer = new Player(animation.getKeyFrame(elapsedTime,true));//テクスチャをplayerクラスに渡す
-       }
 
+        //float deltaTime = Gdx.graphics.getDeltaTime();
+        mPlayer.update(delta);
+        elapsedTime += Gdx.graphics.getDeltaTime();//時間積み上げ
+        anitimer +=delta;
+       if (mPlayer.jumpstate == 0) {
+           mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+           playeranimation = new Animation<TextureRegion>(1f / 8f, playeranimationFrames);
+       }
+        button3animation = new Animation<TextureRegion>(1f / 12f, button3animationFrames);
+
+        mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+        mButton3 = new Button3(button3animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
         //アニメーション
         if (!playingmusic.isPlaying()) {
             playingmusic.play();//音楽を再生
@@ -918,9 +944,12 @@ public class GameScreen extends ScreenAdapter {
         if (tb1) {
             mJumpLine.update(delta);
             mJumpLine.push();
+            //animation = new Animation<TextureRegion>(1f/8f,jumpingFrame);
+            //animation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
         }
         if (tb2) {
             mAttackLine.push();
+            //animation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
         }
 
         if (n < ToSs) {
@@ -1156,10 +1185,18 @@ public class GameScreen extends ScreenAdapter {
                     if (mIBar.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
                         //testa
                         if (tb1 && !tb2) {
+
+                            //アニメ―ション
+                            //animation = new Animation<TextureRegion>(1,jumpingFrame);
+                            //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
                             mPlayer.jumpstate = 1;
+
                         }
                         if (tb2 && !tb1) {
                             //ボタン2押しながら得点得た時の動作
+                            //animation = new Animation<TextureRegion>(1,attackFrame);
+                            //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+                            //アニメ―ション
                             mStar.jumpstate = 1;
                         }
                         if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())

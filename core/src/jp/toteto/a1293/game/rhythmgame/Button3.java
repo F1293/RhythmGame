@@ -14,5 +14,7 @@ public class Button3 extends GameObject {
     public Button3(TextureRegion texture) {
         super(texture);
         setSize(BUTTON3_WIDTH, BUTTON3_HEIGHT);
+        setPosition(0,2.25f);
+        setAlpha(0.2f);
     }
 }
