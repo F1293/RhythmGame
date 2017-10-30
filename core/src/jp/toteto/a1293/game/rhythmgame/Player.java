@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Player  extends GameObject implements ApplicationListener {
     // 横幅、高さ
-    public static final float PLAYER_WIDTH = 1.0f;
-    public static final float PLAYER_HEIGHT = 1.4f;
+    public static final float PLAYER_WIDTH = 0.75f;
+    public static final float PLAYER_HEIGHT = 1.15f;
 
     // 状態（ジャンプ中、落ちている最中）
     public static final int PLAYER_STATE_JUMP = 0;
@@ -42,11 +42,23 @@ public class Player  extends GameObject implements ApplicationListener {
 
     }
 
-    public void update (float deltaTime) {
-
+    public void update (float deltaTime,float screenTime) {
+        if (0.25f > screenTime && screenTime >0){
+            setRegion (0, 64, 22, 32);
+        }
+        if (0.5f > screenTime && screenTime >0.25f){
+            setRegion (32, 64, 22, 32);
+        }
+        if (0.75f > screenTime && screenTime >0.5f){
+            setRegion (64, 64, 22, 32);
+        }
+        if (screenTime >0.75f){
+            setRegion (32, 64, 22, 32);
+        }
 
 
         if (jumpstate == 1) {
+            setRegion (64, 64, 22, 32);
             if (velocity.y == 0) {
                 velocity.y = PLAYER_JUMP_VELOCITY;
                 mState = PLAYER_STATE_JUMP;

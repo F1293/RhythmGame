@@ -14,6 +14,12 @@ public class Button4  extends GameObject {
     public Button4(TextureRegion texture) {
         super(texture);
         setSize(BUTTON4_WIDTH, BUTTON4_HEIGHT);
-        setAlpha(0.2f);
+        setPosition(0,0.1f);
+        setAlpha(0.25f);
+    }
+    public void Push(){
+        setPosition(0,0);
+        setAlpha(0.6f);
+        setRegion(384, 512, 64, 64);
     }
 }

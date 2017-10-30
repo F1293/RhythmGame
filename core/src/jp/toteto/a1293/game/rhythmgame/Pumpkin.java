@@ -30,8 +30,20 @@ public class Pumpkin extends GameObject {
     }
 
     // 座標を更新する
-    public void update(float deltaTime) {
-            setX(getX() + velocity.x * deltaTime);
+    public void update(float deltaTime,float screenTime) {
+        if (0.25f > screenTime && screenTime >0){
+            setRegion (0, 34, 32, 27);
+        }
+        if (0.5f > screenTime && screenTime >0.25f){
+            setRegion (32, 34, 32, 27);
+        }
+        if (0.75f > screenTime && screenTime >0.5f){
+            setRegion (0, 34, 32, 27);
+        }
+        if (screenTime >0.75f){
+            setRegion (32, 34, 32, 27);
+        }
+        setX(getX() + velocity.x * deltaTime);
     }
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
     public void get() {

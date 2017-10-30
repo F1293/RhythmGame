@@ -21,7 +21,7 @@ public class Ghost extends GameObject {
 
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
-    public static final float GHOST_VELOCITY = - 1.7f;
+    public static float GHOST_VELOCITY = - 1.7f;
 
 
 
@@ -33,11 +33,21 @@ public class Ghost extends GameObject {
     }
 
     // 中央付近で上昇し画面下部に現れる
-    public void update(float deltaTime) {
+    public void update(float deltaTime,float screenTime) {
         setX(getX() + velocity.x * deltaTime);
         setY(getY() + velocity.y * deltaTime);
+        if (getX() > 7.5f) {
+            if (0.5f > screenTime && screenTime > 0) {
+                setRegion(0, 33, 24, 32);
+            }
+            if (screenTime > 0.5f) {
+                setRegion(32, 33, 24, 32);
+            }
+        }
+
         if (getX() < 7.5f && getX() > 5) {
             //ここで上昇
+            setRegion(0, 2, 24, 32);
             velocity.x = 0;
             velocity.y = 3;
         }
@@ -57,8 +67,28 @@ public class Ghost extends GameObject {
         }
 
     }
+
+    public void updateRS(float deltaTime) {
+        if (mState == 0) {
+            setX(getX() + velocity.x * deltaTime);
+            if (getX() < -2) {
+                velocity.x = -velocity.x;
+            }
+            if (getX() > 17) {
+                velocity.x = -velocity.x;
+            }
+            if (velocity.x<0){
+                setRegion(0, 33, 24, 32);
+            }
+            if (velocity.x>0){
+                setRegion(0, 64, 24, 32);
+            }
+        }
+    }
+
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
     public void get() {
+        setRegion(0, 2, 24, 32);
         mState = GHOST_NONE;
         setAlpha(0);
         hinder = true;

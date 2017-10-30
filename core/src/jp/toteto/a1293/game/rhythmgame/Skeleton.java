@@ -15,9 +15,9 @@ public class Skeleton extends GameObject {
     // 状態、存在する場合と獲得されて亡くなった場合
     public static final int SKELETON_EXIST = 0;
     public static final int SKELETON_NONE = 1;
-
     //状態を保持するメンバ変数
     int mState;
+    float screenTimeq;
 Star mStar;
     Game mGame;
     // 速度
@@ -34,16 +34,27 @@ Star mStar;
     }
 
     // 中央付近で折り返し、行ったり来たり
-    public void update(float deltaTime) {
+    public void update(float deltaTime,float screenTime) {
+        if (0.3f > screenTime && screenTime >0){
+            setRegion (0, 33, 24, 32);
+        }
+        if (0.6f > screenTime && screenTime >0.3f){
+            setRegion (33, 33, 24, 32);
+        }
+        if (screenTime >0.6f){
+            setRegion (64, 33, 24, 32);
+        }
+
         if (mState == 0) {
             setX(getX() + velocity.x * deltaTime);
             if (getX() < 7.5f) {
-
+                setRegion (33, 33, 24, 32);
                 //ここで攻撃出す
                 velocity.x = 1;
             }
             if (getX() > 12 && velocity.x > 0) {
                 velocity.x = -1;
+                //setRegion (33, 34, 24, 32);
             }
         }
     }

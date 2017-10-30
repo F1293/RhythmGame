@@ -45,6 +45,9 @@ public class GameScreen extends ScreenAdapter {
     float elapsedTime;
     float anitimer;
     //アニメーション
+    float b3pushcounter;
+    float b4pushcounter;
+    float screen1sTimer;
 
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
@@ -104,10 +107,12 @@ public class GameScreen extends ScreenAdapter {
     Button4 mButton4;
     Player mPlayer;
 
+
     AttackLine mAttackLine;
     JumpLine mJumpLine;
     Star mStar;
     Bone mBone;
+    AttackEffect mAttackEffect;
 
     ActionBack mActionBack;
     ButtonBack mButtonBack;
@@ -501,6 +506,8 @@ public class GameScreen extends ScreenAdapter {
 
         mPlayer.draw(mGame.batch);
 
+        mAttackEffect.draw(mGame.batch);
+
        // mPlayer.draw(animation.getKeyFrame(elapsedTime,true), pos.x, pos.y, width, height);
 //アニメーション
         // Grassリストで保持しているので順番に取り出し
@@ -533,7 +540,7 @@ public class GameScreen extends ScreenAdapter {
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + mENote.size() + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
         mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
-        mFont.draw(mGame.batch, mPlayer.playerY+ "<" + elapsedTime, 16, GUI_HEIGHT - 15);
+        mFont.draw(mGame.batch, 1 / deltaTime+ "fps", 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -568,8 +575,8 @@ public class GameScreen extends ScreenAdapter {
         //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 //アニメーション
-        img = new Texture("majomajo.png");
-        TextureRegion[] [] tmpFrames = TextureRegion.split(img,256,256);
+        //img = new Texture("majomajo.png");
+        /*TextureRegion[] [] tmpFrames = TextureRegion.split(img,256,256);
 
         playeranimationFrames = new TextureRegion[4];
         int index = 0;
@@ -581,18 +588,18 @@ public class GameScreen extends ScreenAdapter {
         jumpingFrame = tmpFrames[1][1];
         attackFrame = tmpFrames[0][0];
         playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
-
+*/
         //ボタン
         button3 = new Texture("buttonsp.png");
         TextureRegion[] [] button3Frames = TextureRegion.split(button3,128,128);
-        button3animationFrames = new TextureRegion[16];
+        button3animationFrames = new TextureRegion[12];
         int b3index = 0;
         for (int i = 0; i < 4; i++){
-            for (int j = 0; j < 4; j++){
+            for (int j = 0; j < 3; j++){
                 button3animationFrames[b3index++] = button3Frames[j][i];
             }
         }
-        playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
+        //playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
         button3animation = new Animation<TextureRegion>(1f/30f,button3animationFrames);
 //アニメーションテクスチャ準備
 
@@ -615,8 +622,8 @@ public class GameScreen extends ScreenAdapter {
         Texture pnote = new Texture("pnote.png");
         TextureRegion pnoteTexture = new TextureRegion(pnote,0, 0, 128, 128);
 
-        //Texture playerTexture = new Texture("majo.png");
-
+        Texture player = new Texture("majo.png");
+        TextureRegion playerTexture = new TextureRegion(player,0, 64, 22, 32);
 
         //Texture ufoTexture = new Texture("ufo.png");
 
@@ -657,11 +664,14 @@ public class GameScreen extends ScreenAdapter {
         Texture attackline = new Texture("mahojin.png");
         TextureRegion attacklineTexture = new TextureRegion(attackline,0, 0, 128, 128);
 
+        Texture attackeffect = new Texture("mahojin2.png");
+        TextureRegion attackeffectTexture = new TextureRegion(attackeffect,0, 0, 128, 128);
+
         Texture jumpline = new Texture("up.png");
         TextureRegion jumplineTexture = new TextureRegion(jumpline,0, 0, 128, 128);
 
         Texture batt = new Texture("Bat.png");
-        TextureRegion batTexture = new TextureRegion(batt,0, 100, 21, 16);
+        TextureRegion batTexture = new TextureRegion(batt,0, 0, 21, 16);
 
         Texture skeletont = new Texture("skeleton.png");
         TextureRegion skeletonTexture = new TextureRegion(skeletont,0, 34, 24, 32);
@@ -670,7 +680,7 @@ public class GameScreen extends ScreenAdapter {
         TextureRegion ghostTexture = new TextureRegion(ghostt,0, 2, 24, 32);
 
         Texture pumpkint = new Texture("pumpkin.png");
-        TextureRegion pumpkinTexture = new TextureRegion(pumpkint,0, 0, 31, 26);
+        TextureRegion pumpkinTexture = new TextureRegion(pumpkint,0, 34, 32, 27);
 
         Texture frame = new Texture("frame.png");
         TextureRegion frameTexture = new TextureRegion(frame,0, 0, 1024, 304);
@@ -742,8 +752,9 @@ public class GameScreen extends ScreenAdapter {
         mBone.setPosition(8.0f, 5.5f);
 
 // Playerを配置
-        mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime,true));
+        mPlayer = new Player(playerTexture);
 
+        mAttackEffect = new AttackEffect(attackeffectTexture, 0, 0, 128, 128);
 
         // ボタン１を配置
         mButton1 = new Button1(button1Texture);
@@ -755,11 +766,11 @@ public class GameScreen extends ScreenAdapter {
 
         // ボタン3を配置
         mButton3 = new Button3(button3animation.getKeyFrame(elapsedTime,true));
-        mButton3.setPosition(0, 2.25f);
+        mButton3.setPosition(0, 2);
 
         // ボタン4を配置
         mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime,true));
-        mButton4.setPosition(0, 0);
+        mButton4.setPosition(0, 0.1f);
 
 
 
@@ -875,15 +886,18 @@ public class GameScreen extends ScreenAdapter {
     //aniani
     private void updatePlaying(float delta) {
 //アニメーション
-
+        screen1sTimer += delta;
+        if (screen1sTimer >1){
+            screen1sTimer =0;
+        }
         //float deltaTime = Gdx.graphics.getDeltaTime();
-        mPlayer.update(delta);
+        mPlayer.update(delta,screen1sTimer);
         elapsedTime += Gdx.graphics.getDeltaTime();//時間積み上げ
-        anitimer +=delta;
-       if (mPlayer.jumpstate == 0) {
-           mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
-           playeranimation = new Animation<TextureRegion>(1f / 8f, playeranimationFrames);
-       }
+        //anitimer +=delta;
+       //if (mPlayer.jumpstate == 0) {
+           //mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+         //  playeranimation = new Animation<TextureRegion>(1f / 8f, playeranimationFrames);
+       //}
         button3animation = new Animation<TextureRegion>(1f / 12f, button3animationFrames);
 
         mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
@@ -893,9 +907,10 @@ public class GameScreen extends ScreenAdapter {
             playingmusic.play();//音楽を再生
         }
 
-       //mPlayer.update(delta);
+       mAttackLine.update(delta);
         mStar.update(delta);
         mBone.update(delta);
+        mAttackEffect.update(delta);
         for (int i = 0; i < mTree2.size(); i++) { //ここで一回のみの動作に
             mTree2.get(i).update(delta);
         }
@@ -977,7 +992,7 @@ public class GameScreen extends ScreenAdapter {
         //かぼちゃ出すタイミングで動作
         if (createpumpkin < PumpkinTs) {
             for (int i = 0; i < createpumpkin; i++) {
-                mPumpkin.get(i).update(delta);
+                mPumpkin.get(i).update(delta,screen1sTimer);
             }
             if (playingmusic.getPosition() > PumpkinT.get(createpumpkin)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createpumpkin++;
@@ -987,9 +1002,9 @@ public class GameScreen extends ScreenAdapter {
         //骸骨出すタイミングで動作
         if (createskeleton < SkeletonTs) {
             for (int i = 0; i < createskeleton; i++) {
-                mSkeleton.get(i).update(delta);
+                mSkeleton.get(i).update(delta,screen1sTimer);
                 if (mSkeleton.get(i).getX() < 7.5f) {
-                    mBone.threw = 1;//ここを攻撃の表示に変えるアップデート常にさせて各クラス内で条件分岐させる方法ほかもできるかも？
+                    mBone.threw = 1;
                 }
             }
             if (playingmusic.getPosition() > SkeletonT.get(createskeleton)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
@@ -1000,7 +1015,7 @@ public class GameScreen extends ScreenAdapter {
         //幽霊出すタイミングで動作
         if (createghost < GhostTs) {
             for (int i = 0; i < createghost; i++) {
-                mGhost.get(i).update(delta);
+                mGhost.get(i).update(delta,screen1sTimer);
             }
             if (playingmusic.getPosition() > GhostT.get(createghost)) {//指定時間を超えた瞬間にカウンター加算しノーツを出す
                 createghost++;
@@ -1010,7 +1025,7 @@ public class GameScreen extends ScreenAdapter {
         //コウモリ出すタイミングで動作
         if (createbat < BatTs) {
             for (int i = 0; i < createbat; i++) {
-                mBat.get(i).update(delta);
+                mBat.get(i).update(delta,screen1sTimer);
                 //mENote.get(en).update(delta);
                 //en++;
             }
@@ -1032,6 +1047,8 @@ public class GameScreen extends ScreenAdapter {
         mLGaugeBar.GetDamage();
         mFGaugeBar.GetDamage();
         mActionBack.Darker();
+        mButton1.Darker(screen1sTimer,tb1);
+        mButton2.Darker(screen1sTimer,tb2);
 
 
         if (LifeGauge > FearGauge){
@@ -1052,10 +1069,11 @@ public class GameScreen extends ScreenAdapter {
     //あたり判定の処理
     private void checkCollision() {
 
+
         // ノーツとの当たり判定
         for (int i = 0; i < mNote.size(); i++) {
             Note note = mNote.get(i);
-            if (tb4) {
+            if (tb4) {mButton4.Push();
             //ボタン３が押されたときに上ラインのあたり判定
             if (note.mState == 1) {
                 continue;
@@ -1113,6 +1131,7 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mNote2.size(); i++) {
             Note2 note2 = mNote2.get(i);
              if (tb3) {
+                 mButton3.Push();
             //ボタン３が押されたときに上ラインのあたり判定
             if (note2.mState == 1) {
                 continue;
@@ -1198,6 +1217,7 @@ public class GameScreen extends ScreenAdapter {
                             //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
                             //アニメ―ション
                             mStar.jumpstate = 1;
+                            mAttackEffect.threw = 1;
                         }
                         if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
                                 && mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
@@ -1299,7 +1319,8 @@ public class GameScreen extends ScreenAdapter {
             updateGameOver();
         }
         //ここの時間で終了
-        if (playingmusic.getPosition()>66) {
+        //if (playingmusic.getPosition()>3) {
+            if (playingmusic.getPosition()>66) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
             //gomusic.play();//ゲームオーバー画面の音楽再生
             playingmusic.dispose();//メモリ解放

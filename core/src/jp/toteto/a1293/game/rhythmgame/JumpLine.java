@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class JumpLine extends GameObject {
     // 横幅、高さ
-    public static final float JUMPLINE_WIDTH = 1.0f;
-    public static final float JUMPLINE_HEIGHT = 1.0f;
+    public static final float JUMPLINE_WIDTH = 0.7f;
+    public static final float JUMPLINE_HEIGHT = 0.7f;
 
     public JumpLine(TextureRegion texture) {
         super(texture);

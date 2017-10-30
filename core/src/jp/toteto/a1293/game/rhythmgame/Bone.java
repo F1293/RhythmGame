@@ -10,7 +10,7 @@ public class Bone extends GameObject{
     // 横幅、高さ
     public static final float PLAYER_WIDTH = 0.7f;
     public static final float PLAYER_HEIGHT = 0.7f;
-
+    float rotationTime;
 
     //状態を保持する
     //int mState;
@@ -26,6 +26,7 @@ public class Bone extends GameObject{
     }
 
     public void update (float delta) {
+        rotationTime += delta;
         if (threw == 1) {
             setAlpha(1);//見えるように
             setPosition(getX() + -6 * delta, getY());
@@ -34,6 +35,11 @@ public class Bone extends GameObject{
                 setAlpha(0);
                 setX(8.0f);
             }
+        }
+        setOrigin(0.27f,0.33f);
+        setRotation(rotationTime * 720);
+        if (rotationTime>0.5f){
+            rotationTime = 0;
         }
     }
     //プレイヤーが触れた時に呼ばれるgetメソッド

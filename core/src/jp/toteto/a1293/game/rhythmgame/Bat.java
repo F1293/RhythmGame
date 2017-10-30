@@ -32,8 +32,21 @@ public class Bat extends GameObject {
     }
 
     // 座標を更新する
-    public void update(float deltaTime) {
+    public void update(float deltaTime,float screenTime) {
         setX(getX() + velocity.x * deltaTime);
+        if (0.25f > screenTime && screenTime >0){
+            setRegion (0, 0, 21, 16);
+        }
+        if (0.5f > screenTime && screenTime >0.25f){
+            setRegion (30, 0, 21, 16);
+        }
+        if (0.75f > screenTime && screenTime >0.5f){
+            setRegion (0, 0, 21, 16);
+        }
+        if (screenTime >0.75f){
+            setRegion (30, 0, 21, 16);
+        }
+
 
     }
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
