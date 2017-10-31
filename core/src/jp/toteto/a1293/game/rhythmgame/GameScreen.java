@@ -23,14 +23,13 @@ import java.util.List;
 import java.util.Random;
 
 
-
 /**
  * Created by Fumio on 2017/10/01.
  */
 // implements ApplicationListener, InputProcessor
 public class GameScreen extends ScreenAdapter {
 
-//アニメーション
+    //アニメーション
     public TextureRegion jumpingFrame;
     public TextureRegion attackFrame;
 
@@ -48,6 +47,7 @@ public class GameScreen extends ScreenAdapter {
     float b3pushcounter;
     float b4pushcounter;
     float screen1sTimer;
+    float GameOverCounter;
 
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
@@ -106,6 +106,7 @@ public class GameScreen extends ScreenAdapter {
     Button3 mButton3;
     Button4 mButton4;
     Player mPlayer;
+   // Message mMessage;
 
 
     AttackLine mAttackLine;
@@ -198,7 +199,7 @@ public class GameScreen extends ScreenAdapter {
         mGame = game;
 
         //ToS.add(1.168f);
-        ToS.add(1.514f);
+        GhostT.add(1.514f);
         ToS.add(1.802f);
         ToS.add(2.102f);
         ToS.add(2.418f);
@@ -452,8 +453,7 @@ public class GameScreen extends ScreenAdapter {
 
         // 棒の表示
         mBar.draw(mGame.batch);
-
-       // mIBar.draw(mGame.batch);
+        // mIBar.draw(mGame.batch);
         //mIBar1.draw(mGame.batch);
         //mIBar2.draw(mGame.batch);
         //デッドラインの表示
@@ -508,7 +508,7 @@ public class GameScreen extends ScreenAdapter {
 
         mAttackEffect.draw(mGame.batch);
 
-       // mPlayer.draw(animation.getKeyFrame(elapsedTime,true), pos.x, pos.y, width, height);
+        // mPlayer.draw(animation.getKeyFrame(elapsedTime,true), pos.x, pos.y, width, height);
 //アニメーション
         // Grassリストで保持しているので順番に取り出し
         for (int i = 0; i < mGrass.size(); i++) {
@@ -527,7 +527,6 @@ public class GameScreen extends ScreenAdapter {
         mFGaugeBar.draw(mGame.batch);
 
 
-        mGame.batch.end();
 
         // スコア表示
         mGuiCamera.update();
@@ -538,9 +537,9 @@ public class GameScreen extends ScreenAdapter {
         //drawメソッドで描画第1引数にSprteBatch、第2引数に表示されたい文字列、第3引数にx座標、第4引数にy座標
         //mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
-        //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + mENote.size() + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
-        mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
-        mFont.draw(mGame.batch, 1 / deltaTime+ "fps", 16, GUI_HEIGHT - 15);
+        //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + GameOverCounter + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
+        //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
+        //mFont.draw(mGame.batch, 1 / deltaTime+ "fps", 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -648,8 +647,6 @@ public class GameScreen extends ScreenAdapter {
 
         Texture button2 = new Texture("button2a.png");
         TextureRegion button2Texture = new TextureRegion(button2,0, 0, 128, 128);
-
-
 
         //Texture button3bTexture = new Texture("button3b.png");
 
@@ -894,10 +891,10 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.update(delta,screen1sTimer);
         elapsedTime += Gdx.graphics.getDeltaTime();//時間積み上げ
         //anitimer +=delta;
-       //if (mPlayer.jumpstate == 0) {
-           //mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
-         //  playeranimation = new Animation<TextureRegion>(1f / 8f, playeranimationFrames);
-       //}
+        //if (mPlayer.jumpstate == 0) {
+        //mPlayer = new Player(playeranimation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+        //  playeranimation = new Animation<TextureRegion>(1f / 8f, playeranimationFrames);
+        //}
         button3animation = new Animation<TextureRegion>(1f / 12f, button3animationFrames);
 
         mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
@@ -907,7 +904,7 @@ public class GameScreen extends ScreenAdapter {
             playingmusic.play();//音楽を再生
         }
 
-       mAttackLine.update(delta);
+        mAttackLine.update(delta);
         mStar.update(delta);
         mBone.update(delta);
         mAttackEffect.update(delta);
@@ -1074,11 +1071,11 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mNote.size(); i++) {
             Note note = mNote.get(i);
             if (tb4) {mButton4.Push();
-            //ボタン３が押されたときに上ラインのあたり判定
-            if (note.mState == 1) {
-                continue;
-                //消えてるのには反応しない
-            }
+                //ボタン３が押されたときに上ラインのあたり判定
+                if (note.mState == 1) {
+                    continue;
+                    //消えてるのには反応しない
+                }
                 if (mIBar.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                     //testa
                     /*if (tb1 && !tb2){
@@ -1120,7 +1117,7 @@ public class GameScreen extends ScreenAdapter {
                     }
                 }
 
-            //タイミング判定
+                //タイミング判定
             }
             if (note.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note.getBoundingRectangle())) {
                 //押されなかった場合（ダメージを追加予定
@@ -1130,13 +1127,13 @@ public class GameScreen extends ScreenAdapter {
         }
         for (int i = 0; i < mNote2.size(); i++) {
             Note2 note2 = mNote2.get(i);
-             if (tb3) {
-                 mButton3.Push();
-            //ボタン３が押されたときに上ラインのあたり判定
-            if (note2.mState == 1) {
-                continue;
-                //消えてるのには反応しない
-            }
+            if (tb3) {
+                mButton3.Push();
+                //ボタン３が押されたときに上ラインのあたり判定
+                if (note2.mState == 1) {
+                    continue;
+                    //消えてるのには反応しない
+                }
 
                 if (mIBar.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                     //testa
@@ -1194,64 +1191,64 @@ public class GameScreen extends ScreenAdapter {
             }else{
                 etb = tb4;
             }
-                if (etb) {
-                    //ボタン３が押されたときに上ラインのあたり判定
-                    if (enote.mState == 1) {
-                        continue;
-                        //消えてるのには反応しない
-                    }
-
-                    if (mIBar.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                        //testa
-                        if (tb1 && !tb2) {
-
-                            //アニメ―ション
-                            //animation = new Animation<TextureRegion>(1,jumpingFrame);
-                            //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
-                            mPlayer.jumpstate = 1;
-
-                        }
-                        if (tb2 && !tb1) {
-                            //ボタン2押しながら得点得た時の動作
-                            //animation = new Animation<TextureRegion>(1,attackFrame);
-                            //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
-                            //アニメ―ション
-                            mStar.jumpstate = 1;
-                            mAttackEffect.threw = 1;
-                        }
-                        if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
-                                && mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                            getstarsound.play(1.0f);//獲得音
-                            mScore = mScore + 5; //スコアに加算
-                            if (mScore > mHighScore) { //ハイスコアを超えた場合
-                                mHighScore = mScore; //今の点数をハイスコアに
-                                //ハイスコアをPreferenceに保存する
-                                mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                                mPrefs.flush(); // 値を永続化するのに必要
-                            }
-                            enote.get();//消す
-                        } else {
-                            mScore = mScore + 3; //スコアに加算
-                            if (mScore > mHighScore) { //ハイスコアを超えた場合
-                                mHighScore = mScore; //今の点数をハイスコアに
-                                //ハイスコアをPreferenceに保存する
-                                mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                                mPrefs.flush(); // 値を永続化するのに必要
-                            }
-                            enote.get();//消す
-
-                            break;
-                        }
-                    } else {
-                        if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
-                                || mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
-                            hitsound.play(1.0f);//衝突音
-                            FearGauge -= 2;//プレーヤーダメージ
-                            enote.get();//消す
-                        }
-                    }
-                    //タイミング判定
+            if (etb) {
+                //ボタン３が押されたときに上ラインのあたり判定
+                if (enote.mState == 1) {
+                    continue;
+                    //消えてるのには反応しない
                 }
+
+                if (mIBar.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
+                    //testa
+                    if (tb1 && !tb2) {
+
+                        //アニメ―ション
+                        //animation = new Animation<TextureRegion>(1,jumpingFrame);
+                        //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+                        mPlayer.jumpstate = 1;
+
+                    }
+                    if (tb2 && !tb1) {
+                        //ボタン2押しながら得点得た時の動作
+                        //animation = new Animation<TextureRegion>(1,attackFrame);
+                        //mPlayer = new Player(animation.getKeyFrame(elapsedTime, true));//テクスチャをplayerクラスに渡す
+                        //アニメ―ション
+                        mStar.jumpstate = 1;
+                        mAttackEffect.threw = 1;
+                    }
+                    if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
+                            && mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
+                        getstarsound.play(1.0f);//獲得音
+                        mScore = mScore + 5; //スコアに加算
+                        if (mScore > mHighScore) { //ハイスコアを超えた場合
+                            mHighScore = mScore; //今の点数をハイスコアに
+                            //ハイスコアをPreferenceに保存する
+                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            mPrefs.flush(); // 値を永続化するのに必要
+                        }
+                        enote.get();//消す
+                    } else {
+                        mScore = mScore + 3; //スコアに加算
+                        if (mScore > mHighScore) { //ハイスコアを超えた場合
+                            mHighScore = mScore; //今の点数をハイスコアに
+                            //ハイスコアをPreferenceに保存する
+                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            mPrefs.flush(); // 値を永続化するのに必要
+                        }
+                        enote.get();//消す
+
+                        break;
+                    }
+                } else {
+                    if (mIBar1.getBoundingRectangle().overlaps(enote.getBoundingRectangle())
+                            || mIBar2.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
+                        hitsound.play(1.0f);//衝突音
+                        FearGauge -= 2;//プレーヤーダメージ
+                        enote.get();//消す
+                    }
+                }
+                //タイミング判定
+            }
             if (enote.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(enote.getBoundingRectangle())) {
                 //押されなかった場合（ダメージを追加予定
                 FearGauge -= 2;//プレーヤーダメージ
@@ -1312,14 +1309,25 @@ public class GameScreen extends ScreenAdapter {
         fall.dispose();//メモリ解放
         getstarsound.dispose();//メモリ解放
         jingle.dispose();//メモリ解放
-        mGame.setScreen(new ResultScreen(mGame, mScore));
-    }
-    private void checkGameOver() {
-        if (LifeGauge < 0){
-            updateGameOver();
+/*
+        mGame.batch.begin();
+       // mMessage.draw(mGame.batch);
+        mGame.batch.end();
+        Texture exitbutton = new Texture("Exitbutton.png");
+        TextureRegion messageTexture = new TextureRegion(exitbutton,0, 420, 512, 92);
+        TextureRegion message2Texture = new TextureRegion(exitbutton,320, 392, 143, 24);
+        TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
+        //mMessage = new Message(messageTexture);
+        //mMessage.setPosition(16, 4.0f);
+
+        if (Gdx.input.justTouched()) {*/
+            mGame.setScreen(new ResultScreen(mGame, mScore));
         }
+   // }
+    private void checkGameOver() {
         //ここの時間で終了
-        //if (playingmusic.getPosition()>3) {
+        //if (playingmusic.getPosition()>66) {
+        //if (LifeGauge < 0||playingmusic.getPosition()>66) {
             if (playingmusic.getPosition()>66) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
             //gomusic.play();//ゲームオーバー画面の音楽再生

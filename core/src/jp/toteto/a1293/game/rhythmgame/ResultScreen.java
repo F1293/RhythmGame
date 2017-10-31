@@ -102,16 +102,16 @@ public class ResultScreen extends ScreenAdapter {
 
         mGame.batch.begin();
         mBg.draw(mGame.batch);
-        mGhost.get(0).updateRS(delta);
-        mGhost.get(1).updateRS(delta);
-        mGhost.get(2).updateRS(delta);
-        mGhost.get(3).updateRS(delta);
-        mGhost.get(4).updateRS(delta);
-        mGhost.get(5).updateRS(delta);
-        mGhost.get(6).updateRS(delta);
-        mGhost.get(7).updateRS(delta);
-        mGhost.get(8).updateRS(delta);
-        mGhost.get(9).updateRS(delta);
+        mGhost.get(0).updateRS(delta,-1.7f);
+        mGhost.get(1).updateRS(delta,-1.4f);
+        mGhost.get(2).updateRS(delta,-1.1f);
+        mGhost.get(3).updateRS(delta,-0.7f);
+        mGhost.get(4).updateRS(delta,0);
+        mGhost.get(5).updateRS(delta,2.2f);
+        mGhost.get(6).updateRS(delta,1.2f);
+        mGhost.get(7).updateRS(delta,0.8f);
+        mGhost.get(8).updateRS(delta,0.4f);
+        mGhost.get(9).updateRS(delta,3.0f);
         for (int i = 0; i < mGhost.size(); i++) {
             mGhost.get(i).draw(mGame.batch);
         }

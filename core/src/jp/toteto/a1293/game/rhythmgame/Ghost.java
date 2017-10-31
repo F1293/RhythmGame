@@ -14,6 +14,7 @@ public class Ghost extends GameObject {
     // 状態、存在する無くなった場合
     public static final int GHOST_EXIST = 0;
     public static final int GHOST_NONE = 1;
+    public static final int GHOST_ROUND = 2;
 
     //状態を保持するメンバ変数
     int mState;
@@ -68,14 +69,19 @@ public class Ghost extends GameObject {
 
     }
 
-    public void updateRS(float deltaTime) {
+    public void updateRS(float deltaTime,float v) {
+        setScale(1.3f);
+        setX(getX() + velocity.x * deltaTime);
+        float v2 = Math.abs( v );
         if (mState == 0) {
-            setX(getX() + velocity.x * deltaTime);
+            velocity.x = v;
+        }
+        if (mState == 2) {
             if (getX() < -2) {
-                velocity.x = -velocity.x;
+                velocity.x = v2;
             }
             if (getX() > 17) {
-                velocity.x = -velocity.x;
+                velocity.x = -v2;
             }
             if (velocity.x<0){
                 setRegion(0, 33, 24, 32);
