@@ -20,6 +20,9 @@ import java.util.List;
 import static jp.toteto.a1293.game.rhythmgame.Ghost.GHOST_VELOCITY;
 
 public class ResultScreen extends ScreenAdapter {
+    boolean tbE;
+    ExitButton mExitButton;
+    RetryButton mRetryButton;
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
     static final float CAMERA_HEIGHT = 9;
@@ -83,6 +86,7 @@ public class ResultScreen extends ScreenAdapter {
 
         // フォント
         mFont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
+        mFont.getData().setScale(2.0f);// フォントサイズも指定
         createStage();
     }
 
@@ -116,14 +120,16 @@ public class ResultScreen extends ScreenAdapter {
             mGhost.get(i).draw(mGame.batch);
         }
 
+
         mGame.batch.end();
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mGuiCamera.update();
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
         mGame.batch.begin();
-        mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 60, GUI_WIDTH, Align.center, false);
-        mFont.draw(mGame.batch,screen1sTimer + "Retry?", 0, GUI_HEIGHT / 2 - 40, GUI_WIDTH, Align.center, false);
+        mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 100, GUI_WIDTH, Align.center, false);
 
+        mExitButton.draw(mGame.batch);
+        mRetryButton.draw(mGame.batch);
         mGame.batch.end();
 
         if (Gdx.input.justTouched()) {
@@ -145,8 +151,10 @@ public class ResultScreen extends ScreenAdapter {
     private void createStage() {
 
         GhostTs = 10;
-
-
+        Texture exitbutton = new Texture("ExitButton.png");
+        TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
+        Texture retrybutton = new Texture("RetryButton.png");
+        TextureRegion retrybuttonTexture = new TextureRegion(retrybutton,0, 0, 512, 310);
         Texture ghosttt = new Texture("ghost.png");
         TextureRegion ghostTexture = new TextureRegion(ghosttt,0, 2, 24, 32);
 
@@ -158,6 +166,12 @@ public class ResultScreen extends ScreenAdapter {
             mGhost.add(ghost);
             end++;
         }
+
+        mExitButton = new ExitButton(exitbuttonTexture);
+        mExitButton.setPosition(128, 45);
+        mRetryButton = new RetryButton(retrybuttonTexture);
+        mRetryButton.setPosition(300, 45);
+
     }
     //あたり判定の処理
     /*private void checkCollision() {

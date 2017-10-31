@@ -38,6 +38,7 @@ public class Ghost extends GameObject {
         setX(getX() + velocity.x * deltaTime);
         setY(getY() + velocity.y * deltaTime);
         if (getX() > 7.5f) {
+            velocity.x = -1.7f;
             if (0.5f > screenTime && screenTime > 0) {
                 setRegion(0, 33, 24, 32);
             }
@@ -70,7 +71,7 @@ public class Ghost extends GameObject {
     }
 
     public void updateRS(float deltaTime,float v) {
-        setSize(0.91f,1.2f);
+        setSize(0.88f,1.2f);
         setX(getX() + velocity.x * deltaTime);
         float v2 = Math.abs( v );
         if (velocity.x<0){

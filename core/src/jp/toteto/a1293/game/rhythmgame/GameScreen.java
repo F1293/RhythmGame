@@ -47,6 +47,7 @@ public class GameScreen extends ScreenAdapter {
     float b3pushcounter;
     float b4pushcounter;
     float screen1sTimer;
+    float screen2sTimer;
     float GameOverCounter;
 
     //カメラのサイズを表す定数を定義する
@@ -107,7 +108,7 @@ public class GameScreen extends ScreenAdapter {
     Button4 mButton4;
     Player mPlayer;
     Message mMessage;
-
+    Message2 mMessage2;
 
     AttackLine mAttackLine;
     JumpLine mJumpLine;
@@ -525,7 +526,10 @@ public class GameScreen extends ScreenAdapter {
         mGaugeBarBack.draw(mGame.batch);
         mLGaugeBar.draw(mGame.batch);
         mFGaugeBar.draw(mGame.batch);
+
         mMessage.draw(mGame.batch);
+        mMessage2.draw(mGame.batch);
+
         mGame.batch.end();
 
         // スコア表示
@@ -539,7 +543,7 @@ public class GameScreen extends ScreenAdapter {
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + GameOverCounter + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
         //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
-        //mFont.draw(mGame.batch, 1 / deltaTime+ "fps", 16, GUI_HEIGHT - 15);
+        mFont.draw(mGame.batch, screen2sTimer+ "fps", 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -628,7 +632,7 @@ public class GameScreen extends ScreenAdapter {
 
         Texture exitbutton = new Texture("ExitButton.png");
         TextureRegion messageTexture = new TextureRegion(exitbutton,0, 430, 512, 32);
-        //TextureRegion message2Texture = new TextureRegion(exitbutton,320, 392, 143, 24);
+        TextureRegion message2Texture = new TextureRegion(exitbutton,178, 370, 143, 24);
         //TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
 
         Texture bar = new Texture("bar.png");
@@ -858,7 +862,10 @@ public class GameScreen extends ScreenAdapter {
         }
 
         mMessage = new Message(messageTexture);
-        mMessage.setPosition(16, 4.0f);//変える
+        mMessage.setPosition(16, 4.0f);
+        mMessage2 = new Message2(message2Texture);
+        mMessage2.setPosition(6.5f, 3.4f);//変える
+
     }
 
     // それぞれのオブジェクトの状態をアップデートする
@@ -867,7 +874,7 @@ public class GameScreen extends ScreenAdapter {
 
         switch (mGameState) {
             case GAME_STATE_READY:
-                updateReady();
+                updateReady(delta);
                 break;
             case GAME_STATE_PLAYING:
                 updatePlaying(delta);
@@ -879,8 +886,15 @@ public class GameScreen extends ScreenAdapter {
     }
 
     //タッチされたら状態をゲーム中であるGAME_STATE_PLAYINGに変更
-    private void updateReady() {
+    private void updateReady(float delta) {
+        screen2sTimer += delta;
+        if (screen2sTimer>2){
+            screen2sTimer = 0;
+        }
+        mMessage2.update(screen2sTimer);
         if (Gdx.input.justTouched()) {
+            screen2sTimer = 0;
+            mMessage2.hide();
             mGameState = GAME_STATE_PLAYING;
         }
     }
@@ -890,6 +904,7 @@ public class GameScreen extends ScreenAdapter {
     //aniani
     private void updatePlaying(float delta) {
 //アニメーション
+
         screen1sTimer += delta;
         if (screen1sTimer >1){
             screen1sTimer =0;
@@ -1311,6 +1326,10 @@ public class GameScreen extends ScreenAdapter {
 
     //ゲームオーバー時ResultScreenに遷移
     private void updateGameOver(float delta) {
+        screen2sTimer += delta;
+        if (screen2sTimer>2){
+            screen2sTimer = 0;
+        }
         playingmusic.dispose();//メモリ解放
         hitsound.dispose();//メモリ解放
         fall.dispose();//メモリ解放
@@ -1318,8 +1337,10 @@ public class GameScreen extends ScreenAdapter {
         jingle.dispose();//メモリ解放
 
         mMessage.update(delta);
+        mMessage2.update(screen2sTimer);
 
         if (Gdx.input.justTouched()) {
+            mMessage2.hide();
         mGame.setScreen(new ResultScreen(mGame, mScore));
         }
     }
