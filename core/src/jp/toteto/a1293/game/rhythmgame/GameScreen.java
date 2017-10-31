@@ -106,7 +106,7 @@ public class GameScreen extends ScreenAdapter {
     Button3 mButton3;
     Button4 mButton4;
     Player mPlayer;
-   // Message mMessage;
+    Message mMessage;
 
 
     AttackLine mAttackLine;
@@ -525,8 +525,8 @@ public class GameScreen extends ScreenAdapter {
         mGaugeBarBack.draw(mGame.batch);
         mLGaugeBar.draw(mGame.batch);
         mFGaugeBar.draw(mGame.batch);
-
-
+        mMessage.draw(mGame.batch);
+        mGame.batch.end();
 
         // スコア表示
         mGuiCamera.update();
@@ -626,6 +626,10 @@ public class GameScreen extends ScreenAdapter {
 
         //Texture ufoTexture = new Texture("ufo.png");
 
+        Texture exitbutton = new Texture("ExitButton.png");
+        TextureRegion messageTexture = new TextureRegion(exitbutton,0, 430, 512, 32);
+        //TextureRegion message2Texture = new TextureRegion(exitbutton,320, 392, 143, 24);
+        //TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
 
         Texture bar = new Texture("bar.png");
         TextureRegion barTexture = new TextureRegion(bar,0,845,1024,171);
@@ -852,6 +856,9 @@ public class GameScreen extends ScreenAdapter {
             mGround.add(ground);
             Gs += 8;
         }
+
+        mMessage = new Message(messageTexture);
+        mMessage.setPosition(16, 4.0f);//変える
     }
 
     // それぞれのオブジェクトの状態をアップデートする
@@ -866,7 +873,7 @@ public class GameScreen extends ScreenAdapter {
                 updatePlaying(delta);
                 break;
             case GAME_STATE_GAMEOVER:
-                updateGameOver();
+                updateGameOver(delta);
                 break;
         }
     }
@@ -1175,7 +1182,7 @@ public class GameScreen extends ScreenAdapter {
                         note2.get();//消す
                     }
                 }
-            //タイミング判定
+                //タイミング判定
             }
             if (note2.mState == 0 && mDeadLine.getBoundingRectangle().overlaps(note2.getBoundingRectangle())) {
                 //押されなかった場合（ダメージを追加予定
@@ -1303,32 +1310,23 @@ public class GameScreen extends ScreenAdapter {
     }
 
     //ゲームオーバー時ResultScreenに遷移
-    private void updateGameOver() {
+    private void updateGameOver(float delta) {
         playingmusic.dispose();//メモリ解放
         hitsound.dispose();//メモリ解放
         fall.dispose();//メモリ解放
         getstarsound.dispose();//メモリ解放
         jingle.dispose();//メモリ解放
-/*
-        mGame.batch.begin();
-       // mMessage.draw(mGame.batch);
-        mGame.batch.end();
-        Texture exitbutton = new Texture("Exitbutton.png");
-        TextureRegion messageTexture = new TextureRegion(exitbutton,0, 420, 512, 92);
-        TextureRegion message2Texture = new TextureRegion(exitbutton,320, 392, 143, 24);
-        TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
-        //mMessage = new Message(messageTexture);
-        //mMessage.setPosition(16, 4.0f);
 
-        if (Gdx.input.justTouched()) {*/
-            mGame.setScreen(new ResultScreen(mGame, mScore));
+        mMessage.update(delta);
+
+        if (Gdx.input.justTouched()) {
+        mGame.setScreen(new ResultScreen(mGame, mScore));
         }
-   // }
+    }
     private void checkGameOver() {
         //ここの時間で終了
         //if (playingmusic.getPosition()>66) {
-        //if (LifeGauge < 0||playingmusic.getPosition()>66) {
-            if (playingmusic.getPosition()>66) {
+        if (LifeGauge < 0||playingmusic.getPosition()>6) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
             //gomusic.play();//ゲームオーバー画面の音楽再生
             playingmusic.dispose();//メモリ解放

@@ -153,7 +153,7 @@ public class ResultScreen extends ScreenAdapter {
         while (end < 10) {
             Ghost ghost = new Ghost(ghostTexture);
             //場所を決める
-            ghost.setPosition(MathUtils.random(0, 8), MathUtils.random(0, 5));
+            ghost.setPosition(MathUtils.random(0, 16), MathUtils.random(1, 7.7f));
             GHOST_VELOCITY =MathUtils.random(-3, 3);
             mGhost.add(ghost);
             end++;
