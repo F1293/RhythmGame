@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -32,11 +34,15 @@ public class CrearScreen extends ScreenAdapter {
     OrthographicCamera mCamera;
     FitViewport mViewPort;
     //FitViewport mGuiViewPort;
+    int stage;//ステージセレクト
 
-    List<Ghost> mGhost;
     Player mPlayer;
     Pumpkin mPumpkin;
-
+    boolean tb1;
+    boolean tb2;
+    boolean tb3;
+    boolean tb4;
+    boolean ReleaseButton2;
     int GhostTs;
     int end = 0;
     int createghost = 0;
@@ -48,6 +54,7 @@ public class CrearScreen extends ScreenAdapter {
     OrthographicCamera mGuiCamera;
     FitViewport mGuiViewPort;
     BitmapFont mFont;
+    Vector3 mTouchPoint; // タッチされた座標を保持するメンバ変数
 
     int mScore;
 
@@ -63,8 +70,7 @@ public class CrearScreen extends ScreenAdapter {
         mGuiCamera.setToOrtho(false, GUI_WIDTH, GUI_HEIGHT);
         mViewPort = new FitViewport(CAMERA_WIDTH, CAMERA_HEIGHT, mCamera);
         mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera);
-
-        mGhost = new ArrayList<Ghost>();
+        mTouchPoint = new Vector3();
 
         gomusic.play(); //ゲームオーバー画面の音楽再生
         rebirth.dispose();
@@ -111,19 +117,6 @@ public class CrearScreen extends ScreenAdapter {
 
         mGame.batch.begin();
         mBg.draw(mGame.batch);
-        mGhost.get(0).updateRS(delta,-1.7f);
-        mGhost.get(1).updateRS(delta,-1.4f);
-        mGhost.get(2).updateRS(delta,-1.1f);
-        mGhost.get(3).updateRS(delta,-0.7f);
-        mGhost.get(4).updateRS(delta,0);
-        mGhost.get(5).updateRS(delta,2.2f);
-        mGhost.get(6).updateRS(delta,1.2f);
-        mGhost.get(7).updateRS(delta,0.8f);
-        mGhost.get(8).updateRS(delta,0.4f);
-        mGhost.get(9).updateRS(delta,3.0f);
-        for (int i = 0; i < mGhost.size(); i++) {
-            //mGhost.get(i).draw(mGame.batch);
-        }
         mPlayer.draw(mGame.batch);
         mPlayer.updateSS(delta,screen1sTimer);
         mPumpkin.draw(mGame.batch);
@@ -136,21 +129,62 @@ public class CrearScreen extends ScreenAdapter {
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
         mGame.batch.begin();
         mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
+        //mFont.draw(mGame.batch, tb1 + "" + tb2, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
+
 
         mExitButton.draw(mGame.batch);
         mRetryButton.draw(mGame.batch);
         mExitButton.Darker(delta);
         mRetryButton.Darker(delta);
         mGame.batch.end();
-
+/*
         if (Gdx.input.justTouched()) {
             gomusic.dispose();//メモリ解放
-            rebirth.play(1.0f);//復活音
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            mGame.setScreen(new GameScreen(mGame));
-            //タッチされたらgameScreenに戻る
+            stage = 1;
+            mGame.setScreen(new GameScreen(mGame,stage));
+            //タッチされたらgameScreenに戻る選んだステージで始まる
+        }*/
+        tb1 = false;
+        tb2 = false;
+        tb3 = false;
+        tb4 = false;
+
+
+        for (int i = 0; i < 5; i++) { // 20 is max number of touch points
+            if (Gdx.input.isTouched(i)) {
+                Rectangle left = new Rectangle(128, 15, 83, 51);//
+                //Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//
+                Rectangle right = new Rectangle(300, 15, 83, 51);//
+                //Rectangle leftd = new Rectangle(0, 0, 70, 72);//
+                //test
+                final int iX = Gdx.input.getX(i);
+                final int iY = Gdx.input.getY(i);
+
+                mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
+                tb1 = tb1 || (left.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+                tb2 = tb2 || (right.contains(mTouchPoint.x, mTouchPoint.y));
+                //tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+                //tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
+            }
+        }
+        if (tb1) {
+            mExitButton.Push();
+        }
+        if (tb2) {
+            mRetryButton.Push();
+            ReleaseButton2 = true;
+        }
+        if (ReleaseButton2 && !tb2){
+            gomusic.dispose();//メモリ解放
+            if (mGame.mRequestHandler != null) {
+                mGame.mRequestHandler.showAds(false); //広告消す
+            }
+            stage = 1;
+            mGame.setScreen(new GameScreen(mGame,stage));
+            //タッチされたらgameScreenに戻る選んだステージで始まる
         }
     }
     @Override
@@ -174,14 +208,6 @@ public class CrearScreen extends ScreenAdapter {
         TextureRegion pumpkinTexture = new TextureRegion(pumpkint,0, 64, 32, 27);
 
 
-        while (end < 10) {
-            Ghost ghost = new Ghost(ghostTexture);
-            //場所を決める
-            ghost.setPosition(MathUtils.random(0, 16), MathUtils.random(1, 7.7f));
-            GHOST_VELOCITY =MathUtils.random(-3, 3);
-            mGhost.add(ghost);
-            end++;
-        }
         // Playerを配置
         mPlayer = new Player(playerTexture);
         mPlayer.setPosition(-1,2.5f);

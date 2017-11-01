@@ -69,15 +69,14 @@ public class GameScreen extends ScreenAdapter {
 
     private RhythmGame mGame;
 
+    int ToSs;
+    int ToSs2;
+    int PumpkinTs;
+    int SkeletonTs;
+    int GhostTs;
+    int BatTs;
 
-   /* class TouchInfo {
-        public float touchX = 0;
-        public float touchY = 0;
-        public boolean touched = false;
-    }*/
-    //private Map<Integer,TouchInfo> touches = new HashMap<Integer,TouchInfo>();
-    //タッチ情報を保持するクラスを作り、それのHashMapを作成して、複数のタッチ情報を保存
-    //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+
 
     Sprite mBg;
     //カメラクラスとビューポートクラスをメンバ変数として定義
@@ -96,7 +95,6 @@ public class GameScreen extends ScreenAdapter {
     GaugeBarBack mGaugeBarBack;
     LGaugeBar mLGaugeBar;
     FGaugeBar mFGaugeBar;
-
 
     iBar mIBar;
     iBar1 mIBar1;
@@ -151,12 +149,7 @@ public class GameScreen extends ScreenAdapter {
 
     //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
     //boolean b = true;
-    int ToSs;
-    int ToSs2;
-    int PumpkinTs;
-    int SkeletonTs;
-    int GhostTs;
-    int BatTs;
+
 
     //リストの数を入れる
     int en=0;//エネルギーノーツを取り出すときに使用
@@ -175,12 +168,12 @@ public class GameScreen extends ScreenAdapter {
     int createbat = 0;
 
     //float[] ToS = {5.20f,6.90f};//再生時間に応じて音を鳴らす、どのタイミングかを入れる
-    ArrayList<Float> ToS = new ArrayList<Float>();
-    ArrayList<Float> ToS2 = new ArrayList<Float>();
-    ArrayList<Float> PumpkinT = new ArrayList<Float>();
-    ArrayList<Float> SkeletonT = new ArrayList<Float>();
-    ArrayList<Float> GhostT = new ArrayList<Float>();
-    ArrayList<Float> BatT = new ArrayList<Float>();
+    ArrayList<Float> ToS;
+    ArrayList<Float> ToS2;
+    ArrayList<Float> PumpkinT;
+    ArrayList<Float> SkeletonT;
+    ArrayList<Float> GhostT;
+    ArrayList<Float> BatT;
     //ToS.add(10.2f);
     //String stringFormat;
 
@@ -196,169 +189,18 @@ public class GameScreen extends ScreenAdapter {
     Sound jingle = Gdx.audio.newSound(Gdx.files.internal("jingle.mp3"));
     Sound getstarsound = Gdx.audio.newSound(Gdx.files.internal("getstarsound.mp3"));
 
-    public GameScreen(RhythmGame game) {
+
+
+    public GameScreen(RhythmGame game,int stage) {
 
         mGame = game;
-
+        ToS = new ArrayList<Float>();
+        ToS2 = new ArrayList<Float>();
+        PumpkinT = new ArrayList<Float>();
+        SkeletonT = new ArrayList<Float>();
+        GhostT = new ArrayList<Float>();
+        BatT = new ArrayList<Float>();
         //ToS.add(1.168f);
-        GhostT.add(1.514f);
-        ToS.add(1.802f);
-        ToS.add(2.102f);
-        ToS.add(2.418f);
-        ToS.add(2.784f);
-        ToS.add(3.084f);
-        ToS.add(3.4840002f);
-        BatT.add(3.784f);
-        ToS.add(4.0860004f);
-        ToS.add(4.401f);
-        ToS.add(4.701f);
-        ToS.add(5.0010004f);
-        ToS.add(5.318f);
-        PumpkinT.add(5.634f);
-        ToS.add(5.951f);
-        ToS.add(6.234f);
-        SkeletonT.add(6.5509996f);
-        ToS.add(6.851f);
-        ToS.add(7.151f);
-        ToS.add(7.467f);
-        ToS.add(7.785f);
-        ToS.add(8.104f);
-        ToS.add(8.401f);
-        ToS.add(8.668f);
-        ToS.add(9.001f);
-        ToS.add(9.301f);
-        ToS.add(9.601f);
-        BatT.add(9.901f);
-        ToS.add(10.218f);
-        ToS.add(10.818f);
-        ToS.add(11.452f);
-        ToS.add(12.034f);
-        ToS.add(12.618f);
-        ToS.add(13.268f);
-        BatT.add(13.584f);
-        ToS.add(13.900999f);
-        ToS.add(14.518f);
-        PumpkinT.add(15.152f);
-        ToS.add(15.750999f);
-        ToS.add(16.052f);
-        ToS.add(16.318f);
-        SkeletonT.add(16.951f);
-        ToS.add(17.518f);
-        ToS.add(18.184f);
-        BatT.add(18.501f);
-        ToS.add(18.851f);
-        ToS.add(19.435f);
-        ToS.add(20.018f);
-        ToS.add(20.684f);
-        ToS.add(21.318f);
-        ToS.add(21.636f);
-        ToS.add(21.802f);
-        PumpkinT.add(22.085f);
-        ToS.add(22.539f);
-        ToS.add(23.701f);
-        ToS.add(24.067f);
-        ToS.add(24.234f);
-        ToS.add(24.534f);
-        SkeletonT.add(24.951f);
-        ToS.add(26.184f);
-        ToS.add(26.518f);
-        BatT.add(26.701f);
-        ToS.add(26.985f);
-        ToS.add(27.451f);
-        ToS.add(28.153f);
-        ToS.add(28.467f);
-        ToS.add(28.766998f);
-        ToS.add(29.368f);
-        ToS.add(29.987999f);
-        ToS.add(30.601002f);
-        ToS.add(30.883999f);
-        ToS.add(31.222f);
-        PumpkinT.add(31.550999f);
-        ToS.add(31.719002f);
-        ToS.add(31.987999f);
-        ToS.add(32.455f);
-        ToS.add(33.669f);
-        ToS.add(34.018f);
-        ToS.add(34.184f);
-        SkeletonT.add(34.501f);
-        ToS.add(34.917f);
-        ToS.add(36.175f);
-        ToS.add(36.468f);
-        ToS.add(36.634f);
-        ToS.add(37.001f);
-        ToS.add(37.418f);
-        GhostT.add(38.068f);
-        ToS.add(38.384f);
-        ToS.add(38.667f);
-        ToS.add(39.301f);
-        ToS.add(39.902f);
-        ToS.add(40.468f);
-        ToS.add(40.803f);
-        ToS.add(41.14f);
-        ToS.add(42.034f);
-        ToS.add(42.351f);
-        ToS.add(43.317f);
-        PumpkinT.add(43.637f);
-        ToS.add(43.918f);
-        ToS.add(44.234f);
-        ToS.add(44.57f);
-        ToS.add(44.734f);
-        GhostT.add(44.951f);
-        ToS.add(46.085f);
-        ToS.add(46.725f);
-        ToS.add(47.274f);
-        ToS.add(47.856f);
-        ToS.add(48.523f);
-        ToS.add(49.089f);
-        GhostT.add(49.39f);
-        ToS.add(49.773f);
-        ToS.add(50.126f);
-        ToS.add(50.49f);
-        ToS.add(51.026f);
-        ToS.add(51.355f);
-        ToS.add(51.556f);
-        ToS.add(51.707f);
-        PumpkinT.add(52.173f);
-        ToS.add(52.356f);
-        ToS.add(53.525f);
-        ToS.add(53.84f);
-        ToS.add(54.192f);
-        ToS.add(54.49f);
-        ToS.add(54.776f);
-        ToS.add(55.073f);
-        ToS.add(55.389f);
-        ToS.add(55.727f);
-        ToS.add(55.991f);
-        ToS.add(56.273f);
-        ToS.add(56.44f);
-        ToS.add(56.605f);
-        ToS.add(57.089f);
-        ToS.add(57.238f);
-        ToS.add(58.423f);
-        ToS.add(58.738f);
-        ToS.add(59.074f);
-        ToS.add(59.373f);
-        ToS.add(59.673f);
-        ToS.add(59.976f);
-        //ToS.add(60.172997f);
-        ToS.add(60.189003f);
-        ToS.add(60.372f);
-        //ToS.add(60.739998f);
-        ToS.add(60.889f);
-        ToS.add(61.072f);
-
-
-        ToS.add(61.002f);
-
-
-
-
-        ToS.add(98.1f);
-        ToS2.add(98.1f);
-        PumpkinT.add(98.0f);
-        SkeletonT.add(98.7f);
-        BatT.add(99.7f);
-        GhostT.add(98.7f);
 
 
         //playingmusic.setLooping(true);//音楽はループ
@@ -407,10 +249,12 @@ public class GameScreen extends ScreenAdapter {
         mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");//Preferencesの取得
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
 
-        createStage();
+        createStage(stage);
         //オブジェクト配置するcreateStageメソッドを呼び出す
 
     }
+
+
 
     //描画を行うレンダーメソッド
     @Override
@@ -559,10 +403,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     // ステージを作成する、オブジェクトを配置するメソッド
-    private void createStage() {
-        //aniani
+    private void createStage(int stage) {
+        TimingList(stage);
 
-        //aniani
+
         float x = 0;
         float trees = 0;
         float grasses = 0;
@@ -576,23 +420,7 @@ public class GameScreen extends ScreenAdapter {
         SkeletonTs = SkeletonT.size();
         GhostTs = GhostT.size();
         BatTs = BatT.size();
-        //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-//アニメーション
-        //img = new Texture("majomajo.png");
-        /*TextureRegion[] [] tmpFrames = TextureRegion.split(img,256,256);
-
-        playeranimationFrames = new TextureRegion[4];
-        int index = 0;
-        for (int i = 0; i < 2; i++){
-            for (int j = 0; j < 2; j++){
-                playeranimationFrames[index++] = tmpFrames[j][i];
-            }
-        }
-        jumpingFrame = tmpFrames[1][1];
-        attackFrame = tmpFrames[0][0];
-        playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
-*/
         //ボタン
         button3 = new Texture("buttonsp.png");
         TextureRegion[] [] button3Frames = TextureRegion.split(button3,128,128);
@@ -605,16 +433,6 @@ public class GameScreen extends ScreenAdapter {
         }
         //playeranimation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
         button3animation = new Animation<TextureRegion>(1f/30f,button3animationFrames);
-//アニメーションテクスチャ準備
-
-        // テクスチャの準備
-        //Texture stepTexture = new Texture("step.png");
-
-
-        //Texture stepaTexture = new Texture("stepa.png");
-
-
-        //Texture starTexture = new Texture("star.png");
 
 
         Texture darkstar = new Texture("darkstar.png");
@@ -1383,6 +1201,166 @@ public class GameScreen extends ScreenAdapter {
             //gomusic.play();//ゲームオーバー画面の音楽再生
             playingmusic.dispose();//メモリ解放
             mGameState = GAME_STATE_GAMEOVER;
+        }
+    }
+    public void TimingList(int stage) {
+        if (stage == 1) {
+            GhostT.add(1.514f);
+            ToS.add(1.802f);
+            ToS.add(2.102f);
+            ToS.add(2.418f);
+            ToS.add(2.784f);
+            ToS.add(3.084f);
+            ToS.add(3.4840002f);
+            BatT.add(3.784f);
+            ToS.add(4.0860004f);
+            ToS.add(4.401f);
+            ToS.add(4.701f);
+            ToS.add(5.0010004f);
+            ToS.add(5.318f);
+            PumpkinT.add(5.634f);
+            ToS.add(5.951f);
+            ToS.add(6.234f);
+            SkeletonT.add(6.5509996f);
+            ToS.add(6.851f);
+            ToS.add(7.151f);
+            ToS.add(7.467f);
+            ToS.add(7.785f);
+            ToS.add(8.104f);
+            ToS.add(8.401f);
+            ToS.add(8.668f);
+            ToS.add(9.001f);
+            ToS.add(9.301f);
+            ToS.add(9.601f);
+            BatT.add(9.901f);
+            ToS.add(10.218f);
+            ToS.add(10.818f);
+            ToS.add(11.452f);
+            ToS.add(12.034f);
+            ToS.add(12.618f);
+            ToS.add(13.268f);
+            BatT.add(13.584f);
+            ToS.add(13.900999f);
+            ToS.add(14.518f);
+            PumpkinT.add(15.152f);
+            ToS.add(15.750999f);
+            ToS.add(16.052f);
+            ToS.add(16.318f);
+            SkeletonT.add(16.951f);
+            ToS.add(17.518f);
+            ToS.add(18.184f);
+            BatT.add(18.501f);
+            ToS.add(18.851f);
+            ToS.add(19.435f);
+            ToS.add(20.018f);
+            ToS.add(20.684f);
+            ToS.add(21.318f);
+            ToS.add(21.636f);
+            ToS.add(21.802f);
+            PumpkinT.add(22.085f);
+            ToS.add(22.539f);
+            ToS.add(23.701f);
+            ToS.add(24.067f);
+            ToS.add(24.234f);
+            ToS.add(24.534f);
+            SkeletonT.add(24.951f);
+            ToS.add(26.184f);
+            ToS.add(26.518f);
+            BatT.add(26.701f);
+            ToS.add(26.985f);
+            ToS.add(27.451f);
+            ToS.add(28.153f);
+            ToS.add(28.467f);
+            ToS.add(28.766998f);
+            ToS.add(29.368f);
+            ToS.add(29.987999f);
+            ToS.add(30.601002f);
+            ToS.add(30.883999f);
+            ToS.add(31.222f);
+            PumpkinT.add(31.550999f);
+            ToS.add(31.719002f);
+            ToS.add(31.987999f);
+            ToS.add(32.455f);
+            ToS.add(33.669f);
+            ToS.add(34.018f);
+            ToS.add(34.184f);
+            SkeletonT.add(34.501f);
+            ToS.add(34.917f);
+            ToS.add(36.175f);
+            ToS.add(36.468f);
+            ToS.add(36.634f);
+            ToS.add(37.001f);
+            ToS.add(37.418f);
+            GhostT.add(38.068f);
+            ToS.add(38.384f);
+            ToS.add(38.667f);
+            ToS.add(39.301f);
+            ToS.add(39.902f);
+            ToS.add(40.468f);
+            ToS.add(40.803f);
+            ToS.add(41.14f);
+            ToS.add(42.034f);
+            ToS.add(42.351f);
+            ToS.add(43.317f);
+            PumpkinT.add(43.637f);
+            ToS.add(43.918f);
+            ToS.add(44.234f);
+            ToS.add(44.57f);
+            ToS.add(44.734f);
+            GhostT.add(44.951f);
+            ToS.add(46.085f);
+            ToS.add(46.725f);
+            ToS.add(47.274f);
+            ToS.add(47.856f);
+            ToS.add(48.523f);
+            ToS.add(49.089f);
+            GhostT.add(49.39f);
+            ToS.add(49.773f);
+            ToS.add(50.126f);
+            ToS.add(50.49f);
+            ToS.add(51.026f);
+            ToS.add(51.355f);
+            ToS.add(51.556f);
+            ToS.add(51.707f);
+            PumpkinT.add(52.173f);
+            ToS.add(52.356f);
+            ToS.add(53.525f);
+            ToS.add(53.84f);
+            ToS.add(54.192f);
+            ToS.add(54.49f);
+            ToS.add(54.776f);
+            ToS.add(55.073f);
+            ToS.add(55.389f);
+            ToS.add(55.727f);
+            ToS.add(55.991f);
+            ToS.add(56.273f);
+            ToS.add(56.44f);
+            ToS.add(56.605f);
+            ToS.add(57.089f);
+            ToS.add(57.238f);
+            ToS.add(58.423f);
+            ToS.add(58.738f);
+            ToS.add(59.074f);
+            ToS.add(59.373f);
+            ToS.add(59.673f);
+            ToS.add(59.976f);
+            //ToS.add(60.172997f);
+            ToS.add(60.189003f);
+            ToS.add(60.372f);
+            //ToS.add(60.739998f);
+            ToS.add(60.889f);
+            ToS.add(61.072f);
+
+
+            ToS.add(61.002f);
+
+
+            ToS.add(98.1f);
+            ToS2.add(98.1f);
+            PumpkinT.add(98.0f);
+            SkeletonT.add(98.7f);
+            BatT.add(99.7f);
+            GhostT.add(98.7f);
         }
     }
 

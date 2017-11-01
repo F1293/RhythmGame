@@ -36,4 +36,8 @@ public class RetryButton extends GameObject {
             screenTime = 8;
         }
     }
+    public void Push(){
+        setAlpha(1);
+        setColor(0.5f,0.5f,0.5f,1);
+    }
 }

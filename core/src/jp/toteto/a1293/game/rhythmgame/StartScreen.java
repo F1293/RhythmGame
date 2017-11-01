@@ -23,7 +23,7 @@ public class StartScreen extends ScreenAdapter {
     static final float CAMERA_HEIGHT = 288;
 
     private RhythmGame mGame;
-
+    int stage;
     Sprite mBg;
     OrthographicCamera mCamera;
     FitViewport mViewPort;
@@ -61,8 +61,9 @@ public class StartScreen extends ScreenAdapter {
 
         mGame.batch.end();
         if (Gdx.input.justTouched()) {
+            stage = 1;
             //mGame.setScreen((Screen) new LibGdxSample());
-            mGame.setScreen(new GameScreen(mGame));
+            mGame.setScreen(new GameScreen(mGame,stage));
             //タッチされたらgameScreenに戻る
         }
     }
