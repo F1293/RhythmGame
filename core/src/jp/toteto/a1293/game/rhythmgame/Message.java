@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Message extends GameObject {
     // 横幅、高さ
     public static final float M_WIDTH = 16;
-    public static final float M_HEIGHT = 1;
+    public static final float M_HEIGHT = 0.9f;
 
     public static final int M_EXIST = 0;
     public static final int GRASS_NONE = 1;
@@ -18,7 +18,7 @@ public class Message extends GameObject {
     int mState;
 
     // 速度
-    public static final float GRASS_VELOCITY = - 32.0f;
+    public static final float GRASS_VELOCITY = - 50.0f;
 
 
 

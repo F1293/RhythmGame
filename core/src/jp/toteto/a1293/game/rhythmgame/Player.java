@@ -43,6 +43,7 @@ public class Player  extends GameObject implements ApplicationListener {
     }
 
     public void update (float deltaTime,float screenTime) {
+        velocity.x = 0;
         if (0.25f > screenTime && screenTime >0){
             setRegion (0, 64, 22, 32);
         }
@@ -84,6 +85,64 @@ public class Player  extends GameObject implements ApplicationListener {
                 if (velocity.y <= -9.9f) {
                     velocity.y = PLAYER_JUMP_VELOCITY;
                     setPosition(1.4f, 5.2f);
+                    jumpstate = 0;
+                    //break;
+                }
+            }
+        }
+    }
+
+    public void updateSS (float deltaTime,float screenTime) {
+        setSize(0.98f,1.5f);
+        velocity.x = 2;
+        if (0.25f > screenTime && screenTime >0){
+            setRegion (0, 64, 22, 32);
+        }
+        if (0.5f > screenTime && screenTime >0.25f){
+            setRegion (32, 64, 22, 32);
+        }
+        if (0.75f > screenTime && screenTime >0.5f){
+            setRegion (64, 64, 22, 32);
+        }
+        if (screenTime >0.75f){
+            setRegion (32, 64, 22, 32);
+        }
+        if (getX()<16){
+            setPosition(getX() + velocity.x * deltaTime ,getY() + velocity.y * deltaTime);
+        }
+        if (getX()>8){
+            jumpstate = 1;
+        }
+        if (getX()>16){
+            setPosition(16,8);
+        }
+        if (jumpstate == 1) {
+            setRegion (64, 64, 22, 32);
+            if (velocity.y == 0) {
+                velocity.y = PLAYER_JUMP_VELOCITY;
+                mState = PLAYER_STATE_JUMP;
+            }
+            // while (mState != PLAYER_STATE_FALLED) {
+            // 重力をプレイヤーの速度に加算し、速度から位置を計算する
+            velocity.add(0, -20 * deltaTime);
+
+
+
+            // y方向の速度が正（＝上方向）のときにSTATEがPLAYER_STATE_JUMPでなければPLAYER_STATE_JUMPにする
+            if (velocity.y > 0) {
+                if (mState != PLAYER_STATE_JUMP) {
+                    mState = PLAYER_STATE_JUMP;
+                }
+            }
+
+            // y方向の速度が負（＝下方向）のときにSTATEがPLAYER_STATE_FALLでなければPLAYER_STATE_FALLにする
+            if (velocity.y < 0 && -20 < velocity.y) {
+                if (mState != PLAYER_STATE_FALL) {
+                    mState = PLAYER_STATE_FALL;
+                }
+                if (velocity.y <= -9.9f) {
+                    velocity.y = PLAYER_JUMP_VELOCITY;
+                    //setPosition(1.4f, 5.2f);
                     jumpstate = 0;
                     //break;
                 }

@@ -17,6 +17,7 @@ public class Pumpkin extends GameObject {
 
     //状態を保持するメンバ変数
     int mState;
+    float rotationTime;
 
     // 速度
     //public static final float ENEMY_VELOCITY = - 3.5f;
@@ -44,6 +45,20 @@ public class Pumpkin extends GameObject {
             setRegion (32, 34, 32, 27);
         }
         setX(getX() + velocity.x * deltaTime);
+    }
+    public void updateSS(float deltaTime) {
+        velocity.x = 2;
+        setSize(1.0f,0.96f);
+        setPosition(getX() + velocity.x * deltaTime ,2.5f);
+        if (getX()>17){
+            setX(-8);
+        }
+        rotationTime += deltaTime;
+        setOrigin(0.5f,0.48f);
+        setRotation(rotationTime * -300);
+        if (rotationTime>12){
+            rotationTime = 0;
+        }
     }
     //プレイヤーが触れた時に呼ばれるgetメソッド,状態をSTAR_NONEにし、setAlphaメソッドで透明に
     public void get() {
