@@ -24,11 +24,11 @@ public class Player  extends GameObject implements ApplicationListener {
     //状態を保持する
     int mState;
     int jumpstate;
+    int start;
     float stateTime = 0.01f;
     public float playerY;
     float posx;
     float posy;
-
     GameScreen mGameScreen;
 
     public Player(TextureRegion texture1) {
@@ -104,6 +104,7 @@ public class Player  extends GameObject implements ApplicationListener {
         if (0.75f > screenTime && screenTime >0.5f){
             setRegion (64, 64, 22, 32);
         }
+
         if (screenTime >0.75f){
             setRegion (32, 64, 22, 32);
         }
@@ -146,6 +147,29 @@ public class Player  extends GameObject implements ApplicationListener {
                     jumpstate = 0;
                     //break;
                 }
+            }
+        }
+    }
+    public void updatestart (float deltaTime,float screenTime) {
+        setSize(0.98f,1.5f);
+        velocity.x = 7;
+
+        if (start ==1) {
+            setX(getX() + velocity.x * deltaTime);
+            if (0.25f > screenTime && screenTime > 0) {
+                setRegion(0, 64, 22, 32);
+            }
+            if (0.5f > screenTime && screenTime > 0.25f) {
+                setRegion(32, 64, 22, 32);
+            }
+            if (0.75f > screenTime && screenTime > 0.5f) {
+                setRegion(64, 64, 22, 32);
+            }
+            if (1 > screenTime && screenTime > 0.75f) {
+                setRegion(32, 64, 22, 32);
+            }
+            if (getX() > 16) {
+                setPosition(16, 8);
             }
         }
     }

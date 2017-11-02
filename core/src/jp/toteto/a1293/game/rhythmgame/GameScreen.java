@@ -69,6 +69,8 @@ public class GameScreen extends ScreenAdapter {
 
     private RhythmGame mGame;
 
+    int LengthOfSong;
+
     int ToSs;
     int ToSs2;
     int PumpkinTs;
@@ -1190,11 +1192,10 @@ public class GameScreen extends ScreenAdapter {
 
     private void checkGameOver() {
         //ここの時間で終了
-        if (playingmusic.getPosition()>3) {
-        //if (playingmusic.getPosition()>66) {
+        if (playingmusic.getPosition()>LengthOfSong) {
             playingmusic.dispose();//メモリ解放
-            //mGameState = GAME_STATE_GAMECREAR;
-            mGameState = GAME_STATE_GAMEOVER;
+            mGameState = GAME_STATE_GAMECREAR;
+            //mGameState = GAME_STATE_GAMEOVER;
         }
         if (LifeGauge < 0) {
             Gdx.app.log("RhythmGame", "GAMEOVER");
@@ -1203,7 +1204,8 @@ public class GameScreen extends ScreenAdapter {
             mGameState = GAME_STATE_GAMEOVER;
         }
     }
-    public void TimingList(int stage) {
+    private void TimingList(int stage) {
+        LengthOfSong =3;//66
         if (stage == 1) {
             GhostT.add(1.514f);
             ToS.add(1.802f);

@@ -41,6 +41,7 @@ public class ResultScreen extends ScreenAdapter {
     boolean tb2;
     boolean tb3;
     boolean tb4;
+    boolean ReleaseButton1;
     boolean ReleaseButton2;
 
     int stage;
@@ -164,10 +165,20 @@ public class ResultScreen extends ScreenAdapter {
         }
         if (tb1) {
             mExitButton.Push();
+            ReleaseButton1 = true;
         }
         if (tb2) {
             mRetryButton.Push();
             ReleaseButton2 = true;
+        }
+        if (ReleaseButton1 && !tb1){
+            gomusic.dispose();//メモリ解放
+            if (mGame.mRequestHandler != null) {
+                mGame.mRequestHandler.showAds(false); //広告消す
+            }
+            stage = 1;
+            mGame.setScreen(new StartScreen(mGame));
+            //タッチされたらgameScreenに戻る選んだステージで始まる
         }
         if (ReleaseButton2 && !tb2){
             gomusic.dispose();//メモリ解放

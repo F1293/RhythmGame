@@ -23,16 +23,16 @@ public class RetryButton extends GameObject {
         setAlpha(color);
         screenTime += delta;
         Darker = color;
-        if (screenTime<8){
+        if (screenTime < 8) {
             color = 1;
         }
-        if (8<=screenTime && screenTime<=9){
-            color = -0.5f * screenTime + 4;
+        if (8 <= screenTime && screenTime <= 9) {
+            color = -0.5f * screenTime + 5;
         }
-        if (9<=screenTime && screenTime<10){
-            color = 0.5f * screenTime -4;
+        if (9 <= screenTime && screenTime < 10) {
+            color = 0.5f * screenTime - 4;
         }
-        if (screenTime>10){
+        if (screenTime > 10) {
             screenTime = 8;
         }
     }

@@ -23,6 +23,7 @@ import static jp.toteto.a1293.game.rhythmgame.Ghost.GHOST_VELOCITY;
 
 public class CrearScreen extends ScreenAdapter {
     boolean tbE;
+    Present mPresent;
     ExitButton mExitButton;
     RetryButton mRetryButton;
     //カメラのサイズを表す定数を定義する
@@ -42,11 +43,13 @@ public class CrearScreen extends ScreenAdapter {
     boolean tb2;
     boolean tb3;
     boolean tb4;
+    boolean ReleaseButton1;
     boolean ReleaseButton2;
     int GhostTs;
     int end = 0;
     int createghost = 0;
     float screen1sTimer =0;
+    float screenTimer =0;
     //ArrayList<Float> GhostT = new ArrayList<Float>();
 
     private RhythmGame mGame;
@@ -62,6 +65,7 @@ public class CrearScreen extends ScreenAdapter {
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
     public CrearScreen(RhythmGame game, int score) {
+
         // カメラ、ViewPortを生成、設定するメンバ変数に初期化して代入
         mCamera = new OrthographicCamera();
         mCamera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -95,12 +99,21 @@ public class CrearScreen extends ScreenAdapter {
         // フォント
         mFont = new BitmapFont(Gdx.files.internal("roundfont.fnt"), Gdx.files.internal("roundfont.png"), false);
         mFont.getData().setScale(0.5f);// フォントサイズも指定
+
         createStage();
+        if (score>500) {
+            mPresent.setRegion(194, 0, 190, 170);
+        }else if(score>400){
+            mPresent.setRegion(405, 0, 190, 170);
+        }else {
+            mPresent.setRegion(0, 0, 190, 170);
+        }
     }
 
     @Override
     public void render(float delta) {
         screen1sTimer += delta;
+        screenTimer += delta;
         if (screen1sTimer>1){
             screen1sTimer = 0;
         }
@@ -117,6 +130,7 @@ public class CrearScreen extends ScreenAdapter {
 
         mGame.batch.begin();
         mBg.draw(mGame.batch);
+        mPresent.draw(mGame.batch);
         mPlayer.draw(mGame.batch);
         mPlayer.updateSS(delta,screen1sTimer);
         mPumpkin.draw(mGame.batch);
@@ -172,10 +186,20 @@ public class CrearScreen extends ScreenAdapter {
         }
         if (tb1) {
             mExitButton.Push();
+            ReleaseButton1 = true;
         }
         if (tb2) {
             mRetryButton.Push();
             ReleaseButton2 = true;
+        }
+        if (ReleaseButton1 && !tb1){
+            gomusic.dispose();//メモリ解放
+            if (mGame.mRequestHandler != null) {
+                mGame.mRequestHandler.showAds(false); //広告消す
+            }
+            stage = 1;
+            mGame.setScreen(new StartScreen(mGame));
+            //タッチされたらgameScreenに戻る選んだステージで始まる
         }
         if (ReleaseButton2 && !tb2){
             gomusic.dispose();//メモリ解放
@@ -185,6 +209,10 @@ public class CrearScreen extends ScreenAdapter {
             stage = 1;
             mGame.setScreen(new GameScreen(mGame,stage));
             //タッチされたらgameScreenに戻る選んだステージで始まる
+        }
+
+        if (screenTimer > 4){
+            mPresent.get();
         }
     }
     @Override
@@ -196,6 +224,8 @@ public class CrearScreen extends ScreenAdapter {
     private void createStage() {
 
         GhostTs = 10;
+        Texture present = new Texture("present.png");
+        TextureRegion presentTexture = new TextureRegion(present);
         Texture exitbutton = new Texture("ExitButton.png");
         TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
         Texture retrybutton = new Texture("RetryButton.png");
@@ -211,10 +241,10 @@ public class CrearScreen extends ScreenAdapter {
         // Playerを配置
         mPlayer = new Player(playerTexture);
         mPlayer.setPosition(-1,2.5f);
-
         mPumpkin = new Pumpkin(pumpkinTexture);
         mPumpkin.setPosition(-24,2.5f);
-
+        mPresent = new Present(presentTexture);
+        mPresent.setPosition(7.5f, 2.5f);
 
         mExitButton = new ExitButton(exitbuttonTexture);
         mExitButton.setPosition(128, 15);
