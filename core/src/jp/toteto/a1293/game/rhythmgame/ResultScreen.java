@@ -44,7 +44,7 @@ public class ResultScreen extends ScreenAdapter {
     boolean ReleaseButton1;
     boolean ReleaseButton2;
 
-    int stage;
+    int  STAGENo;
     int GhostTs;
     int end = 0;
     int createghost = 0;
@@ -63,7 +63,8 @@ public class ResultScreen extends ScreenAdapter {
     Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("gomusic.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
-    public ResultScreen(RhythmGame game, int score) {
+    public ResultScreen(RhythmGame game, int score,int Stage) {
+        STAGENo = Stage;
         // カメラ、ViewPortを生成、設定するメンバ変数に初期化して代入
         mCamera = new OrthographicCamera();
         mCamera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -118,7 +119,9 @@ public class ResultScreen extends ScreenAdapter {
         mGhost.get(1).updateRS(delta,-1.4f);
         mGhost.get(2).updateRS(delta,-1.1f);
         mGhost.get(3).updateRS(delta,-0.7f);
-        mGhost.get(4).updateRS(delta,0);
+        //mGhost.get(4).updateRS(delta,0);
+        mGhost.get(4).setPosition(1.5f,3);
+        mGhost.get(4).setSize(0.88f,1.2f);
         mGhost.get(5).updateRS(delta,2.2f);
         mGhost.get(6).updateRS(delta,1.2f);
         mGhost.get(7).updateRS(delta,0.8f);
@@ -134,7 +137,7 @@ public class ResultScreen extends ScreenAdapter {
         mGuiCamera.update();
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
         mGame.batch.begin();
-        mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 100, GUI_WIDTH, Align.center, false);
+        mFont.draw(mGame.batch, "Score: " + mScore + tb3, 0, GUI_HEIGHT / 2 + 100, GUI_WIDTH, Align.center, false);
 
         mExitButton.draw(mGame.batch);
         mRetryButton.draw(mGame.batch);
@@ -149,9 +152,8 @@ public class ResultScreen extends ScreenAdapter {
         for (int i = 0; i < 5; i++) { // 20 is max number of touch points
             if (Gdx.input.isTouched(i)) {
                 Rectangle left = new Rectangle(128, 45, 83, 51);//
-                //Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//
                 Rectangle right = new Rectangle(300, 45, 83, 51);//
-                //Rectangle leftd = new Rectangle(0, 0, 70, 72);//
+                Rectangle ghost = new Rectangle(48, 96, 28, 38);//
                 //test
                 final int iX = Gdx.input.getX(i);
                 final int iY = Gdx.input.getY(i);
@@ -159,7 +161,7 @@ public class ResultScreen extends ScreenAdapter {
                 mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
                 tb1 = tb1 || (left.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
                 tb2 = tb2 || (right.contains(mTouchPoint.x, mTouchPoint.y));
-                //tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+                tb3 = tb3 || (ghost.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
                 //tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
             }
         }
@@ -176,7 +178,6 @@ public class ResultScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
             mGame.setScreen(new StartScreen(mGame));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
@@ -185,8 +186,7 @@ public class ResultScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
-            mGame.setScreen(new GameScreen(mGame,stage));
+            mGame.setScreen(new GameScreen(mGame,STAGENo));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
     }
