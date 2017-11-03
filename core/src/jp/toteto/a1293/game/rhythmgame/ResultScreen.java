@@ -43,6 +43,8 @@ public class ResultScreen extends ScreenAdapter {
     boolean tb4;
     boolean ReleaseButton1;
     boolean ReleaseButton2;
+    boolean ReleaseButton3;
+    int ghostcounter;
 
     int  STAGENo;
     int GhostTs;
@@ -60,7 +62,8 @@ public class ResultScreen extends ScreenAdapter {
 
     int mScore;
 
-    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("gomusic.mp3"));//音楽準備
+    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Gnossienne-No1.mp3"));//音楽準備
+    Music Vexationsmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Vexations.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
     public ResultScreen(RhythmGame game, int score,int Stage) {
@@ -165,31 +168,54 @@ public class ResultScreen extends ScreenAdapter {
                 //tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
             }
         }
-        if (tb1) {
+        if (tb1 && ghostcounter<8) {
             mExitButton.Push();
             ReleaseButton1 = true;
         }
-        if (tb2) {
+        if (tb2 && ghostcounter<8) {
             mRetryButton.Push();
             ReleaseButton2 = true;
         }
         if (ReleaseButton1 && !tb1){
-            gomusic.dispose();//メモリ解放
+            Dispose();
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
             mGame.setScreen(new StartScreen(mGame));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
+        if (tb3) {
+            mRetryButton.Push();
+            ReleaseButton3 = true;
+        }
+        if (ReleaseButton3 && !tb3){
+            ReleaseButton3 = false;
+            ghostcounter ++;
+        }
         if (ReleaseButton2 && !tb2){
-            gomusic.dispose();//メモリ解放
+            Dispose();
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
             mGame.setScreen(new GameScreen(mGame,STAGENo));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
+        if (ghostcounter >8){
+            Vexationsmusic.dispose();
+            mGame.setScreen(new GameScreen(mGame,3));
+        }else if (ghostcounter >5){
+            gomusic.dispose();
+            Vexationsmusic.play();
+        }else if (ghostcounter >2){
+
+        }
     }
+
+    private void Dispose() {
+        gomusic.dispose();
+        Vexationsmusic.dispose();
+    }
+
     @Override
     public void resize(int width, int height) {
         mViewPort.update(width, height);

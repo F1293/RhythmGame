@@ -61,7 +61,7 @@ public class CrearScreen extends ScreenAdapter {
 
     int mScore;
 
-    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("gomusic.mp3"));//音楽準備
+    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("Mozart-Magic-Flute-Overture.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
     public CrearScreen(RhythmGame game, int score,int stage) {
@@ -76,6 +76,7 @@ public class CrearScreen extends ScreenAdapter {
         mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera);
         mTouchPoint = new Vector3();
 
+        gomusic.setPosition(90);
         gomusic.play(); //ゲームオーバー画面の音楽再生
         rebirth.dispose();
 
