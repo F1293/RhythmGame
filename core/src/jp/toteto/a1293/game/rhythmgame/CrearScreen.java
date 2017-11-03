@@ -35,7 +35,7 @@ public class CrearScreen extends ScreenAdapter {
     OrthographicCamera mCamera;
     FitViewport mViewPort;
     //FitViewport mGuiViewPort;
-    int stage;//ステージセレクト
+    int STAGENo;//ステージセレクト
 
     Player mPlayer;
     Pumpkin mPumpkin;
@@ -64,8 +64,8 @@ public class CrearScreen extends ScreenAdapter {
     Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("gomusic.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
-    public CrearScreen(RhythmGame game, int score) {
-
+    public CrearScreen(RhythmGame game, int score,int stage) {
+        STAGENo = stage;
         // カメラ、ViewPortを生成、設定するメンバ変数に初期化して代入
         mCamera = new OrthographicCamera();
         mCamera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -197,7 +197,6 @@ public class CrearScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
             mGame.setScreen(new StartScreen(mGame));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
@@ -206,8 +205,7 @@ public class CrearScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
-            mGame.setScreen(new GameScreen(mGame,stage));
+            mGame.setScreen(new GameScreen(mGame,STAGENo));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
 

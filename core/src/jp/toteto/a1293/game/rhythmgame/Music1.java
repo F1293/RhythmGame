@@ -36,6 +36,6 @@ public class Music1 extends GameObject {
     }
 
     public void Push(){
-        setColor(0.5f,0.5f,0.5f,1);
+        setColor(0.3f,0.3f,0.3f,1);
     }
 }

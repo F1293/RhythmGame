@@ -79,7 +79,6 @@ public class GameScreen extends ScreenAdapter {
     int BatTs;
 
 
-
     Sprite mBg;
     //カメラクラスとビューポートクラスをメンバ変数として定義
     OrthographicCamera mCamera;
@@ -107,6 +106,7 @@ public class GameScreen extends ScreenAdapter {
     Button2 mButton2;
     Button3 mButton3;
     Button4 mButton4;
+    BackButton mBackButton;
     Player mPlayer;
     Message mMessage;
     Message2 mMessage2;
@@ -147,6 +147,7 @@ public class GameScreen extends ScreenAdapter {
     boolean tb2;
     boolean tb3;
     boolean tb4;
+    boolean tb5;
     boolean etb;
 
     //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
@@ -161,6 +162,8 @@ public class GameScreen extends ScreenAdapter {
 
     int n = 0;
     int nn = 0;
+
+    int STAGENo;
 
     int end = 0;
     int ENEMY_NUMBER = 0;//敵を選ぶための数字
@@ -181,9 +184,8 @@ public class GameScreen extends ScreenAdapter {
 
     //float f = 2.7f;
 
+    Music playingmusic;
 
-    //音楽の準備
-    Music playingmusic = Gdx.audio.newMusic(Gdx.files.internal("s_WitchAndCat.mp3"));
 
     //効果音の準備
     Sound hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.mp3"));
@@ -203,6 +205,18 @@ public class GameScreen extends ScreenAdapter {
         GhostT = new ArrayList<Float>();
         BatT = new ArrayList<Float>();
         //ToS.add(1.168f);
+//音楽の準備
+        switch (stage){
+            case 1:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("s_WitchAndCat.mp3"));
+                break;
+            case 2:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Jeteveux.mp3"));
+                break;
+            case 3:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("s_WitchAndCat.mp3"));
+                break;
+        }
 
 
         //playingmusic.setLooping(true);//音楽はループ
@@ -363,10 +377,9 @@ public class GameScreen extends ScreenAdapter {
             mGrass.get(i).draw(mGame.batch);
         }
 
-
-
         mRFrame.draw(mGame.batch);
 
+        mBackButton.draw(mGame.batch);
 
 
         //ライフゲージ周り
@@ -406,8 +419,8 @@ public class GameScreen extends ScreenAdapter {
 
     // ステージを作成する、オブジェクトを配置するメソッド
     private void createStage(int stage) {
+        STAGENo = stage;
         TimingList(stage);
-
 
         float x = 0;
         float trees = 0;
@@ -455,6 +468,9 @@ public class GameScreen extends ScreenAdapter {
         TextureRegion messageTexture = new TextureRegion(exitbutton,0, 430, 512, 30);
         TextureRegion message2Texture = new TextureRegion(exitbutton,175, 370, 143, 24);
         //TextureRegion exitbuttonTexture = new TextureRegion(exitbutton,0, 0, 512, 310);
+
+        Texture backbutton = new Texture("present.png");
+        TextureRegion backbuttonTexture = new TextureRegion(backbutton, 812, 0, 212, 160);
 
         Texture bar = new Texture("bar.png");
         TextureRegion barTexture = new TextureRegion(bar,0,845,1024,171);
@@ -598,9 +614,6 @@ public class GameScreen extends ScreenAdapter {
         mButton4 = new Button4(button3animation.getKeyFrame(elapsedTime,true));
         mButton4.setPosition(0, 0.1f);
 
-
-
-
         mButtonBack = new ButtonBack(buttonbackTexture);
         mButtonBack.setPosition(0, 0);
 
@@ -681,6 +694,8 @@ public class GameScreen extends ScreenAdapter {
             mGround.add(ground);
             Gs += 8;
         }
+        mBackButton = new BackButton(backbuttonTexture);
+        mBackButton.setPosition(14.6f, 8.0f);
 
         mMessage = new Message(messageTexture);
         mMessage.setPosition(16, 4.0f);
@@ -717,6 +732,7 @@ public class GameScreen extends ScreenAdapter {
         }
         mMessage2.update(screen2sTimer);
         if (Gdx.input.justTouched()) {
+            mBackButton.setAlpha(0.4f);
             screen2sTimer = 0;
             mMessage2.hide();
             mGameState = GAME_STATE_PLAYING;
@@ -788,6 +804,7 @@ public class GameScreen extends ScreenAdapter {
                 Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//ボタン2
                 Rectangle leftu = new Rectangle(0, 72, 70, 72);//ボタン３
                 Rectangle leftd = new Rectangle(0, 0, 70, 72);//ボタン４
+                Rectangle exit = new Rectangle(467.2f, 246.4f, 83, 51);
                 //test
                 final int iX = Gdx.input.getX(i);
                 final int iY = Gdx.input.getY(i);
@@ -797,6 +814,7 @@ public class GameScreen extends ScreenAdapter {
                 tb2 = tb2 || (rightd.contains(mTouchPoint.x, mTouchPoint.y));
                 tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
                 tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
+                tb5 = tb5 || (exit.contains(mTouchPoint.x, mTouchPoint.y));
             }
         }
         if (tb1) {
@@ -808,6 +826,11 @@ public class GameScreen extends ScreenAdapter {
         if (tb2) {
             mAttackLine.push();
             //animation = new Animation<TextureRegion>(1f/8f,playeranimationFrames);
+        }
+        if (tb5) {
+            mBackButton.Push();
+            Dispose();
+            mGame.setScreen(new StartScreen(mGame));
         }
 
         if (n < ToSs) {
@@ -1154,19 +1177,23 @@ public class GameScreen extends ScreenAdapter {
         if (screen2sTimer>2){
             screen2sTimer = 0;
         }
-        playingmusic.dispose();//メモリ解放
-        hitsound.dispose();//メモリ解放
-        fall.dispose();//メモリ解放
-        getstarsound.dispose();//メモリ解放
-        jingle.dispose();//メモリ解放
+        Dispose();
 
         mMessage.update(delta);
         mMessage2.update(screen2sTimer);
 
         if (Gdx.input.justTouched()) {
             mMessage2.hide();
-        mGame.setScreen(new ResultScreen(mGame, mScore));
+        mGame.setScreen(new ResultScreen(mGame, mScore,STAGENo));
         }
+    }
+
+    private void Dispose() {
+        playingmusic.dispose();//メモリ解放
+        hitsound.dispose();//メモリ解放
+        fall.dispose();//メモリ解放
+        getstarsound.dispose();//メモリ解放
+        jingle.dispose();//メモリ解放
     }
 
     //ゲームクリア時CrearScreenに遷移
@@ -1175,18 +1202,14 @@ public class GameScreen extends ScreenAdapter {
         if (screen2sTimer>2){
             screen2sTimer = 0;
         }
-        playingmusic.dispose();//メモリ解放
-        hitsound.dispose();//メモリ解放
-        fall.dispose();//メモリ解放
-        getstarsound.dispose();//メモリ解放
-        jingle.dispose();//メモリ解放
+        Dispose();
         mMessage.setRegion(0, 471, 512, 30);
         mMessage.update(delta);
         mMessage2.update(screen2sTimer);
 
         if (Gdx.input.justTouched()) {
             mMessage2.hide();
-            mGame.setScreen(new CrearScreen(mGame, mScore));
+            mGame.setScreen(new CrearScreen(mGame, mScore,STAGENo));
         }
     }
 
@@ -1205,8 +1228,167 @@ public class GameScreen extends ScreenAdapter {
         }
     }
     private void TimingList(int stage) {
-        LengthOfSong =3;//66
         if (stage == 1) {
+            LengthOfSong =66;//66
+            GhostT.add(1.514f);
+            ToS.add(1.802f);
+            ToS.add(2.102f);
+            ToS.add(2.418f);
+            ToS.add(2.784f);
+            ToS.add(3.084f);
+            ToS.add(3.4840002f);
+            BatT.add(3.784f);
+            ToS.add(4.0860004f);
+            ToS.add(4.401f);
+            ToS.add(4.701f);
+            ToS.add(5.0010004f);
+            ToS.add(5.318f);
+            PumpkinT.add(5.634f);
+            ToS.add(5.951f);
+            ToS.add(6.234f);
+            SkeletonT.add(6.5509996f);
+            ToS.add(6.851f);
+            ToS.add(7.151f);
+            ToS.add(7.467f);
+            ToS.add(7.785f);
+            ToS.add(8.104f);
+            ToS.add(8.401f);
+            ToS.add(8.668f);
+            ToS.add(9.001f);
+            ToS.add(9.301f);
+            ToS.add(9.601f);
+            BatT.add(9.901f);
+            ToS.add(10.218f);
+            ToS.add(10.818f);
+            ToS.add(11.452f);
+            ToS.add(12.034f);
+            ToS.add(12.618f);
+            ToS.add(13.268f);
+            BatT.add(13.584f);
+            ToS.add(13.900999f);
+            ToS.add(14.518f);
+            PumpkinT.add(15.152f);
+            ToS.add(15.750999f);
+            ToS.add(16.052f);
+            ToS.add(16.318f);
+            SkeletonT.add(16.951f);
+            ToS.add(17.518f);
+            ToS.add(18.184f);
+            BatT.add(18.501f);
+            ToS.add(18.851f);
+            ToS.add(19.435f);
+            ToS.add(20.018f);
+            ToS.add(20.684f);
+            ToS.add(21.318f);
+            ToS.add(21.636f);
+            ToS.add(21.802f);
+            PumpkinT.add(22.085f);
+            ToS.add(22.539f);
+            ToS.add(23.701f);
+            ToS.add(24.067f);
+            ToS.add(24.234f);
+            ToS.add(24.534f);
+            SkeletonT.add(24.951f);
+            ToS.add(26.184f);
+            ToS.add(26.518f);
+            BatT.add(26.701f);
+            ToS.add(26.985f);
+            ToS.add(27.451f);
+            ToS.add(28.153f);
+            ToS.add(28.467f);
+            ToS.add(28.766998f);
+            ToS.add(29.368f);
+            ToS.add(29.987999f);
+            ToS.add(30.601002f);
+            ToS.add(30.883999f);
+            ToS.add(31.222f);
+            PumpkinT.add(31.550999f);
+            ToS.add(31.719002f);
+            ToS.add(31.987999f);
+            ToS.add(32.455f);
+            ToS.add(33.669f);
+            ToS.add(34.018f);
+            ToS.add(34.184f);
+            SkeletonT.add(34.501f);
+            ToS.add(34.917f);
+            ToS.add(36.175f);
+            ToS.add(36.468f);
+            ToS.add(36.634f);
+            ToS.add(37.001f);
+            ToS.add(37.418f);
+            GhostT.add(38.068f);
+            ToS.add(38.384f);
+            ToS.add(38.667f);
+            ToS.add(39.301f);
+            ToS.add(39.902f);
+            ToS.add(40.468f);
+            ToS.add(40.803f);
+            ToS.add(41.14f);
+            ToS.add(42.034f);
+            ToS.add(42.351f);
+            ToS.add(43.317f);
+            PumpkinT.add(43.637f);
+            ToS.add(43.918f);
+            ToS.add(44.234f);
+            ToS.add(44.57f);
+            ToS.add(44.734f);
+            GhostT.add(44.951f);
+            ToS.add(46.085f);
+            ToS.add(46.725f);
+            ToS.add(47.274f);
+            ToS.add(47.856f);
+            ToS.add(48.523f);
+            ToS.add(49.089f);
+            GhostT.add(49.39f);
+            ToS.add(49.773f);
+            ToS.add(50.126f);
+            ToS.add(50.49f);
+            ToS.add(51.026f);
+            ToS.add(51.355f);
+            ToS.add(51.556f);
+            ToS.add(51.707f);
+            PumpkinT.add(52.173f);
+            ToS.add(52.356f);
+            ToS.add(53.525f);
+            ToS.add(53.84f);
+            ToS.add(54.192f);
+            ToS.add(54.49f);
+            ToS.add(54.776f);
+            ToS.add(55.073f);
+            ToS.add(55.389f);
+            ToS.add(55.727f);
+            ToS.add(55.991f);
+            ToS.add(56.273f);
+            ToS.add(56.44f);
+            ToS.add(56.605f);
+            ToS.add(57.089f);
+            ToS.add(57.238f);
+            ToS.add(58.423f);
+            ToS.add(58.738f);
+            ToS.add(59.074f);
+            ToS.add(59.373f);
+            ToS.add(59.673f);
+            ToS.add(59.976f);
+            //ToS.add(60.172997f);
+            ToS.add(60.189003f);
+            ToS.add(60.372f);
+            //ToS.add(60.739998f);
+            ToS.add(60.889f);
+            ToS.add(61.072f);
+
+
+            ToS.add(61.002f);
+
+
+            ToS.add(98.1f);
+            ToS2.add(98.1f);
+            PumpkinT.add(98.0f);
+            SkeletonT.add(98.7f);
+            BatT.add(99.7f);
+            GhostT.add(98.7f);
+        }
+        if (stage == 2) {
+            LengthOfSong =66;//66
             GhostT.add(1.514f);
             ToS.add(1.802f);
             ToS.add(2.102f);

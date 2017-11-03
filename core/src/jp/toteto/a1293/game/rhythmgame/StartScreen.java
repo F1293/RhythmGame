@@ -27,6 +27,8 @@ public class StartScreen extends ScreenAdapter {
     Music1 mMusic1;
     Music2 mMusic2;
     Home mHome;
+    BackButton mBackButton;
+    Manual mManual;
     //カメラのサイズを表す定数を定義する
     static final float CAMERA_WIDTH = 16;
     static final float CAMERA_HEIGHT = 9;
@@ -45,7 +47,8 @@ public class StartScreen extends ScreenAdapter {
     boolean tb4;
     boolean ReleaseButton1;
     boolean ReleaseButton2;
-    int GhostTs;
+    boolean ReleaseButton3;
+    int b3switch;
     int end = 0;
     int createghost = 0;
     float screen1sTimer = 0;
@@ -125,16 +128,25 @@ public class StartScreen extends ScreenAdapter {
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mGuiCamera.update();
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
+
         mGame.batch.begin();
         //mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-        //mFont.draw(mGame.batch, tb1 + "" + tb2, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-
+        //mFont.draw(mGame.batch, tb3 + "" + b3switch, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
 
 
         mMusic1.draw(mGame.batch);
         mMusic2.draw(mGame.batch);
+
         mMusic1.Darker(delta);
         mMusic2.Darker(delta);
+        mManual.draw(mGame.batch);
+        mGame.batch.end();
+
+        mCamera.update();
+        mGame.batch.setProjectionMatrix(mCamera.combined);
+        //↑はカメラの座標を計算しスプライト表示に反映させるのに必要
+        mGame.batch.begin();
+        mBackButton.draw(mGame.batch);
         mGame.batch.end();
 /*
         if (Gdx.input.justTouched()) {
@@ -154,10 +166,10 @@ public class StartScreen extends ScreenAdapter {
 
         for (int i = 0; i < 5; i++) { // 20 is max number of touch points
             if (Gdx.input.isTouched(i)) {
-                Rectangle music1 = new Rectangle(300, 150, 200, 50);//
+                Rectangle music1 = new Rectangle(300, 190, 200, 50);//
                 //Rectangle rightd = new Rectangle(GUI_WIDTH - 70, 0, GUI_WIDTH, 72);//
-                Rectangle music2 = new Rectangle(300, 90, 200, 50);//
-                //Rectangle leftd = new Rectangle(0, 0, 70, 72);//
+                Rectangle music2 = new Rectangle(300, 130, 200, 50);//
+                Rectangle exit = new Rectangle(467.2f, 246.4f, 83, 51);
                 //test
                 final int iX = Gdx.input.getX(i);
                 final int iY = Gdx.input.getY(i);
@@ -165,17 +177,20 @@ public class StartScreen extends ScreenAdapter {
                 mGuiViewPort.unproject(mTouchPoint.set(iX, iY, 0));
                 tb1 = tb1 || (music1.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
                 tb2 = tb2 || (music2.contains(mTouchPoint.x, mTouchPoint.y));
-                //tb3 = tb3 || (leftu.contains(mTouchPoint.x, mTouchPoint.y)); // Touch coordinates are in screen space
+                tb3 = tb3 || (exit.contains(mTouchPoint.x, mTouchPoint.y));
                 //tb4 = tb4 || (leftd.contains(mTouchPoint.x, mTouchPoint.y));
             }
         }
-        if (tb1) {
+        if (tb1 && !ReleaseButton2 && b3switch == 0) {
             mMusic1.Push();
             ReleaseButton1 = true;
         }
-        if (tb2) {
+        if (tb2 && !ReleaseButton1 && b3switch == 0) {
             mMusic2.Push();
             ReleaseButton2 = true;
+        }
+        if (tb3 && !ReleaseButton1 && !ReleaseButton2) {
+            ReleaseButton3 = true;
         }
         if (ReleaseButton1 && !tb1) {
             mPlayer.start=1;
@@ -193,9 +208,22 @@ public class StartScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
+            stage = 2;
             screenbuttonTimer += delta;
             //タッチされたらgameScreenに戻る選んだステージで始まる
+        }
+        if (ReleaseButton3 && !tb3) {
+            ReleaseButton3 = false;
+            if (b3switch == 0) {
+                mBackButton.setRegion(600, 192, 212, 160);
+                mManual.setAlpha(1);
+                b3switch = 1;
+                //ここに説明書入れる
+            }else if(b3switch == 1){
+                mBackButton.setRegion(600, 0, 212, 160);
+                mManual.setAlpha(0);
+                b3switch = 0;
+            }
         }
         if (screenbuttonTimer>2.3f){
             mGame.setScreen(new GameScreen(mGame, stage));
@@ -210,17 +238,21 @@ public class StartScreen extends ScreenAdapter {
 
     private void createStage() {
 
-        GhostTs = 10;
         Texture music1 = new Texture("music.png");
         TextureRegion music1Texture = new TextureRegion(music1, 0, 0, 512, 128);
         Texture music2 = new Texture("music.png");
         TextureRegion music2Texture = new TextureRegion(music2, 0, 150, 512, 128);
+        Texture backbutton = new Texture("present.png");
+        TextureRegion backbuttonTexture = new TextureRegion(backbutton, 600, 0, 212, 160);
         Texture player = new Texture("majo.png");
         TextureRegion playerTexture = new TextureRegion(player, 0, 64, 22, 32);
         Texture pumpkint = new Texture("pumpkin.png");
         TextureRegion pumpkinTexture = new TextureRegion(pumpkint, 0, 64, 32, 27);
         Texture home = new Texture("startscreen.png");
         TextureRegion homeTexture = new TextureRegion(home, 0, 625, 400, 400);
+        Texture manual = new Texture("music.png");
+        TextureRegion manualTexture = new TextureRegion(manual, 0, 280, 421, 232);
+
 
 
         // Playerを配置
@@ -231,9 +263,15 @@ public class StartScreen extends ScreenAdapter {
         mHome.setPosition(0, 1.3f);
 
         mMusic1 = new Music1(music1Texture);
-        mMusic1.setPosition(300, 170);
+        mMusic1.setPosition(300, 190);
         mMusic2 = new Music2(music2Texture);
-        mMusic2.setPosition(300, 110);
+        mMusic2.setPosition(300, 130);
 
+        mBackButton = new BackButton(backbuttonTexture);
+        mBackButton.setPosition(14.6f, 7.7f);
+
+        mManual = new Manual(manualTexture);
+        mManual.setPosition(6.0f, 5.0f);
+        mManual.setAlpha(0);
     }
 }
