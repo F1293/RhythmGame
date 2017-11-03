@@ -2,6 +2,7 @@ package jp.toteto.a1293.game.rhythmgame;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -40,6 +41,12 @@ public class StartScreen extends ScreenAdapter {
     //FitViewport mGuiViewPort;
     int stage;//ステージセレクト
 
+    Preferences mPrefs;
+    int mHighScore1;
+    int mHighScore2;
+    int mHighScore3;
+
+
     Player mPlayer;
     boolean tb1;
     boolean tb2;
@@ -77,6 +84,11 @@ public class StartScreen extends ScreenAdapter {
         mViewPort = new FitViewport(CAMERA_WIDTH, CAMERA_HEIGHT, mCamera);
         mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera);
         mTouchPoint = new Vector3();
+
+        mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");
+        mHighScore1 = mPrefs.getInteger("HIGHSCORE1", 0);
+        mHighScore2 = mPrefs.getInteger("HIGHSCORE2", 0);
+        mHighScore3 = mPrefs.getInteger("HIGHSCORE3", 0);
 
         gomusic.play(); //ゲームオーバー画面の音楽再生
         rebirth.dispose();
@@ -131,7 +143,7 @@ public class StartScreen extends ScreenAdapter {
 
         mGame.batch.begin();
         //mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-        //mFont.draw(mGame.batch, tb3 + "" + b3switch, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
+        mFont.draw(mGame.batch, mHighScore1 + "" + mHighScore1 + mHighScore2 + mHighScore3, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
 
 
         mMusic1.draw(mGame.batch);
@@ -198,7 +210,7 @@ public class StartScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 1;
+            stage = 3;
             screenbuttonTimer += delta;
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
