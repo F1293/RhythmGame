@@ -71,7 +71,7 @@ public class StartScreen extends ScreenAdapter {
 
     int mScore;
 
-    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("gomusic.mp3"));//音楽準備
+    Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("175-Mozart-Symphony-No41-2nd.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
     public StartScreen(RhythmGame game) {
