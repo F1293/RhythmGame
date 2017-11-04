@@ -144,8 +144,10 @@ public class CrearScreen extends ScreenAdapter {
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
         mGame.batch.begin();
         mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-        //mFont.draw(mGame.batch, tb1 + "" + tb2, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-
+        if (STAGENo == 3) {
+            mFont.draw(mGame.batch, "You are so awesome!", 0, GUI_HEIGHT / 2 +20, GUI_WIDTH, Align.center, false);
+            mFont.draw(mGame.batch, "Thanks so much.", 0, GUI_HEIGHT / 2 - 30, GUI_WIDTH, Align.center, false);
+        }
 
         mExitButton.draw(mGame.batch);
         mRetryButton.draw(mGame.batch);

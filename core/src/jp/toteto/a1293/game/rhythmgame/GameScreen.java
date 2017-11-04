@@ -16,11 +16,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static com.badlogic.gdx.utils.Timer.schedule;
 
 
 /**
@@ -48,6 +51,7 @@ public class GameScreen extends ScreenAdapter {
     float b4pushcounter;
     float screen1sTimer;
     float screen2sTimer;
+    float screen12sTimer;
     float GameOverCounter;
 
     //カメラのサイズを表す定数を定義する
@@ -69,7 +73,8 @@ public class GameScreen extends ScreenAdapter {
 
     private RhythmGame mGame;
 
-    int LengthOfSong;
+    float LengthOfSong;
+    float RemainingTime;
 
     int ToSs;
     int ToSs2;
@@ -142,6 +147,8 @@ public class GameScreen extends ScreenAdapter {
     float musictime = 0.00f;//再生時間を入れる変数
     Preferences mPrefs; // データを永続化させるためのPreferenceをメンバ変数に定義
     boolean b = false;
+
+    int VCounter;
     //ボタンがタッチされているかaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     boolean tb1;
     boolean tb2;
@@ -149,6 +156,7 @@ public class GameScreen extends ScreenAdapter {
     boolean tb4;
     boolean tb5;
     boolean etb;
+    boolean VCswitch = true;
 
     //ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
     //boolean b = true;
@@ -206,18 +214,7 @@ public class GameScreen extends ScreenAdapter {
         BatT = new ArrayList<Float>();
         //ToS.add(1.168f);
 //音楽の準備
-        switch (stage){
-            case 1:
-                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Gymnopedies.mp3"));
-                break;
-            case 2:
-                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Jeteveux.mp3"));
-                break;
-            case 3:
-                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Vexations.mp3"));
-                playingmusic.setLooping(true);//音楽はループ
-                break;
-        }
+
 
 
 
@@ -264,7 +261,24 @@ public class GameScreen extends ScreenAdapter {
         mGround = new ArrayList<Ground>();
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.toteto.a1293.game.rhythmgame");//Preferencesの取得
-        mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
+
+        //mHighScore = mPrefs.getInteger("HIGHSCORE", 0);//第2引数はキーに対応する値がなかった場合に返ってくる値（初期値）
+
+        switch (stage){
+            case 1:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Gymnopedies.mp3"));
+                mHighScore = mPrefs.getInteger("HIGHSCORE1", 0);
+                break;
+            case 2:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Jeteveux.mp3"));
+                mHighScore = mPrefs.getInteger("HIGHSCORE2", 0);
+                break;
+            case 3:
+                playingmusic = Gdx.audio.newMusic(Gdx.files.internal("Satie-Vexations.mp3"));
+                mHighScore = mPrefs.getInteger("HIGHSCORE3", 0);
+                playingmusic.setLooping(true);//音楽はループ
+                break;
+        }
 
         createStage(stage);
         //オブジェクト配置するcreateStageメソッドを呼び出す
@@ -400,11 +414,14 @@ public class GameScreen extends ScreenAdapter {
         mGame.batch.begin();
 
         //drawメソッドで描画第1引数にSprteBatch、第2引数に表示されたい文字列、第3引数にx座標、第4引数にy座標
-        //mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15);
+        if (STAGENo == 3){
+            mFont.draw(mGame.batch, "Vexations mode: " + VCounter + "/840", 60, GUI_HEIGHT - 60);
+        }
         //mFont.draw(mGame.batch, "Music: " + musictime, 16, GUI_HEIGHT - 55);
         //mFont.draw(mGame.batch, "Score: " + mScore + "FG: " + GameOverCounter + FearGauge + "Life: " + LifeGauge , 16, GUI_HEIGHT - 35);
-        //mFont.draw(mGame.batch, "tb4.2.3.1" + tb4 + "." + tb2 + "." + tb3 + "." + tb1 + "." + mPlayer.jumpstate +mPlayer.stateTime, 16, GUI_HEIGHT - 75);
-        mFont.draw(mGame.batch, screen2sTimer+ "fps", 16, GUI_HEIGHT - 15);
+        if (STAGENo == 1 || STAGENo ==2){mFont.draw(mGame.batch, ""+ Math.floor(RemainingTime), GUI_WIDTH/2 - 20, GUI_HEIGHT - 10);
+        }
+        mFont.draw(mGame.batch, "Score" + mScore, 16, GUI_HEIGHT - 15);
 
         mGame.batch.end();
 
@@ -422,6 +439,7 @@ public class GameScreen extends ScreenAdapter {
     private void createStage(int stage) {
         STAGENo = stage;
         TimingList(stage);
+        RemainingTime = 1 + LengthOfSong;
 
         float x = 0;
         float trees = 0;
@@ -535,7 +553,8 @@ public class GameScreen extends ScreenAdapter {
         TextureRegion tree2Texture = new TextureRegion(tree2t,0,0,512,512);
 
         Texture grasst = new Texture("kusa.png");
-        TextureRegion grassTexture = new TextureRegion(grasst,0,845,1024,171);
+        //TextureRegion grassTexture = new TextureRegion(grasst,0,845,1024,171);
+        TextureRegion grassTexture = new TextureRegion(grasst,0,0,1024,47);
 
         Texture jiment = new Texture("jimen.png");
         TextureRegion groundTexture = new TextureRegion(jiment,0,896,1024,128);
@@ -680,14 +699,21 @@ public class GameScreen extends ScreenAdapter {
             mTree2.add(tree2);
             trees += mRandom.nextFloat() * 10;
         }
-
+/*
         while ( grasses < 24) {
-
             Grass grass = new Grass(grassTexture);
             grass.setPosition(grasses, 4.5f);
             mGrass.add(grass);
             grasses += 6;
         }
+*/
+        while ( grasses < 48) {
+            Grass grass = new Grass(grassTexture);
+            grass.setPosition(grasses, 4.5f);
+            mGrass.add(grass);
+            grasses += 24;
+        }
+/*
         while ( Gs <= 24) {
 
             Ground ground = new Ground(groundTexture);
@@ -695,6 +721,14 @@ public class GameScreen extends ScreenAdapter {
             mGround.add(ground);
             Gs += 8;
         }
+        */
+        while ( Gs <= 24) {
+            Ground ground = new Ground(groundTexture);
+            ground.setPosition(Gs, 4.5f);
+            mGround.add(ground);
+            Gs += 12;
+        }
+
         mBackButton = new BackButton(backbuttonTexture);
         mBackButton.setPosition(14.6f, 8.0f);
 
@@ -745,6 +779,21 @@ public class GameScreen extends ScreenAdapter {
     //aniani
     private void updatePlaying(float delta) {
 //アニメーション
+        RemainingTime -= delta;
+        screen12sTimer += delta;
+
+
+        if (screen12sTimer>=6 && mGrass.get(0).getX()<-1){
+            mGrass.get(0).setX(24);
+            mGround.get(0).setX(12);
+        }
+        if (screen12sTimer>=6 && mGrass.get(1).getX()<-1){
+            mGrass.get(1).setX(24);
+            mGround.get(1).setX(12);
+        }
+        if (screen12sTimer > 6){
+            screen12sTimer = 0;
+        }
 
         screen1sTimer += delta;
         if (screen1sTimer >1){
@@ -786,7 +835,6 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mGrass.size(); i++) { //ここで一回のみの動作に
             mGrass.get(i).update(delta);
         }
-
 
         musictime = playingmusic.getPosition();//再生時間取得
         //ボタンがタッチされているか
@@ -910,7 +958,6 @@ public class GameScreen extends ScreenAdapter {
         }
 
 
-
         mLGaugeBar.GetDamage();
         mFGaugeBar.GetDamage();
         mActionBack.Darker();
@@ -925,7 +972,24 @@ public class GameScreen extends ScreenAdapter {
         if (LifeGauge <= 15){
             mRFrame.update(delta);
         }
-//ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
+
+        if (STAGENo==3){
+            if (musictime <1 && VCswitch) {
+                VCounter++;
+                VCswitch = false;
+            }
+            if (musictime > 90){
+                for (int i = 0; i < ToSs; i++) {
+                    mNote.get(i).loop();
+                    n = 0;
+                }
+                for (int i = 0; i < ToSs2; i++) {
+                    mNote2.get(i).loop();
+                    nn = 0;
+                }
+                VCswitch = true;
+            }
+        }
         checkCollision();
 
         // ゲームオーバーか判断する
@@ -963,8 +1027,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         note.get();//消す
                     } else {
@@ -972,8 +1036,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         note.get();//消す
                         break;
@@ -1021,8 +1085,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         note2.get();//消す
                     } else {
@@ -1030,8 +1094,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         note2.get();//消す
 
@@ -1093,8 +1157,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         enote.get();//消す
                     } else {
@@ -1102,8 +1166,8 @@ public class GameScreen extends ScreenAdapter {
                         if (mScore > mHighScore) { //ハイスコアを超えた場合
                             mHighScore = mScore; //今の点数をハイスコアに
                             //ハイスコアをPreferenceに保存する
-                            mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
-                            mPrefs.flush(); // 値を永続化するのに必要
+                            //mPrefs.putInteger("HIGHSCORE", mHighScore); // 第1引数にキー、第2引数に値を指定
+                            //mPrefs.flush(); // 値を永続化するのに必要
                         }
                         enote.get();//消す
 
@@ -1174,6 +1238,20 @@ public class GameScreen extends ScreenAdapter {
 
     //ゲームオーバー時ResultScreenに遷移
     private void updateGameOver(float delta) {
+        switch (STAGENo){
+            case 1:
+                mPrefs.putInteger("HIGHSCORE1", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+            case 2:
+                mPrefs.putInteger("HIGHSCORE2", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+            case 3:
+                mPrefs.putInteger("HIGHSCORE3", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+        }
         screen2sTimer += delta;
         if (screen2sTimer>2){
             screen2sTimer = 0;
@@ -1199,6 +1277,20 @@ public class GameScreen extends ScreenAdapter {
 
     //ゲームクリア時CrearScreenに遷移
     private void updateGameCrear(float delta) {
+        switch (STAGENo){
+            case 1:
+                mPrefs.putInteger("HIGHSCORE1", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+            case 2:
+                mPrefs.putInteger("HIGHSCORE2", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+            case 3:
+                mPrefs.putInteger("HIGHSCORE3", mHighScore);
+                mPrefs.flush(); // 値を永続化するのに必要
+                break;
+        }
         screen2sTimer += delta;
         if (screen2sTimer>2){
             screen2sTimer = 0;
@@ -1227,10 +1319,13 @@ public class GameScreen extends ScreenAdapter {
             playingmusic.dispose();//メモリ解放
             mGameState = GAME_STATE_GAMEOVER;
         }
+        if (VCounter == 841){
+            mGameState = GAME_STATE_GAMECREAR;
+        }
     }
     private void TimingList(int stage) {
         if (stage == 1) {
-            LengthOfSong =6;//66
+            LengthOfSong =66;//66
             GhostT.add(1.514f);
             ToS.add(1.802f);
             ToS.add(2.102f);
@@ -1548,155 +1643,25 @@ public class GameScreen extends ScreenAdapter {
             GhostT.add(98.7f);
         }
         if (stage == 3) {
-            LengthOfSong =666;//66
-            GhostT.add(1.514f);
-            ToS.add(1.802f);
-            ToS.add(2.102f);
-            ToS.add(2.418f);
-            ToS.add(2.784f);
-            ToS.add(3.084f);
-            ToS.add(3.4840002f);
-            BatT.add(3.784f);
-            ToS.add(4.0860004f);
-            ToS.add(4.401f);
-            ToS.add(4.701f);
-            ToS.add(5.0010004f);
-            ToS.add(5.318f);
-            PumpkinT.add(5.634f);
-            ToS.add(5.951f);
-            ToS.add(6.234f);
-            SkeletonT.add(6.5509996f);
-            ToS.add(6.851f);
-            ToS.add(7.151f);
-            ToS.add(7.467f);
-            ToS.add(7.785f);
-            ToS.add(8.104f);
-            ToS.add(8.401f);
-            ToS.add(8.668f);
-            ToS.add(9.001f);
-            ToS.add(9.301f);
-            ToS.add(9.601f);
-            BatT.add(9.901f);
-            ToS.add(10.218f);
-            ToS.add(10.818f);
-            ToS.add(11.452f);
-            ToS.add(12.034f);
-            ToS.add(12.618f);
-            ToS.add(13.268f);
-            BatT.add(13.584f);
-            ToS.add(13.900999f);
-            ToS.add(14.518f);
-            PumpkinT.add(15.152f);
-            ToS.add(15.750999f);
-            ToS.add(16.052f);
-            ToS.add(16.318f);
-            SkeletonT.add(16.951f);
-            ToS.add(17.518f);
-            ToS.add(18.184f);
-            BatT.add(18.501f);
-            ToS.add(18.851f);
-            ToS.add(19.435f);
-            ToS.add(20.018f);
-            ToS.add(20.684f);
-            ToS.add(21.318f);
-            ToS.add(21.636f);
-            ToS.add(21.802f);
-            PumpkinT.add(22.085f);
-            ToS.add(22.539f);
-            ToS.add(23.701f);
-            ToS.add(24.067f);
-            ToS.add(24.234f);
-            ToS.add(24.534f);
-            SkeletonT.add(24.951f);
-            ToS.add(26.184f);
-            ToS.add(26.518f);
-            BatT.add(26.701f);
-            ToS.add(26.985f);
-            ToS.add(27.451f);
-            ToS.add(28.153f);
-            ToS.add(28.467f);
-            ToS.add(28.766998f);
-            ToS.add(29.368f);
-            ToS.add(29.987999f);
-            ToS.add(30.601002f);
-            ToS.add(30.883999f);
-            ToS.add(31.222f);
-            PumpkinT.add(31.550999f);
-            ToS.add(31.719002f);
-            ToS.add(31.987999f);
-            ToS.add(32.455f);
-            ToS.add(33.669f);
-            ToS.add(34.018f);
-            ToS.add(34.184f);
-            SkeletonT.add(34.501f);
-            ToS.add(34.917f);
-            ToS.add(36.175f);
-            ToS.add(36.468f);
-            ToS.add(36.634f);
-            ToS.add(37.001f);
-            ToS.add(37.418f);
-            GhostT.add(38.068f);
-            ToS.add(38.384f);
-            ToS.add(38.667f);
-            ToS.add(39.301f);
-            ToS.add(39.902f);
-            ToS.add(40.468f);
-            ToS.add(40.803f);
-            ToS.add(41.14f);
-            ToS.add(42.034f);
-            ToS.add(42.351f);
-            ToS.add(43.317f);
-            PumpkinT.add(43.637f);
-            ToS.add(43.918f);
-            ToS.add(44.234f);
-            ToS.add(44.57f);
-            ToS.add(44.734f);
-            GhostT.add(44.951f);
-            ToS.add(46.085f);
-            ToS.add(46.725f);
-            ToS.add(47.274f);
-            ToS.add(47.856f);
-            ToS.add(48.523f);
-            ToS.add(49.089f);
-            GhostT.add(49.39f);
-            ToS.add(49.773f);
-            ToS.add(50.126f);
-            ToS.add(50.49f);
-            ToS.add(51.026f);
-            ToS.add(51.355f);
-            ToS.add(51.556f);
-            ToS.add(51.707f);
-            PumpkinT.add(52.173f);
-            ToS.add(52.356f);
-            ToS.add(53.525f);
-            ToS.add(53.84f);
-            ToS.add(54.192f);
-            ToS.add(54.49f);
-            ToS.add(54.776f);
-            ToS.add(55.073f);
-            ToS.add(55.389f);
-            ToS.add(55.727f);
-            ToS.add(55.991f);
-            ToS.add(56.273f);
-            ToS.add(56.44f);
-            ToS.add(56.605f);
-            ToS.add(57.089f);
-            ToS.add(57.238f);
-            ToS.add(58.423f);
-            ToS.add(58.738f);
-            ToS.add(59.074f);
-            ToS.add(59.373f);
-            ToS.add(59.673f);
-            ToS.add(59.976f);
-            //ToS.add(60.172997f);
-            ToS.add(60.189003f);
-            ToS.add(60.372f);
-            //ToS.add(60.739998f);
-            ToS.add(60.889f);
-            ToS.add(61.072f);
-
-
-            ToS.add(61.002f);
+            LengthOfSong =100;//66
+            ToS.add(1.0f);
+            ToS2.add(2.0f);
+            ToS.add(3.0f);
+            ToS2.add(4.0f);
+            ToS.add(5.0f);
+            ToS2.add(6.0f);
+            ToS.add(7.0f);
+            ToS2.add(8.0f);
+            ToS.add(9.0f);
+            ToS2.add(10.0f);
+            ToS.add(11.0f);
+            ToS2.add(12.0f);
+            ToS.add(13.0f);
+            ToS2.add(14.0f);
+            ToS.add(15.0f);
+            ToS2.add(16.0f);
+            ToS.add(17.0f);
+            ToS2.add(18.0f);
 
 
             ToS.add(98.1f);

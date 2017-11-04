@@ -109,7 +109,7 @@ public class StartScreen extends ScreenAdapter {
 
         // フォント
         mFont = new BitmapFont(Gdx.files.internal("roundfont.fnt"), Gdx.files.internal("roundfont.png"), false);
-        mFont.getData().setScale(0.5f);// フォントサイズも指定
+        mFont.getData().setScale(0.3f);// フォントサイズも指定
         createStage();
     }
 
@@ -143,8 +143,14 @@ public class StartScreen extends ScreenAdapter {
 
         mGame.batch.begin();
         //mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-        mFont.draw(mGame.batch, mHighScore1 + "" + mHighScore1 + mHighScore2 + mHighScore3, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
-
+        if (mHighScore1>1 || mHighScore2>1) {
+            mFont.draw(mGame.batch, "High Score" + "", -70, GUI_HEIGHT / 2 + 49, GUI_WIDTH, Align.center, false);
+            mFont.draw(mGame.batch, mHighScore1 + "", 20, GUI_HEIGHT / 2 + 77, GUI_WIDTH, Align.center, false);
+            mFont.draw(mGame.batch, mHighScore2 + "", 20, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false);
+        }
+        if (mHighScore3>1) {
+            mFont.draw(mGame.batch, "Vexations mode:" + mHighScore3, 90, 110, GUI_WIDTH, Align.center, false);
+        }
 
         mMusic1.draw(mGame.batch);
         mMusic2.draw(mGame.batch);
@@ -210,7 +216,7 @@ public class StartScreen extends ScreenAdapter {
             if (mGame.mRequestHandler != null) {
                 mGame.mRequestHandler.showAds(false); //広告消す
             }
-            stage = 3;
+            stage = 1;
             screenbuttonTimer += delta;
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }

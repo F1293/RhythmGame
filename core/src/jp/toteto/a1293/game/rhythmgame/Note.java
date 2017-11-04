@@ -41,4 +41,9 @@ public class Note extends GameObject {
         mState = NOTE_NONE;
         setAlpha(0);
     }
+    public void loop() {
+        mState = NOTE_EXIST;
+        setPosition(30.0f, 0.85f);
+        setAlpha(1);
+    }
 }

@@ -80,9 +80,6 @@ public class Ghost extends GameObject {
         if (velocity.x>0){
             setRegion(0, 64, 24, 32);
         }
-        if (velocity.x==0){
-            setRegion(0, 2, 24, 32);
-        }
         if (mState == 0) {
             velocity.x = v;
             if (getX() > 17||getX() < -2) {

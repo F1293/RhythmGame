@@ -122,7 +122,6 @@ public class ResultScreen extends ScreenAdapter {
         mGhost.get(1).updateRS(delta,-1.4f);
         mGhost.get(2).updateRS(delta,-1.1f);
         mGhost.get(3).updateRS(delta,-0.7f);
-        //mGhost.get(4).updateRS(delta,0);
         mGhost.get(4).setPosition(1.5f,3);
         mGhost.get(4).setSize(0.88f,1.2f);
         mGhost.get(5).updateRS(delta,2.2f);
@@ -185,7 +184,6 @@ public class ResultScreen extends ScreenAdapter {
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
         if (tb3) {
-            mRetryButton.Push();
             ReleaseButton3 = true;
         }
         if (ReleaseButton3 && !tb3){
@@ -207,7 +205,9 @@ public class ResultScreen extends ScreenAdapter {
             gomusic.dispose();
             Vexationsmusic.play();
         }else if (ghostcounter >2){
-
+            mGhost.get(4).setRegion(64, 98, 24, 32);
+        }else if (ghostcounter >0){
+            mGhost.get(4).setRegion(64, 2, 24, 32);
         }
     }
 

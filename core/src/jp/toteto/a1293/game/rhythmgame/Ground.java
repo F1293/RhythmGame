@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Ground   extends GameObject {
     // 横幅、高さ
-    public static final float GROUND_WIDTH = 8.1f;
+    public static final float GROUND_WIDTH = 16.0f;
     public static final float GROUND_HEIGHT = 1.0f;
 
     public static final int GROUND_EXIST = 0;
@@ -18,7 +18,7 @@ public class Ground   extends GameObject {
     int mState;
 
     // 速度
-    public static final float TREE_VELOCITY = - 1.8f;
+    public static final float TREE_VELOCITY = - 2.0f;
 
 
 
@@ -32,9 +32,5 @@ public class Ground   extends GameObject {
     // 座標を更新する
     public void update(float deltaTime) {
         setX(getX() + velocity.x * deltaTime);
-            if (getX()<= -8.0){
-                setPosition(16, 4.5f);
-            }
-
     }
 }

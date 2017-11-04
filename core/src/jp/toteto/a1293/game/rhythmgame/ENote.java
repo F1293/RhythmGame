@@ -44,4 +44,5 @@ public class ENote extends GameObject {
         mState = NOTE_NONE;
         setAlpha(0);
     }
+
 }
