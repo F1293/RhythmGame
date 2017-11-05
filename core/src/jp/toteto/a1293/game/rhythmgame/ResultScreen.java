@@ -87,6 +87,9 @@ public class ResultScreen extends ScreenAdapter {
         if (mGame.mRequestHandler != null) {//表示するかどうか
             mGame.mRequestHandler.showAds(true); // 広告表示
         }
+        if (mGame.mRequestHandler != null && MathUtils.random(1, 2) == 2) {//表示するかどうか
+            mGame.mRequestHandler.showAdsi(true); // 広告表示
+        }
 
 
         mScore = score;
@@ -200,6 +203,9 @@ public class ResultScreen extends ScreenAdapter {
         }
         if (ghostcounter >8){
             Vexationsmusic.dispose();
+            if (mGame.mRequestHandler != null) {
+                mGame.mRequestHandler.showAds(false); //広告消す
+            }
             mGame.setScreen(new GameScreen(mGame,3));
         }else if (ghostcounter >5){
             gomusic.dispose();

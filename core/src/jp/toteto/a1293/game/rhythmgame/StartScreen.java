@@ -12,16 +12,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static jp.toteto.a1293.game.rhythmgame.Ghost.GHOST_VELOCITY;
 
 public class StartScreen extends ScreenAdapter {
     boolean tbE;
@@ -145,8 +139,8 @@ public class StartScreen extends ScreenAdapter {
         //mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
         if (mHighScore1>1 || mHighScore2>1) {
             mFont.draw(mGame.batch, "High Score" + "", -70, GUI_HEIGHT / 2 + 49, GUI_WIDTH, Align.center, false);
-            mFont.draw(mGame.batch, mHighScore1 + "", 20, GUI_HEIGHT / 2 + 77, GUI_WIDTH, Align.center, false);
-            mFont.draw(mGame.batch, mHighScore2 + "", 20, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false);
+            mFont.draw(mGame.batch, mHighScore1 + "", 10, GUI_HEIGHT / 2 + 77, GUI_WIDTH, Align.center, false);
+            mFont.draw(mGame.batch, mHighScore2 + "", 10, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false);
         }
         if (mHighScore3>1) {
             mFont.draw(mGame.batch, "Vexations mode:" + mHighScore3, 90, 110, GUI_WIDTH, Align.center, false);
@@ -234,16 +228,27 @@ public class StartScreen extends ScreenAdapter {
             ReleaseButton3 = false;
             if (b3switch == 0) {
                 mBackButton.setRegion(600, 192, 212, 160);
+                if (mGame.mRequestHandler != null) {//表示するかどうか
+                    mGame.mRequestHandler.showAds(false); // 広告表示
+                }
                 mManual.setAlpha(1);
                 b3switch = 1;
                 //ここに説明書入れる
             }else if(b3switch == 1){
+
                 mBackButton.setRegion(600, 0, 212, 160);
+                if (mGame.mRequestHandler != null) {//表示するかどうか
+                    mGame.mRequestHandler.showAds(true); // 広告表示
+                }
                 mManual.setAlpha(0);
                 b3switch = 0;
             }
         }
         if (screenbuttonTimer>2.3f){
+            if (mGame.mRequestHandler != null) {//表示するかどうか
+                mGame.mRequestHandler.showAds(false); // 広告表示
+            }
+
             mGame.setScreen(new GameScreen(mGame, stage));
         }
     }

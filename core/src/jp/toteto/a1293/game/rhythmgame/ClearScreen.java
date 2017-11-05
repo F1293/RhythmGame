@@ -10,18 +10,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static jp.toteto.a1293.game.rhythmgame.Ghost.GHOST_VELOCITY;
-
-public class CrearScreen extends ScreenAdapter {
+public class ClearScreen extends ScreenAdapter {
     boolean tbE;
     Present mPresent;
     ExitButton mExitButton;
@@ -48,6 +42,7 @@ public class CrearScreen extends ScreenAdapter {
     int GhostTs;
     int end = 0;
     int createghost = 0;
+    float Life;
     float screen1sTimer =0;
     float screenTimer =0;
     //ArrayList<Float> GhostT = new ArrayList<Float>();
@@ -64,7 +59,8 @@ public class CrearScreen extends ScreenAdapter {
     Music gomusic = Gdx.audio.newMusic(Gdx.files.internal("Mozart-Magic-Flute-Overture.mp3"));//音楽準備
     Sound rebirth = Gdx.audio.newSound(Gdx.files.internal("rebirth.mp3"));//効果音準備
 
-    public CrearScreen(RhythmGame game, int score,int stage) {
+    public ClearScreen(RhythmGame game, int score, int stage,int life) {
+        Life = life;
         STAGENo = stage;
         // カメラ、ViewPortを生成、設定するメンバ変数に初期化して代入
         mCamera = new OrthographicCamera();
@@ -82,10 +78,6 @@ public class CrearScreen extends ScreenAdapter {
 
         mGame = game;
 
-        if (mGame.mRequestHandler != null) {//表示するかどうか
-            mGame.mRequestHandler.showAds(true); // 広告表示
-        }
-
 
         mScore = score;
 
@@ -102,13 +94,31 @@ public class CrearScreen extends ScreenAdapter {
         mFont.getData().setScale(0.5f);// フォントサイズも指定
 
         createStage();
-        if (score>500) {
-            mPresent.setRegion(194, 0, 190, 170);
-        }else if(score>400){
-            mPresent.setRegion(405, 0, 190, 170);
-        }else {
-            mPresent.setRegion(0, 0, 190, 170);
+        if (STAGENo == 1) {
+            if (score > 500) {
+                mPresent.setRegion(194, 0, 190, 170);
+            } else if (score > 400) {
+                mPresent.setRegion(405, 0, 190, 170);
+            } else {
+                mPresent.setRegion(0, 0, 190, 170);
+            }
         }
+        if (STAGENo == 2){
+            if (score > 1300) {
+                mPresent.setRegion(194, 0, 190, 170);
+            } else if (score > 950) {
+                mPresent.setRegion(405, 0, 190, 170);
+            } else {
+                mPresent.setRegion(0, 0, 190, 170);
+            }
+        }
+        if (STAGENo == 3){
+            if (score > 302400) {
+                mPresent.setRegion(194, 0, 190, 170);
+            } else{
+                mPresent.setRegion(405, 0, 190, 170);
+            }
+            }
     }
 
     @Override
@@ -144,6 +154,9 @@ public class CrearScreen extends ScreenAdapter {
         mGame.batch.setProjectionMatrix(mGuiCamera.combined);
         mGame.batch.begin();
         mFont.draw(mGame.batch, "Score: " + mScore, 0, GUI_HEIGHT / 2 + 120, GUI_WIDTH, Align.center, false);
+        if (Life == 100) {
+            mFont.draw(mGame.batch, "No Damage CLEAR", 0, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false);
+        }
         if (STAGENo == 3) {
             mFont.draw(mGame.batch, "You are so awesome!", 0, GUI_HEIGHT / 2 +20, GUI_WIDTH, Align.center, false);
             mFont.draw(mGame.batch, "Thanks so much.", 0, GUI_HEIGHT / 2 - 30, GUI_WIDTH, Align.center, false);
@@ -154,16 +167,7 @@ public class CrearScreen extends ScreenAdapter {
         mExitButton.Darker(delta);
         mRetryButton.Darker(delta);
         mGame.batch.end();
-/*
-        if (Gdx.input.justTouched()) {
-            gomusic.dispose();//メモリ解放
-            if (mGame.mRequestHandler != null) {
-                mGame.mRequestHandler.showAds(false); //広告消す
-            }
-            stage = 1;
-            mGame.setScreen(new GameScreen(mGame,stage));
-            //タッチされたらgameScreenに戻る選んだステージで始まる
-        }*/
+
         tb1 = false;
         tb2 = false;
         tb3 = false;
@@ -197,17 +201,11 @@ public class CrearScreen extends ScreenAdapter {
         }
         if (ReleaseButton1 && !tb1){
             gomusic.dispose();//メモリ解放
-            if (mGame.mRequestHandler != null) {
-                mGame.mRequestHandler.showAds(false); //広告消す
-            }
             mGame.setScreen(new StartScreen(mGame));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
         if (ReleaseButton2 && !tb2){
             gomusic.dispose();//メモリ解放
-            if (mGame.mRequestHandler != null) {
-                mGame.mRequestHandler.showAds(false); //広告消す
-            }
             mGame.setScreen(new GameScreen(mGame,STAGENo));
             //タッチされたらgameScreenに戻る選んだステージで始まる
         }
